@@ -1,6 +1,7 @@
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
 import { MoveUpRight } from 'lucide-react';
+import { SiGithub, SiFacebook, SiInstagram } from '@icons-pack/react-simple-icons';
 import { useNavigate } from 'react-router';
 import { GENERAL_INFO, SOCIAL_LINKS } from '@/lib/data';
 import { useTranslation } from 'react-i18next';
@@ -119,18 +120,25 @@ const Navbar = () => {
                                 {t('nav.social').toUpperCase()}
                             </p>
                             <ul className="space-y-3">
-                                {SOCIAL_LINKS.map((link) => (
-                                    <li key={link.name}>
-                                        <a
-                                            href={link.url}
-                                            target="_blank"
-                                            rel="noreferrer"
-                                            className="text-lg capitalize hover:underline"
-                                        >
-                                            {link.name}
-                                        </a>
-                                    </li>
-                                ))}
+                                {SOCIAL_LINKS.map((link) => {
+                                    const Icon = link.name === 'github' ? SiGithub
+                                        : link.name === 'facebook' ? SiFacebook
+                                        : link.name === 'instagram' ? SiInstagram
+                                        : null;
+                                    return (
+                                        <li key={link.name}>
+                                            <a
+                                                href={link.url}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                className="text-lg capitalize hover:underline inline-flex items-center gap-2.5 group"
+                                            >
+                                                {Icon && <Icon size={18} className="opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all duration-200" />}
+                                                {link.name}
+                                            </a>
+                                        </li>
+                                    );
+                                })}
                             </ul>
                         </div>
                         <div className="">
