@@ -2,11 +2,11 @@
   "banner": {
     "title_line1": "BACKEND",
     "title_line2": "DEVELOPER",
-    "description": "Xin chào! Mình là <1>Long</1> — một lập trình viên {{age}} tuổi hiện đang là sinh viên năm 3. Mình xây dựng hệ thống backend với Spring Boot, PostgreSQL, Redis, Docker và deploy lên production.",
+    "description": "Mình là <1>Long</1> — lập trình viên backend {{age}} tuổi, hiện là sinh viên năm 3. Mình xây dựng và triển khai hệ thống backend với Spring Boot, PostgreSQL, Redis và Docker.",
     "cta": "Liên hệ",
-    "available": "Đang tìm vị trí Intern / Junior",
+    "available": "Đang tìm vị trí Intern / Fresher",
     "stat_projects": "Dự án",
-    "stat_projects_value": "3",
+    "stat_projects_value": "3+",
     "stat_awards": "Giải thưởng",
     "stat_awards_value": "6",
     "stat_years": "Năm code",
@@ -16,8 +16,8 @@
     "intro_quote": "Mình không chỉ viết code chạy được — mình thiết kế hệ thống để nó chạy đúng, chạy ổn, và dễ maintain.",
     "this_is_me": "Về mình.",
     "greeting": "Mình là Long.",
-    "bio_1": "Backend developer, thích thiết kế database, viết API sạch, xử lý authentication, và deploy hệ thống lên production. Stack chính: Spring Boot + PostgreSQL + Redis + Docker.",
-    "bio_2": "Ngoài backend, mình có kinh nghiệm full-stack với React và Python. 6 giải Olympic Toán quốc gia + Tin học tỉnh cho mình nền tảng tư duy logic vững."
+    "bio_1": "Backend developer — mình thiết kế database, viết REST API, xử lý xác thực, và deploy lên production. Stack chính: Spring Boot + PostgreSQL + Redis + Docker.",
+    "bio_2": "Ngoài backend, mình có kinh nghiệm full-stack với React và Python. 4 giải Olympic Toán quốc gia và 2 giải Tin học cấp tỉnh thể hiện nền tảng tư duy giải quyết vấn đề vững chắc."
   },
   "sections": {
     "my_stack": "Kỹ năng",
@@ -70,12 +70,12 @@
     "olympic_humg": {
       "tagline": "Nền tảng luyện tập trực tuyến và quản lý đội tuyển Olympic Tin học.",
       "description": "Nền tảng luyện tập cho sinh viên đại học chuẩn bị cho kỳ thi Olympic cấp Trường/Quốc gia, quản lý đội thi và lộ trình học tập.<br/><br/>Tính năng chính:<br/><ul><li>Hệ thống đề thi thử với chấm điểm tự động</li><li>Quản lý đội thi và thành viên</li><li>Lộ trình học tập cá nhân hóa</li><li>AI chatbot dựa trên RAG trả lời câu hỏi của sinh viên</li><li>Xác thực Google OAuth2 + JWT</li><li>Giám sát với Prometheus/Grafana + sao lưu PostgreSQL tự động</li></ul>",
-      "role": "Lập trình viên Full-stack:<br/><ul><li>Tạo tài liệu kỹ thuật: C4 model, kiến trúc hệ thống, tài liệu REST API, sơ đồ ERD</li><li>Thiết kế và triển khai Spring Boot REST APIs, PostgreSQL schema, và các bản di chuyển cơ sở dữ liệu với Flyway</li><li>Xây dựng lớp xác thực với Google OAuth2, JWT access/refresh tokens, và phân quyền dựa trên vai trò (RBAC)</li><li>Tích hợp AI chatbot dựa trên RAG sử dụng LLM</li><li>Triển khai Docker + Nginx reverse proxy, Prometheus/Grafana, và thiết lập lịch sao lưu tự động</li></ul>"
+      "role": "Lập trình viên Full-stack:<br/><ul><li>Tạo tài liệu kỹ thuật: C4 model, kiến trúc hệ thống, tài liệu REST API, sơ đồ ERD</li><li>Thiết kế và triển khai Spring Boot REST APIs, PostgreSQL schema, và database migrations với Flyway</li><li>Xây dựng lớp xác thực với Google OAuth2, JWT access/refresh tokens, và phân quyền dựa trên vai trò (RBAC)</li><li>Tích hợp AI chatbot dựa trên RAG sử dụng LLM</li><li>Triển khai Docker + Nginx reverse proxy, Prometheus/Grafana, và thiết lập lịch sao lưu tự động</li></ul>"
     },
     "boom_online": {
       "tagline": "Game Bomberman nhiều người chơi thời gian thực tích hợp bot AI A*.",
-      "description": "Game Bomberman nhiều người chơi trong thời gian thực tích hợp bot AI.<br/><br/>Tính năng chính:<br/><ul><li>Đồng bộ hóa multiplayer thời gian thực qua WebSocket</li><li>Bot AI sử dụng giải thuật tìm đường A* và xử lý va chạm</li><li>Áp dụng các mẫu thiết kế: Strategy (độ khó bot), Observer (sự kiện game), Factory (tạo thực thể)</li><li>Xác thực Google OAuth2 + JWT</li><li>Quản lý di chuyển cơ sở dữ liệu với Flyway</li></ul>",
-      "role": "Lập trình viên Full-stack:<br/><ul><li>Xây dựng Spring Boot backend với WebSocket cho đồng bộ multiplayer thời gian thực</li><li>Triển khai giải thuật tìm đường A* cho chuyển động bot AI và thuật toán phát hiện va chạm</li><li>Áp dụng các mẫu thiết kế Strategy, Observer, và Factory</li><li>Tích hợp xác thực Google OAuth2 + JWT</li><li>Quản lý di chuyển cơ sở dữ liệu với Flyway</li></ul>"
+      "description": "Game Bomberman nhiều người chơi trong thời gian thực tích hợp bot AI.<br/><br/>Tính năng chính:<br/><ul><li>Đồng bộ hóa multiplayer thời gian thực qua WebSocket</li><li>Bot AI sử dụng giải thuật tìm đường A* và xử lý va chạm</li><li>Áp dụng các mẫu thiết kế: Strategy (độ khó bot), Observer (sự kiện game), Factory (tạo thực thể)</li><li>Xác thực Google OAuth2 + JWT</li><li>Quản lý database migrations với Flyway</li></ul>",
+      "role": "Lập trình viên Full-stack:<br/><ul><li>Xây dựng Spring Boot backend với WebSocket cho đồng bộ multiplayer thời gian thực</li><li>Triển khai giải thuật tìm đường A* cho chuyển động bot AI và thuật toán phát hiện va chạm</li><li>Áp dụng các mẫu thiết kế Strategy, Observer, và Factory</li><li>Tích hợp xác thực Google OAuth2 + JWT</li><li>Quản lý database migrations với Flyway</li></ul>"
     }
   },
   "seo": {

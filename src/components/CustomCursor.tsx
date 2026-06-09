@@ -16,8 +16,8 @@ const CustomCursor = () => {
             const { clientX, clientY } = e;
 
             gsap.to(svgRef.current, {
-                x: clientX,
-                y: clientY,
+                x: clientX - 13.5,
+                y: clientY - 15,
                 ease: 'power2.out',
                 duration: 0.25,
                 opacity: 1,

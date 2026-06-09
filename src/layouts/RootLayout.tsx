@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Outlet, ScrollRestoration, useLocation } from 'react-router';
 import { ReactLenis } from 'lenis/react';
 import { HelmetProvider } from 'react-helmet-async';
@@ -14,8 +14,21 @@ import ParticleBackground from '@/components/ParticleBackground';
 const RootLayout = () => {
     const [isPreloaderComplete, setIsPreloaderComplete] = useState(false);
     const location = useLocation();
+    const prevPathname = useRef(location.pathname);
+
+    // Force scroll to top on page load/refresh
+    useEffect(() => {
+        if ('scrollRestoration' in history) {
+            history.scrollRestoration = 'manual';
+        }
+        window.scrollTo(0, 0);
+    }, []);
 
     useEffect(() => {
+        // Only animate transition when pathname actually changes (not on initial mount)
+        if (prevPathname.current === location.pathname) return;
+        prevPathname.current = location.pathname;
+
         // Animate the transition overlay out when path changes
         const tl = gsap.timeline();
         tl.to('.page-transition', {

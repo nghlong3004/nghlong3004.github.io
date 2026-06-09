@@ -14,6 +14,7 @@ const Preloader = ({ onComplete }: PreloaderProps) => {
     useGSAP(
         () => {
             const tl = gsap.timeline({
+                paused: true,
                 defaults: {
                     ease: 'power2.inOut',
                 },
@@ -25,6 +26,9 @@ const Preloader = ({ onComplete }: PreloaderProps) => {
                 stagger: 0.04,
                 duration: 0.4,
             });
+
+            // Wait for fonts to load before playing to avoid FOUT
+            document.fonts.ready.then(() => tl.play());
 
             // 2. Pause to let user read
             tl.to({}, { duration: 0.6 });

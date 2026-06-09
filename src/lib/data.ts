@@ -3,7 +3,7 @@ import type { IProject } from '@/types';
 export const GENERAL_INFO = {
     email: 'nghlong3004@gmail.com',
     github: 'https://github.com/nghlong3004',
-    targetRole: 'Backend Developer Intern',
+    targetRole: 'Backend Developer',
 };
 
 export const SOCIAL_LINKS = [

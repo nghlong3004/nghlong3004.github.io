@@ -2,11 +2,11 @@
   "banner": {
     "title_line1": "BACKEND",
     "title_line2": "DEVELOPER",
-    "description": "Hey! I'm <1>Long</1> — a {{age}}-year-old developer and third-year student. I design, build, and deploy backend systems with Spring Boot, PostgreSQL, Redis, and Docker.",
+    "description": "I'm <1>Long</1> — a {{age}}-year-old backend developer and third-year student. I design, build, and deploy production systems with Spring Boot, PostgreSQL, Redis, and Docker.",
     "cta": "Contact Me",
-    "available": "Open for Intern / Junior roles",
+    "available": "Open for Intern / Fresher roles",
     "stat_projects": "Projects",
-    "stat_projects_value": "3",
+    "stat_projects_value": "3+",
     "stat_awards": "Awards",
     "stat_awards_value": "6",
     "stat_years": "Years Coding",
@@ -16,8 +16,8 @@
     "intro_quote": "I don't just write code that works — I design systems that run correctly, run reliably, and are easy to maintain.",
     "this_is_me": "About me.",
     "greeting": "I'm Long.",
-    "bio_1": "Backend developer who enjoys designing databases, writing clean APIs, handling auth, and deploying systems to production. Main stack: Spring Boot + PostgreSQL + Redis + Docker.",
-    "bio_2": "Beyond backend, I have full-stack experience with React and Python. 6 national Math Olympiad + provincial Informatics awards give me a solid foundation in analytical thinking."
+    "bio_1": "Backend developer — I design databases, write REST APIs, handle auth, and deploy to production. Main stack: Spring Boot + PostgreSQL + Redis + Docker.",
+    "bio_2": "Beyond backend, I have full-stack experience with React and Python. 4 National Math Olympiad prizes and 2 Provincial Informatics awards reflect a strong foundation in problem-solving."
   },
   "sections": {
     "my_stack": "My Stack",
@@ -27,7 +27,7 @@
   "education": {
     "title": "Education",
     "university": "Hanoi University of Mining and Geology",
-    "degree": "B.Eng. in Control Engineering and Automation",
+    "degree": "Control Engineering and Automation",
     "period": "09/2023 - Present",
     "awards_title": "Awards",
     "awards": [
