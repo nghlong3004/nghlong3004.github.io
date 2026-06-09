@@ -4,7 +4,8 @@ import type { IProject } from '@/types';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/all';
-import { ArrowLeft, ExternalLink, Github } from 'lucide-react';
+import { ArrowLeft, ExternalLink } from 'lucide-react';
+import { SiGithub } from '@icons-pack/react-simple-icons';
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -114,7 +115,7 @@ const ProjectDetails = ({ project }: Props) => {
                                         rel="noreferrer noopener"
                                         className="hover:text-primary"
                                     >
-                                        <Github size={30} />
+                                        <SiGithub size={30} />
                                     </a>
                                 )}
                                 {project.liveUrl && (
