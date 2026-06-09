@@ -22,43 +22,39 @@ const EducationAwards = () => {
         return maxYear(b.year) - maxYear(a.year);
     });
 
+    // Stagger reveal each item on scroll
     useGSAP(
         () => {
-            const tl = gsap.timeline({
+            gsap.from('.edu-item', {
+                y: 40,
+                opacity: 0,
+                duration: 0.8,
+                stagger: 0.12,
+                ease: 'power3.out',
                 scrollTrigger: {
                     trigger: containerRef.current,
-                    start: 'top 60%',
-                    end: 'bottom 50%',
-                    toggleActions: 'restart none none reverse',
-                    scrub: 1,
+                    start: 'top 70%',
+                    toggleActions: 'play none none reverse',
                 },
-            });
-
-            tl.from('.edu-item', {
-                y: 50,
-                opacity: 0,
-                stagger: 0.3,
             });
         },
         { scope: containerRef },
     );
 
+    // Fade out on scroll past (desktop only)
     useGSAP(
         () => {
             const mm = gsap.matchMedia();
             mm.add('(min-width: 768px)', () => {
-                const tl = gsap.timeline({
+                gsap.to(containerRef.current, {
+                    y: -150,
+                    opacity: 0,
                     scrollTrigger: {
                         trigger: containerRef.current,
                         start: 'bottom 50%',
                         end: 'bottom 20%',
                         scrub: 1,
                     },
-                });
-
-                tl.to(containerRef.current, {
-                    y: -150,
-                    opacity: 0,
                 });
             });
         },
@@ -88,19 +84,19 @@ const EducationAwards = () => {
                     <p className="text-2xl font-anton text-primary mb-8">
                         {t('education.awards_title')}
                     </p>
-                    <div className="grid gap-6">
-                        {awards.map((award) => (
+                    <div className="space-y-0">
+                        {awards.map((award, idx) => (
                             <div
-                                key={`${award.title}-${award.year}`}
-                                className="edu-item flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6"
+                                key={`${award.title}-${award.year}-${idx}`}
+                                className="edu-item group grid grid-cols-1 sm:grid-cols-[1fr_auto_auto] items-baseline gap-x-6 gap-y-1 py-4 border-b border-foreground/10 hover:bg-foreground/[0.03] transition-colors -mx-4 px-4 rounded-sm"
                             >
-                                <span className="text-lg font-medium min-w-[280px]">
+                                <span className="text-lg font-medium">
                                     {award.title}
                                 </span>
-                                <span className="text-muted-foreground">
+                                <span className="text-muted-foreground text-sm sm:text-base">
                                     {award.event}
                                 </span>
-                                <span className="text-muted-foreground sm:ml-auto">
+                                <span className="text-muted-foreground tabular-nums text-sm sm:text-base sm:text-right">
                                     {award.year}
                                 </span>
                             </div>

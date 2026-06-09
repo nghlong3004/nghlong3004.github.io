@@ -21,7 +21,7 @@ const ThemeToggle = () => {
     return (
         <button
             onClick={cycle}
-            className="size-10 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-foreground/10 transition-colors"
+            className="size-10 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-foreground/10 active:scale-95 transition-all"
             aria-label={`Theme: ${label}`}
             title={label}
         >

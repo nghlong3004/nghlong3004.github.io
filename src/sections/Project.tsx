@@ -1,5 +1,4 @@
 import TransitionLink from '@/components/TransitionLink';
-import { cn } from '@/lib/utils';
 import type { IProject } from '@/types';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
@@ -96,15 +95,15 @@ const Project = ({ index, project, selectedProject, onMouseEnter }: Props) => {
             onMouseLeave={handleMouseLeave}
         >
             {selectedProject === null && (
-                <img
-                    src={project.thumbnail}
-                    alt="Project"
-                    className={cn(
-                        'w-full object-cover mb-6 aspect-video object-top rounded-xl border border-border/20 shadow-sm',
-                    )}
-                    key={project.slug}
-                    loading="lazy"
-                />
+                <div className="w-full aspect-video mb-6 rounded-xl border border-border/20 shadow-sm overflow-hidden">
+                    <img
+                        src={project.longThumbnail}
+                        alt={project.title}
+                        className="w-full h-full object-cover object-top animate-scroll-preview"
+                        key={project.slug}
+                        loading="lazy"
+                    />
+                </div>
             )}
             <div className="flex gap-2 md:gap-5">
                 <div className="font-anton text-muted-foreground">

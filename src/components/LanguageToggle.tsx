@@ -12,7 +12,7 @@ const LanguageToggle = () => {
     return (
         <button
             onClick={toggle}
-            className="size-10 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-foreground/10 transition-colors text-sm font-medium"
+            className="size-10 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-foreground/10 active:scale-95 transition-all text-sm font-medium"
             aria-label="Toggle language"
             title={i18n.language === 'vi' ? 'Tiếng Việt' : 'English'}
         >

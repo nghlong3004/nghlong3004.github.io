@@ -50,32 +50,39 @@ const Navbar = () => {
     return (
         <>
             <div className="sticky top-0 z-[4]">
-                <div className="absolute top-5 right-5 md:right-10 z-[2] flex items-center gap-3">
-                    <ThemeToggle />
-                    <LanguageToggle />
-                    <button
-                        className={cn('group size-12 relative')}
-                        onClick={() => setIsMenuOpen(!isMenuOpen)}
-                    >
-                        <span
+                <div className="absolute top-5 left-1/2 -translate-x-1/2 z-[2]">
+                    <div className="flex items-center rounded-full border border-foreground/10 bg-background/60 backdrop-blur-xl shadow-lg shadow-black/5">
+                        <ThemeToggle />
+                        <div className="w-px h-5 bg-foreground/10" />
+                        <LanguageToggle />
+                        <div className="w-px h-5 bg-foreground/10" />
+                        <button
                             className={cn(
-                                'inline-block w-3/5 h-0.5 bg-foreground rounded-full absolute left-1/2 -translate-x-1/2 top-1/2 duration-300 -translate-y-[5px] ',
-                                {
-                                    'rotate-45 -translate-y-1/2': isMenuOpen,
-                                    'md:group-hover:rotate-12': !isMenuOpen,
-                                },
+                                'group size-10 relative rounded-full transition-colors hover:bg-foreground/10 active:scale-95',
                             )}
-                        ></span>
-                        <span
-                            className={cn(
-                                'inline-block w-3/5 h-0.5 bg-foreground rounded-full absolute left-1/2 -translate-x-1/2 top-1/2 duration-300 translate-y-[5px] ',
-                                {
-                                    '-rotate-45 -translate-y-1/2': isMenuOpen,
-                                    'md:group-hover:-rotate-12': !isMenuOpen,
-                                },
-                            )}
-                        ></span>
-                    </button>
+                            onClick={() => setIsMenuOpen(!isMenuOpen)}
+                            aria-label="Menu"
+                        >
+                            <span
+                                className={cn(
+                                    'inline-block w-[18px] h-0.5 bg-foreground rounded-full absolute left-1/2 -translate-x-1/2 top-1/2 duration-300 -translate-y-[4px]',
+                                    {
+                                        'rotate-45 -translate-y-1/2': isMenuOpen,
+                                        'md:group-hover:rotate-12': !isMenuOpen,
+                                    },
+                                )}
+                            ></span>
+                            <span
+                                className={cn(
+                                    'inline-block w-[18px] h-0.5 bg-foreground rounded-full absolute left-1/2 -translate-x-1/2 top-1/2 duration-300 translate-y-[4px]',
+                                    {
+                                        '-rotate-45 -translate-y-1/2': isMenuOpen,
+                                        'md:group-hover:-rotate-12': !isMenuOpen,
+                                    },
+                                )}
+                            ></span>
+                        </button>
+                    </div>
                 </div>
             </div>
 
