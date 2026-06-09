@@ -1,49 +1,55 @@
 @import "tailwindcss";
+@import "lenis/dist/lenis.css";
 
 /* ===== Theme Variables ===== */
+/* Deep Navy + Amber Gold + Cyan Blue */
+
 :root {
   /* Light theme */
-  --bg: 0 0% 97%;
-  --bg-light: 0 0% 92%;
-  --fg: 0 0% 13%;
-  --primary: 250 89% 60%;
-  --primary-fg: 0 0% 98%;
-  --secondary: 193 80% 40%;
-  --secondary-fg: 0 0% 98%;
-  --muted: 0 0% 90%;
-  --muted-fg: 0 0% 45%;
-  --accent: 0 0% 93%;
-  --accent-fg: 0 0% 9%;
-  --border: 0 0% 85%;
+  --bg: 210 20% 96%;
+  --bg-light: 210 16% 90%;
+  --fg: 215 25% 15%;
+  --primary: 48 97% 54%;
+  --primary-fg: 215 25% 10%;
+  --secondary: 199 89% 60%;
+  --secondary-fg: 215 25% 10%;
+  --muted: 210 14% 89%;
+  --muted-fg: 215 16% 42%;
+  --accent: 210 14% 93%;
+  --accent-fg: 215 25% 10%;
+  --border: 214 14% 82%;
   --card: 0 0% 100%;
-  --card-fg: 0 0% 9%;
+  --card-fg: 215 25% 10%;
   --popover: 0 0% 100%;
-  --popover-fg: 0 0% 9%;
-  --input: 0 0% 90%;
-  --ring: 0 0% 30%;
+  --popover-fg: 215 25% 10%;
+  --input: 214 14% 82%;
+  --ring: 48 97% 54%;
   --destructive: 0 62.8% 40%;
   --destructive-fg: 0 0% 98%;
 }
 
 [data-theme="dark"] {
-  --bg: 0 0% 13%;
-  --bg-light: 0 0% 19%;
-  --fg: 0 0% 87%;
-  --primary: 250 95% 68%;
-  --primary-fg: 0 0% 9%;
-  --secondary: 193 100% 47%;
-  --secondary-fg: 0 0% 13%;
-  --muted: 0 0% 14.9%;
-  --muted-fg: 0 0% 71%;
-  --accent: 0 0% 14.9%;
-  --accent-fg: 0 0% 98%;
-  --border: 0 0% 24%;
-  --card: 0 0% 3.9%;
-  --card-fg: 0 0% 98%;
-  --popover: 0 0% 3.9%;
-  --popover-fg: 0 0% 98%;
-  --input: 0 0% 14.9%;
-  --ring: 0 0% 83.1%;
+  /* Deep Navy background */
+  --bg: 222 47% 10%;
+  --bg-light: 221 39% 14%;
+  --fg: 210 40% 97%;
+  /* Amber Gold primary */
+  --primary: 48 97% 54%;
+  --primary-fg: 222 47% 10%;
+  /* Cyan Blue secondary */
+  --secondary: 199 89% 60%;
+  --secondary-fg: 222 47% 10%;
+  --muted: 217 33% 14%;
+  --muted-fg: 215 20% 65%;
+  --accent: 217 33% 14%;
+  --accent-fg: 210 40% 97%;
+  --border: 217 33% 18%;
+  --card: 222 47% 7%;
+  --card-fg: 210 40% 97%;
+  --popover: 222 47% 7%;
+  --popover-fg: 210 40% 97%;
+  --input: 217 33% 18%;
+  --ring: 48 97% 54%;
   --destructive: 0 62.8% 30.6%;
   --destructive-fg: 0 0% 98%;
 }
@@ -76,7 +82,7 @@
   --font-roboto-flex: 'Roboto Flex', sans-serif;
 
   /* Spacing */
-  --spacing-section: 250px;
+  --spacing-section: clamp(120px, 15vw, 250px);
 
   /* Border Radius */
   --radius-lg: 0.5rem;
@@ -117,7 +123,7 @@ body {
   padding-inline: 1rem;
 }
 
-.grid {
+.portfolio-grid {
   gap: 25px;
 }
 
@@ -141,9 +147,6 @@ body {
   color: var(--color-primary);
   font-weight: 500;
 }
-
-/* Lenis */
-@import "lenis/dist/lenis.css";
 
 /* Typing Text Cursor Animation */
 @keyframes blink {
