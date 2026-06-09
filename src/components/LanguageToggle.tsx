@@ -1,0 +1,24 @@
+import { useTranslation } from 'react-i18next';
+
+const LanguageToggle = () => {
+    const { i18n } = useTranslation();
+
+    const toggle = () => {
+        const next = i18n.language === 'vi' ? 'en' : 'vi';
+        i18n.changeLanguage(next);
+        localStorage.setItem('lang', next);
+    };
+
+    return (
+        <button
+            onClick={toggle}
+            className="size-10 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-foreground/10 transition-colors text-sm font-medium"
+            aria-label="Toggle language"
+            title={i18n.language === 'vi' ? 'Tiếng Việt' : 'English'}
+        >
+            {i18n.language === 'vi' ? 'VI' : 'EN'}
+        </button>
+    );
+};
+
+export default LanguageToggle;

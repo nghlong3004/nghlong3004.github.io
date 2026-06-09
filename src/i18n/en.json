@@ -1,0 +1,85 @@
+{
+  "banner": {
+    "title_line1": "BACKEND",
+    "title_line2": "DEVELOPER",
+    "description": "Hey! I'm <1>Long</1> — a {{age}}-year-old developer and third-year student. I design, build, and deploy backend systems with Spring Boot, PostgreSQL, Redis, and Docker.",
+    "cta": "Contact Me",
+    "available": "Open for Intern / Junior roles",
+    "stat_projects": "Projects",
+    "stat_projects_value": "3",
+    "stat_awards": "Awards",
+    "stat_awards_value": "6",
+    "stat_years": "Years Coding",
+    "stat_years_value": "2+"
+  },
+  "about": {
+    "intro_quote": "I don't just write code that works — I design systems that run correctly, run reliably, and are easy to maintain.",
+    "this_is_me": "About me.",
+    "greeting": "I'm Long.",
+    "bio_1": "Backend developer who enjoys designing databases, writing clean APIs, handling auth, and deploying systems to production. Main stack: Spring Boot + PostgreSQL + Redis + Docker.",
+    "bio_2": "Beyond backend, I have full-stack experience with React and Python. 6 national Math Olympiad + provincial Informatics awards give me a solid foundation in analytical thinking."
+  },
+  "sections": {
+    "my_stack": "My Stack",
+    "education_awards": "Education & Awards",
+    "selected_projects": "Selected Projects"
+  },
+  "education": {
+    "title": "Education",
+    "university": "Hanoi University of Mining and Geology",
+    "degree": "B.Eng. in Control Engineering and Automation",
+    "period": "09/2023 - Present",
+    "awards_title": "Awards",
+    "awards": [
+      { "title": "Third Prize — Calculus", "event": "National Mathematics Olympiad", "year": "2026" },
+      { "title": "Third Prize — Calculus", "event": "National Mathematics Olympiad", "year": "2025" },
+      { "title": "Third Prize — Linear Algebra", "event": "National Mathematics Olympiad", "year": "2024" },
+      { "title": "Consolation Prize — Algebra", "event": "National Mathematics Olympiad", "year": "2025" },
+      { "title": "Second Prize — Informatics", "event": "Provincial Contest, Grade 12", "year": "2023" },
+      { "title": "Consolation Prize — Informatics", "event": "Provincial Contest, Grade 11", "year": "2022" }
+    ]
+  },
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "education": "Education",
+    "projects": "Projects",
+    "social": "Social",
+    "menu": "Menu",
+    "contact": "Get in Touch"
+  },
+  "footer": {
+    "have_project": "Want to work together?",
+    "built_by": "Designed & coded by Nguyen Hoang Long"
+  },
+  "project_detail": {
+    "back": "Back",
+    "year": "Year",
+    "tech": "Tech Stack",
+    "description": "Description",
+    "role": "My Role",
+    "visit_website": "Visit Website",
+    "view_code": "View GitHub"
+  },
+  "projects_data": {
+    "vinqa": {
+      "tagline": "Multi-service automated web quality testing platform with 9 scanning tools.",
+      "description": "Multi-service automated web quality testing platform. Users input a URL and receive a consolidated QA report with AI-driven scores and suggestions.<br/><br/>Key Features:<br/><ul><li>Multi-service architecture: Spring Boot API + Python Worker + React SPA + PostgreSQL + Redis</li><li>9 scanners: Accessibility, Performance, Security, SEO, Visual Regression, Content, Console, Functional/UX, Link Checker</li><li>Asynchronous processing via Redis Queue (LPUSH/BLPOP)</li><li>AES-GCM encryption for sensitive payloads + SSRF protection</li><li>Real-time progress streaming via SSE</li><li>LLM integration for issue explanations and remediation suggestions</li><li>Monitoring with Prometheus/Grafana</li></ul>",
+      "role": "Backend / Full-stack / System Architecture:<br/><ul><li>Designed and implemented the Spring Boot API layer: scan job lifecycle, Redis queue producer, PostgreSQL persistence, JWT/OAuth2 authentication, SSE progress streaming</li><li>Built queue-based architecture with Redis LPUSH/BLPOP, separating the API from Python workers</li><li>Implemented AES-GCM encryption for sensitive queue payloads and SSRF protection for target URLs</li><li>Integrated PostgreSQL, Flyway, Redis, Docker Compose, Nginx, Prometheus, Grafana</li><li>Developed React + TypeScript dashboard with scan submission, real-time progress, and report visualization</li></ul>"
+    },
+    "olympic_humg": {
+      "tagline": "Online training and management platform for University Informatics Olympiad teams.",
+      "description": "Training platform for college students preparing for School/National Olympiads, managing teams, and learning pathways.<br/><br/>Key Features:<br/><ul><li>Mock exam system with auto-grading</li><li>Team and member management</li><li>Personalized learning pathways</li><li>RAG-based AI chatbot to answer student queries</li><li>Google OAuth2 + JWT authentication</li><li>Prometheus/Grafana monitoring + automatic PostgreSQL backups</li></ul>",
+      "role": "Full-stack Developer:<br/><ul><li>Created technical documentation: C4 model, system architecture, REST API specs, and ERD</li><li>Designed and implemented Spring Boot REST APIs, PostgreSQL schema, and Flyway migrations</li><li>Built authentication using Google OAuth2, JWT access/refresh tokens, and Role-Based Access Control (RBAC)</li><li>Integrated RAG-based AI chatbot with LLMs</li><li>Deployed using Docker + Nginx reverse proxy, Prometheus/Grafana, and automated backup schedules</li></ul>"
+    },
+    "boom_online": {
+      "tagline": "Real-time multiplayer Bomberman game with intelligent A* pathfinding bots.",
+      "description": "Real-time multiplayer Bomberman game integrated with AI bots.<br/><br/>Key Features:<br/><ul><li>Real-time multiplayer synchronization via WebSockets</li><li>AI bot with A* pathfinding and collision detection</li><li>Design patterns: Strategy (bot difficulty), Observer (game events), Factory (entity creation)</li><li>Google OAuth2 + JWT authentication</li><li>Database migrations with Flyway</li></ul>",
+      "role": "Full-stack Developer:<br/><ul><li>Built Spring Boot backend with WebSockets for real-time multiplayer synchronization</li><li>Implemented A* pathfinding for AI bot movement and custom collision detection</li><li>Applied Strategy, Observer, Factory design patterns</li><li>Integrated Google OAuth2 + JWT authentication</li><li>Managed database migrations using Flyway</li></ul>"
+    }
+  },
+  "seo": {
+    "home_title": "Nguyen Hoang Long — Backend Developer",
+    "home_description": "Portfolio of Nguyen Hoang Long — Backend Developer: Spring Boot, PostgreSQL, Redis, Docker, OAuth2/JWT, monitoring."
+  }
+}

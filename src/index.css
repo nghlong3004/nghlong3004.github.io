@@ -1,0 +1,177 @@
+@import "tailwindcss";
+
+/* ===== Theme Variables ===== */
+:root {
+  /* Light theme */
+  --bg: 0 0% 97%;
+  --bg-light: 0 0% 92%;
+  --fg: 0 0% 13%;
+  --primary: 250 89% 60%;
+  --primary-fg: 0 0% 98%;
+  --secondary: 193 80% 40%;
+  --secondary-fg: 0 0% 98%;
+  --muted: 0 0% 90%;
+  --muted-fg: 0 0% 45%;
+  --accent: 0 0% 93%;
+  --accent-fg: 0 0% 9%;
+  --border: 0 0% 85%;
+  --card: 0 0% 100%;
+  --card-fg: 0 0% 9%;
+  --popover: 0 0% 100%;
+  --popover-fg: 0 0% 9%;
+  --input: 0 0% 90%;
+  --ring: 0 0% 30%;
+  --destructive: 0 62.8% 40%;
+  --destructive-fg: 0 0% 98%;
+}
+
+[data-theme="dark"] {
+  --bg: 0 0% 13%;
+  --bg-light: 0 0% 19%;
+  --fg: 0 0% 87%;
+  --primary: 250 95% 68%;
+  --primary-fg: 0 0% 9%;
+  --secondary: 193 100% 47%;
+  --secondary-fg: 0 0% 13%;
+  --muted: 0 0% 14.9%;
+  --muted-fg: 0 0% 71%;
+  --accent: 0 0% 14.9%;
+  --accent-fg: 0 0% 98%;
+  --border: 0 0% 24%;
+  --card: 0 0% 3.9%;
+  --card-fg: 0 0% 98%;
+  --popover: 0 0% 3.9%;
+  --popover-fg: 0 0% 98%;
+  --input: 0 0% 14.9%;
+  --ring: 0 0% 83.1%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-fg: 0 0% 98%;
+}
+
+@theme {
+  /* Colors mapped from CSS variables */
+  --color-background: hsl(var(--bg));
+  --color-background-light: hsl(var(--bg-light));
+  --color-foreground: hsl(var(--fg));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-fg));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-fg));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-fg));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-fg));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-fg));
+  --color-border: hsl(var(--border));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-fg));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-fg));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  /* Fonts */
+  --font-anton: 'Anton', sans-serif;
+  --font-roboto-flex: 'Roboto Flex', sans-serif;
+
+  /* Spacing */
+  --spacing-section: 250px;
+
+  /* Border Radius */
+  --radius-lg: 0.5rem;
+  --radius-md: calc(0.5rem - 2px);
+  --radius-sm: calc(0.5rem - 4px);
+
+  /* Screens */
+  --breakpoint-xs: 420px;
+
+  /* Transition Duration */
+  --duration-7000: 7s;
+}
+
+/* ===== Base Styles ===== */
+::-webkit-scrollbar {
+  display: none;
+}
+
+* {
+  border-color: var(--color-border);
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-roboto-flex);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ===== Component Styles ===== */
+.container {
+  width: 100%;
+  max-width: 1148px;
+  margin-inline: auto;
+  padding-inline: 1rem;
+}
+
+.grid {
+  gap: 25px;
+}
+
+.markdown-text ul {
+  list-style-type: none;
+  padding-left: 0;
+  margin-top: 0.75rem;
+}
+
+.markdown-text li {
+  position: relative;
+  padding-left: 1.5rem;
+  margin-bottom: 0.625rem;
+  line-height: 1.6;
+}
+
+.markdown-text li::before {
+  content: "—";
+  position: absolute;
+  left: 0;
+  color: var(--color-primary);
+  font-weight: 500;
+}
+
+/* Lenis */
+@import "lenis/dist/lenis.css";
+
+/* Typing Text Cursor Animation */
+@keyframes blink {
+
+  from,
+  to {
+    border-color: transparent
+  }
+
+  50% {
+    border-color: var(--color-primary)
+  }
+}
+
+.animate-blink {
+  animation: blink 0.8s step-end infinite;
+}
+
+/* Long thumbnail auto-scroll on hover */
+@keyframes scroll-preview {
+  0% {
+    object-position: top;
+  }
+  100% {
+    object-position: bottom;
+  }
+}
+
+.animate-scroll-preview {
+  animation: scroll-preview 4s ease-in-out infinite alternate;
+}
