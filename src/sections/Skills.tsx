@@ -60,9 +60,9 @@ const ICONS: Record<string, { Icon: ComponentType<{ size?: number; color?: strin
 
 const SkillIcon = ({ name }: { name: string }) => {
     const entry = ICONS[name];
-    if (!entry) return <Code2 size={36} className="text-muted-foreground" />;
+    if (!entry) return <Code2 size={24} className="text-muted-foreground" />;
     const { Icon, color } = entry;
-    return <Icon size={36} color={color} />;
+    return <Icon size={24} color={color} />;
 };
 
 const Skills = () => {
@@ -124,21 +124,21 @@ const Skills = () => {
 
                 <div className="space-y-20">
                     {Object.entries(MY_STACK).map(([key, items]) => (
-                        <div className="grid sm:grid-cols-12" key={key}>
-                            <div className="sm:col-span-5">
+                        <div className="grid sm:grid-cols-12 gap-y-8" key={key}>
+                            <div className="sm:col-span-4">
                                 <p className="slide-up text-5xl font-anton leading-none text-muted-foreground uppercase">
                                     {key}
                                 </p>
                             </div>
 
-                            <div className="sm:col-span-7 flex gap-x-11 gap-y-9 flex-wrap">
+                            <div className="sm:col-span-8 grid grid-cols-2 gap-x-8 gap-y-5">
                                 {items.map((name) => (
                                     <div
-                                        className="slide-up flex gap-3.5 items-center leading-none"
+                                        className="slide-up flex gap-3 items-center leading-none"
                                         key={name}
                                     >
                                         <SkillIcon name={name} />
-                                        <span className="text-2xl">
+                                        <span className="text-lg">
                                             {name}
                                         </span>
                                     </div>

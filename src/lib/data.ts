@@ -8,6 +8,8 @@ export const GENERAL_INFO = {
 
 export const SOCIAL_LINKS = [
     { name: 'github', url: 'https://github.com/nghlong3004' },
+    { name: 'facebook', url: 'https://facebook.com/nghlong3004' },
+    { name: 'instagram', url: 'https://www.instagram.com/nghlong.3004' },
 ];
 
 export const MY_STACK: Record<string, string[]> = {
