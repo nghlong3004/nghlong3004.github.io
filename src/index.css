@@ -51,6 +51,12 @@
   --text-body--line-height: 1.6;
   --text-eyebrow: 0.8125rem;
   --text-eyebrow--line-height: 1.2;
+
+  --duration-4000: 4s;
+}
+
+.duration-4000 {
+  animation-duration: 4s;
 }
 
 :root {
@@ -152,7 +158,7 @@ html {
 
 @media (max-width: 640px) {
   html {
-    font-size: clamp(14px, 4.444444vw, 17px);
+    font-size: 16px;
   }
 
   :root {
@@ -224,4 +230,31 @@ html {
 [data-theme="dark"] .light-only,
 .dark .light-only {
   display: none !important;
+}
+
+/* Markdown & rich text styling */
+.markdown-text {
+  line-height: 1.7;
+}
+
+.markdown-text ul {
+  list-style-type: disc;
+  padding-left: 1.25rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.markdown-text li {
+  margin-top: 0.35rem;
+}
+
+.markdown-text strong {
+  color: hsl(var(--foreground));
+  font-weight: 600;
+}
+
+.markdown-text a {
+  color: hsl(var(--primary));
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }

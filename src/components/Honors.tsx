@@ -103,16 +103,8 @@ export function Honors() {
               : "opacity 500ms ease, transform 500ms ease",
           }}
         >
-          {/* Decorative watermark index */}
-          <span
-            className="absolute right-6 -bottom-6 font-display text-[9rem] leading-none text-muted-foreground/5 select-none pointer-events-none"
-            aria-hidden="true"
-          >
-            {activeHonor.index}
-          </span>
-
           <div className="relative z-10">
-            <span className="text-eyebrow uppercase tracking-[0.2em] text-primary font-mono mb-4 block">
+            <span className="text-eyebrow uppercase tracking-[0.2em] text-primary mb-4 block">
               {activeHonor.role}
             </span>
             <RevealText

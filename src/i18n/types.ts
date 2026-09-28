@@ -39,20 +39,40 @@ export interface ExperienceTranslation {
   roles: readonly ExperienceRoleTranslation[];
 }
 
+export interface ProjectDetailTranslation {
+  back: string;
+  year: string;
+  tech: string;
+  description: string;
+  role: string;
+  visit_website: string;
+  view_code: string;
+}
+
 export interface ProjectItemTranslation {
   id: string;
+  slug: string;
   name: string;
+  title: string;
   category: string;
   year: string;
   outcome: string;
   blurb: string;
   image: string;
+  techStack: readonly string[];
+  liveUrl?: string;
+  sourceCode?: string;
+  images: readonly string[];
+  tagline?: string;
+  description: string;
+  role?: string;
 }
 
 export interface ProjectsTranslation {
   eyebrow: string;
   heading: string;
   counter: string;
+  detail: ProjectDetailTranslation;
   projects: readonly ProjectItemTranslation[];
 }
 

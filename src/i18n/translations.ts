@@ -111,50 +111,147 @@ export const translations: Record<Language, TranslationDictionary> = {
       eyebrow: "Selected Projects",
       heading: "The work that shipped.",
       counter: "04 / Projects",
+      detail: {
+        back: "Back",
+        year: "Year",
+        tech: "Tech Stack",
+        description: "Description",
+        role: "My Role",
+        visit_website: "Visit Website",
+        view_code: "View GitHub",
+      },
 
       projects: [
         {
           id: "vinqa",
+          slug: "vinqa",
           name: "VinQA",
+          title: "VinQA",
           category: "AI Quality Assessment",
           year: "2026",
           outcome: "Team Lead — Backend",
           blurb:
             "AI-assisted platform that scans URLs and generates actionable technical reports. Async Redis workers cut scan submission from ~30s to ~200ms.",
           image: "/project/vinqa.webp",
+          liveUrl: "https://a20-app-054.nghlong3004.me/",
+          sourceCode: "https://github.com/nghlong3004/vinqa",
+          techStack: [
+            "Spring Boot",
+            "React",
+            "PostgreSQL",
+            "Redis",
+            "Docker",
+            "Python",
+            "Playwright",
+            "Lighthouse",
+          ],
+          images: [
+            "/project/vinqa/vinqa_1.webp",
+            "/project/vinqa/vinqa_2.webp",
+          ],
+          tagline: "Multi-service automated web quality testing platform with 9 scanning tools.",
+          description:
+            "Multi-service automated web quality testing platform. Users input a URL and receive a consolidated QA report with AI-driven scores and suggestions.<br/><br/>Key Features:<br/><ul><li>Multi-service architecture: Spring Boot API + Python Worker + React SPA + PostgreSQL + Redis</li><li>9 scanners: Accessibility, Performance, Security, SEO, Visual Regression, Content, Console, Functional/UX, Link Checker</li><li>Asynchronous processing via Redis Queue (LPUSH/BLPOP)</li><li>AES-GCM encryption for sensitive payloads + SSRF protection</li><li>Real-time progress streaming via SSE</li><li>LLM integration for issue explanations and remediation suggestions</li><li>Monitoring with Prometheus/Grafana</li></ul>",
+          role:
+            "Backend / Full-stack / System Architecture:<br/><ul><li>Designed and implemented the Spring Boot API layer: scan job lifecycle, Redis queue producer, PostgreSQL persistence, JWT/OAuth2 authentication, SSE progress streaming</li><li>Built queue-based architecture with Redis LPUSH/BLPOP, separating the API from Python workers</li><li>Implemented AES-GCM encryption for sensitive queue payloads and SSRF protection for target URLs</li><li>Integrated PostgreSQL, Flyway, Redis, Docker Compose, Nginx, Prometheus, Grafana</li><li>Developed React + TypeScript dashboard with scan submission, real-time progress, and report visualization</li></ul>",
         },
 
         {
           id: "vsf-qc-copilot",
+          slug: "vsf-qc-copilot",
           name: "VSF QC Copilot",
+          title: "VSF QC Copilot",
           category: "AI Evaluation Platform",
           year: "2026",
           outcome: "Built at Vinsmart Future",
           blurb:
             "An evaluation platform where QC teams configure chatbot/API targets, run AI-assisted evaluations and export results — Spring Boot, Redis workers, Promptfoo.",
           image: "/project/VSF.webp",
+          sourceCode: "https://github.com/VSF-QC-TTS/vf-qc-copilot",
+          techStack: [
+            "Spring Boot",
+            "Node.js",
+            "Promptfoo",
+            "React",
+            "Vite",
+            "TypeScript",
+            "Redis Streams",
+            "PostgreSQL",
+            "Docker Compose",
+          ],
+          images: [
+            "/project/VSF.webp",
+          ],
+          tagline: "Internal automated testing and structured evaluation platform for chatbot APIs.",
+          description:
+            "Internal test automation platform designed for QC teams to automatically test and evaluate chatbot responses through APIs. The platform eliminates manual Excel workflows and blunt all-in-one LLM judges, shifting toward structured evaluation across specific fields, components, tools, and evaluation rubrics.<br/><br/>System Architecture (Microservices Monorepo):<br/><ul><li><strong>Frontend SPA (apps/client):</strong> React, Vite, TypeScript — QC dashboard to manage test projects, configure target APIs, generate AI test cases, and inspect evaluation reports.</li><li><strong>Backend API (apps/api):</strong> Java Spring Boot — core API services, business logic, evaluation lifecycle orchestration, LLM integration, and Redis Streams job producer.</li><li><strong>Evaluation Runner (apps/runner):</strong> Node.js — worker consumer that pulls jobs from Redis, queries chatbot APIs, normalizes responses, executes promptfoo assertions, and reports results back to Backend API.</li><li><strong>Data Infrastructure:</strong> PostgreSQL for persistent state, Redis Streams for distributed evaluation task queue.</li></ul><br/>Key Engineering Highlights:<br/><ul><li>Automated multi-scenario testing with tiered assertions (regex, semantic similarity, LLM rubric judges)</li><li>Comprehensive architectural documentation: C4 Model, LLD, Architecture Decision Records (ADRs)</li><li>One-command local development environment with Docker Compose</li></ul>",
+          role:
+            "Backend Development & System Integration at Vinsmart Future:<br/><ul><li>Designed and built Spring Boot Backend API managing test projects, evaluation suites, target APIs, and run lifecycles.</li><li>Engineered distributed asynchronous queue pipeline using Redis Streams to dispatch eval jobs to the Node.js Runner.</li><li>Architected PostgreSQL database schema for test cases, rubrics, and detailed execution metrics.</li><li>Authored technical documentation: C4 Model Architecture, LLD, ADRs, and complete handover specs.</li></ul>",
         },
 
         {
           id: "olympic-humg",
+          slug: "olympic-humg",
           name: "Olympic HUMG",
+          title: "Olympic HUMG",
           category: "Education Platform",
           year: "2025",
           outcome: "Full-stack Developer",
           blurb:
             "Practice platform for Olympiad mock exams, team management and study roadmaps — with Google OAuth2, RBAC and a RAG-based chatbot.",
           image: "/project/olympic-humg.webp",
+          liveUrl: "https://olympic.humg.edu.vn",
+          sourceCode: "https://github.com/nghlong3004/humg-olympic-documentation",
+          techStack: [
+            "Spring Boot",
+            "React",
+            "PostgreSQL",
+            "Redis",
+            "Flyway",
+            "Docker",
+            "Nginx",
+            "OAuth2/JWT",
+          ],
+          images: [
+            "/project/olympic-humg/olympic-humg_1.webp",
+            "/project/olympic-humg/olympic-humg_2.webp",
+          ],
+          tagline: "Online training and management platform for University Informatics Olympiad teams.",
+          description:
+            "Training platform for college students preparing for School/National Olympiads, managing teams, and learning pathways.<br/><br/>Key Features:<br/><ul><li>Mock exam system with auto-grading</li><li>Team and member management</li><li>Personalized learning pathways</li><li>RAG-based AI chatbot to answer student queries</li><li>Google OAuth2 + JWT authentication</li><li>Prometheus/Grafana monitoring + automatic PostgreSQL backups</li></ul>",
+          role:
+            "Full-stack Developer:<br/><ul><li>Created technical documentation: C4 model, system architecture, REST API specs, and ERD</li><li>Designed and implemented Spring Boot REST APIs, PostgreSQL schema, and Flyway migrations</li><li>Built authentication using Google OAuth2, JWT access/refresh tokens, and Role-Based Access Control (RBAC)</li><li>Integrated RAG-based AI chatbot with LLMs</li><li>Deployed using Docker + Nginx reverse proxy, Prometheus/Grafana, and automated backup schedules</li></ul>",
         },
 
         {
           id: "boom-online",
+          slug: "boom-online",
           name: "Boom Online",
+          title: "Boom Online",
           category: "Real-time Multiplayer Game",
           year: "2025",
           outcome: "Java Developer",
           blurb:
             "Real-time multiplayer Bomberman-style game with a Spring Boot WebSocket server, A* pathfinding bots, and Strategy/Observer/Factory design patterns.",
           image: "/project/boom-online.webp",
+          sourceCode: "https://github.com/nghlong3004/boom-online",
+          techStack: [
+            "Spring Boot",
+            "WebSocket",
+            "Java Swing",
+            "PostgreSQL",
+            "Flyway",
+            "A* Pathfinding",
+          ],
+          images: [
+            "/project/boom-online/boom-1.webp",
+            "/project/boom-online/boom-2.webp",
+          ],
+          tagline: "Real-time multiplayer Bomberman game with intelligent A* pathfinding bots.",
+          description:
+            "Real-time multiplayer Bomberman game integrated with AI bots.<br/><br/>Key Features:<br/><ul><li>Real-time multiplayer synchronization via WebSockets</li><li>AI bot with A* pathfinding and collision detection</li><li>Design patterns: Strategy (bot difficulty), Observer (game events), Factory (entity creation)</li><li>Google OAuth2 + JWT authentication</li><li>Database migrations with Flyway</li></ul>",
+          role:
+            "Full-stack Developer:<br/><ul><li>Built Spring Boot backend with WebSockets for real-time multiplayer synchronization</li><li>Implemented A* pathfinding for AI bot movement and custom collision detection</li><li>Applied Strategy, Observer, Factory design patterns</li><li>Integrated Google OAuth2 + JWT authentication</li><li>Managed database migrations using Flyway</li></ul>",
         },
       ],
     },
@@ -342,50 +439,147 @@ export const translations: Record<Language, TranslationDictionary> = {
       eyebrow: "Dự án tiêu biểu",
       heading: "The work that shipped.",
       counter: "04 / Dự án",
+      detail: {
+        back: "Quay lại",
+        year: "Năm",
+        tech: "Tech Stack",
+        description: "Mô tả",
+        role: "Vai trò của mình",
+        visit_website: "Ghé thăm trang web",
+        view_code: "Xem GitHub",
+      },
 
       projects: [
         {
           id: "vinqa",
+          slug: "vinqa",
           name: "VinQA",
+          title: "VinQA",
           category: "Đánh Giá Chất Lượng AI",
           year: "2026",
           outcome: "Team Lead — Backend",
           blurb:
             "Nền tảng ứng dụng AI để scan URL và tạo báo cáo kỹ thuật. Async Redis workers giúp giảm thời gian submit scan từ ~30s xuống ~200ms.",
           image: "/project/vinqa.webp",
+          liveUrl: "https://a20-app-054.nghlong3004.me/",
+          sourceCode: "https://github.com/nghlong3004/vinqa",
+          techStack: [
+            "Spring Boot",
+            "React",
+            "PostgreSQL",
+            "Redis",
+            "Docker",
+            "Python",
+            "Playwright",
+            "Lighthouse",
+          ],
+          images: [
+            "/project/vinqa/vinqa_1.webp",
+            "/project/vinqa/vinqa_2.webp",
+          ],
+          tagline: "Nền tảng kiểm thử chất lượng web tự động đa dịch vụ với 9 công cụ quét.",
+          description:
+            "Nền tảng kiểm thử chất lượng web tự động đa dịch vụ. Người dùng nhập URL, hệ thống trả về báo cáo QA tổng hợp với điểm số và gợi ý sửa lỗi AI.<br/><br/>Tính năng chính:<br/><ul><li>Kiến trúc đa dịch vụ: Spring Boot API + Python Worker + React SPA + PostgreSQL + Redis</li><li>9 công cụ scan: Accessibility, Performance, Security, SEO, Visual Regression, Content, Console, Functional/UX, Link Checker</li><li>Xử lý bất đồng bộ qua Redis Queue (LPUSH/BLPOP)</li><li>Mã hóa AES-GCM cho payload nhạy cảm + bảo vệ chống tấn công SSRF</li><li>SSE streaming tiến trình thời gian thực</li><li>Tích hợp LLM để giải thích lỗi và gợi ý sửa đổi</li><li>Giám sát hệ thống với Prometheus và Grafana</li></ul>",
+          role:
+            "Backend / Full-stack / Kiến trúc hệ thống:<br/><ul><li>Thiết kế và triển khai lớp Spring Boot API: vòng đời quét lỗi, Redis queue producer, lưu trữ PostgreSQL, xác thực JWT/OAuth2, SSE progress streaming</li><li>Xây dựng kiến trúc hàng đợi Redis LPUSH/BLPOP, tách biệt API với Python worker</li><li>Triển khai mã hóa AES-GCM cho gói tin nhạy cảm và bảo vệ chống tấn công SSRF cho các URL đích</li><li>Tích hợp PostgreSQL, Flyway, Redis, Docker Compose, Nginx, Prometheus, Grafana</li><li>Phát triển dashboard React + TypeScript phục vụ gửi yêu cầu quét, theo dõi tiến trình trực tiếp, hiển thị báo cáo trực quan</li></ul>",
         },
 
         {
           id: "vsf-qc-copilot",
+          slug: "vsf-qc-copilot",
           name: "VSF QC Copilot",
+          title: "VSF QC Copilot",
           category: "Nền Tảng Đánh Giá AI",
           year: "2026",
           outcome: "Phát triển tại Vinsmart Future",
           blurb:
             "Nền tảng evaluation cho phép đội ngũ QC cấu hình chatbot/API targets, chạy đánh giá với AI và export kết quả — sử dụng Spring Boot, Redis workers và Promptfoo.",
           image: "/project/VSF.webp",
+          sourceCode: "https://github.com/VSF-QC-TTS/vf-qc-copilot",
+          techStack: [
+            "Spring Boot",
+            "Node.js",
+            "Promptfoo",
+            "React",
+            "Vite",
+            "TypeScript",
+            "Redis Streams",
+            "PostgreSQL",
+            "Docker Compose",
+          ],
+          images: [
+            "/project/VSF.webp",
+          ],
+          tagline: "Nền tảng tự động hóa kiểm thử nội bộ đánh giá phản hồi chatbot theo tiêu chí có cấu trúc.",
+          description:
+            "Dự án này là nền tảng tự động hóa kiểm thử nội bộ dành cho đội ngũ QC, được thiết kế để kiểm thử và đánh giá tự động các phản hồi của chatbot thông qua API. Hệ thống sinh ra để giảm bớt quy trình thủ công sử dụng Excel và các công cụ đánh giá tổng hợp bằng AI (all-in-one LLM judge), chuyển hướng sang phương pháp <strong>đánh giá có cấu trúc (structured evaluation)</strong> dựa trên từng trường, thành phần, công cụ và tiêu chí đánh giá (rubric) cụ thể.<br/><br/><strong>Kiến Trúc Hệ Thống (Microservices Monorepo):</strong><br/><ul><li><strong>Frontend SPA (apps/client):</strong> React, Vite, TypeScript — giao diện cho đội ngũ QC để quản lý dự án, cấu hình mục tiêu kiểm thử, tạo dữ liệu kiểm thử (test cases) bằng AI, và đánh giá kết quả chạy kiểm thử (run reports).</li><li><strong>Backend API (apps/api):</strong> Java Spring Boot — cung cấp API lõi, quản lý logic nghiệp vụ, quản lý vòng đời đánh giá, phối hợp với các LLM, và đẩy các tác vụ kiểm thử (jobs) vào hàng đợi Redis Streams.</li><li><strong>Evaluation Runner (apps/runner):</strong> Node.js — consumer nhận task từ Redis, gọi API chatbot, chuẩn hóa response, chạy assertions/evaluations bằng promptfoo và trả kết quả về Backend API.</li><li><strong>Hạ tầng dữ liệu:</strong> PostgreSQL lưu trữ dữ liệu nghiệp vụ, Redis Streams làm hàng đợi cho runner.</li></ul><br/><strong>Điểm nổi bật kỹ thuật:</strong><br/><ul><li>Chạy kiểm thử tự động nhiều kịch bản, assertion đa tầng (regex, semantic similarity, LLM rubric judge)</li><li>Tài liệu thiết kế kiến trúc chuẩn C4 Model, LLD, ADRs và API specs chi tiết</li><li>Hỗ trợ khởi tạo toàn bộ hạ tầng cục bộ (local) với Docker Compose</li></ul>",
+          role:
+            "Backend Development & Tích hợp hệ thống tại Vinsmart Future:<br/><ul><li>Thiết kế và xây dựng Spring Boot Backend API quản lý dự án kiểm thử, cấu hình test suites, target APIs và vòng đời evaluation runs.</li><li>Xây dựng kiến trúc message queue với Redis Streams để phân phối tác vụ kiểm thử bất đồng bộ cho Node.js Runner.</li><li>Thiết kế cơ sở dữ liệu PostgreSQL và quản lý dữ liệu test cases, rubrics, metrics kết quả.</li><li>Soạn thảo tài liệu kỹ thuật hoàn chỉnh: C4 Model Architecture, LLD, ADRs và tài liệu bàn giao sản phẩm.</li></ul>",
         },
 
         {
           id: "olympic-humg",
+          slug: "olympic-humg",
           name: "Olympic HUMG",
+          title: "Olympic HUMG",
           category: "Nền Tảng Giáo Dục",
           year: "2025",
           outcome: "Full-stack Developer",
           blurb:
             "Nền tảng luyện thi Olympic, quản lý đội tuyển và xây dựng lộ trình học tập — tích hợp Google OAuth2, RBAC và chatbot sử dụng RAG.",
           image: "/project/olympic-humg.webp",
+          liveUrl: "https://olympic.humg.edu.vn",
+          sourceCode: "https://github.com/nghlong3004/humg-olympic-documentation",
+          techStack: [
+            "Spring Boot",
+            "React",
+            "PostgreSQL",
+            "Redis",
+            "Flyway",
+            "Docker",
+            "Nginx",
+            "OAuth2/JWT",
+          ],
+          images: [
+            "/project/olympic-humg/olympic-humg_1.webp",
+            "/project/olympic-humg/olympic-humg_2.webp",
+          ],
+          tagline: "Nền tảng luyện tập trực tuyến và quản lý đội tuyển Olympic Tin học.",
+          description:
+            "Nền tảng luyện tập cho sinh viên đại học chuẩn bị cho kỳ thi Olympic cấp Trường/Quốc gia, quản lý đội thi và lộ trình học tập.<br/><br/>Tính năng chính:<br/><ul><li>Hệ thống đề thi thử với chấm điểm tự động</li><li>Quản lý đội thi và thành viên</li><li>Lộ trình học tập cá nhân hóa</li><li>AI chatbot dựa trên RAG trả lời câu hỏi của sinh viên</li><li>Xác thực Google OAuth2 + JWT</li><li>Giám sát với Prometheus/Grafana + sao lưu PostgreSQL tự động</li></ul>",
+          role:
+            "Lập trình viên Full-stack:<br/><ul><li>Tạo tài liệu kỹ thuật: C4 model, kiến trúc hệ thống, tài liệu REST API, sơ đồ ERD</li><li>Thiết kế và triển khai Spring Boot REST APIs, PostgreSQL schema, và database migrations với Flyway</li><li>Xây dựng lớp xác thực với Google OAuth2, JWT access/refresh tokens, và phân quyền dựa trên vai trò (RBAC)</li><li>Tích hợp AI chatbot dựa trên RAG sử dụng LLM</li><li>Triển khai Docker + Nginx reverse proxy, Prometheus/Grafana, và thiết lập lịch sao lưu tự động</li></ul>",
         },
 
         {
           id: "boom-online",
+          slug: "boom-online",
           name: "Boom Online",
+          title: "Boom Online",
           category: "Game Multiplayer Real-time",
           year: "2025",
           outcome: "Java Developer",
           blurb:
             "Game đặt bom multiplayer thời gian thực với Spring Boot WebSocket server, bot tìm đường bằng thuật toán A* và các design patterns Strategy/Observer/Factory.",
           image: "/project/boom-online.webp",
+          sourceCode: "https://github.com/nghlong3004/boom-online",
+          techStack: [
+            "Spring Boot",
+            "WebSocket",
+            "Java Swing",
+            "PostgreSQL",
+            "Flyway",
+            "A* Pathfinding",
+          ],
+          images: [
+            "/project/boom-online/boom-1.webp",
+            "/project/boom-online/boom-2.webp",
+          ],
+          tagline: "Game Bomberman nhiều người chơi thời gian thực tích hợp bot AI A*.",
+          description:
+            "Game Bomberman nhiều người chơi trong thời gian thực tích hợp bot AI.<br/><br/>Tính năng chính:<br/><ul><li>Đồng bộ hóa multiplayer thời gian thực qua WebSocket</li><li>Bot AI sử dụng giải thuật tìm đường A* và xử lý va chạm</li><li>Áp dụng các mẫu thiết kế: Strategy (độ khó bot), Observer (sự kiện game), Factory (tạo thực thể)</li><li>Xác thực Google OAuth2 + JWT</li><li>Quản lý database migrations với Flyway</li></ul>",
+          role:
+            "Lập trình viên Full-stack:<br/><ul><li>Xây dựng Spring Boot backend với WebSocket cho đồng bộ multiplayer thời gian thực</li><li>Triển khai giải thuật tìm đường A* cho chuyển động bot AI và thuật toán phát hiện va chạm</li><li>Áp dụng các mẫu thiết kế Strategy, Observer, và Factory</li><li>Tích hợp xác thực Google OAuth2 + JWT</li><li>Quản lý database migrations với Flyway</li></ul>",
         },
       ],
     },

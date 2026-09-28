@@ -19,6 +19,12 @@ import {
   SiHibernate,
   SiSpring,
   SiGitlab,
+  SiReact,
+  SiTypescript,
+  SiNodedotjs,
+  SiVite,
+  SiLighthouse,
+  SiSocketdotio,
 } from "react-icons/si";
 import { FaJava } from "react-icons/fa6";
 
@@ -137,6 +143,21 @@ const ICON_MAP: Record<
   // Testing & AI
   playwright: PlaywrightIcon,
   langfuse: LangfuseIcon,
+  lighthouse: SiLighthouse,
+
+  // Web & Full-stack
+  react: SiReact,
+  typescript: SiTypescript,
+  ts: SiTypescript,
+  vite: SiVite,
+  "node.js": SiNodedotjs,
+  nodejs: SiNodedotjs,
+  node: SiNodedotjs,
+  websocket: SiSocketdotio,
+  websockets: SiSocketdotio,
+  "redis streams": SiRedis,
+  "docker compose": SiDocker,
+  "java swing": FaJava,
 };
 
 // Official brand colors from Simple Icons & brand guidelines
@@ -150,7 +171,9 @@ const BRAND_COLORS: Record<string, string> = {
   postgresql: "#4169E1",
   postgres: "#4169E1",
   redis: "#DC382D",
+  "redis streams": "#DC382D",
   docker: "#2496ED",
+  "docker compose": "#2496ED",
   nginx: "#009639",
   linux: "#FCC624",
   "ci/cd": "#FC6D26",
@@ -169,6 +192,17 @@ const BRAND_COLORS: Record<string, string> = {
   oauth2: "#FB015B",
   hibernate: "#BCAE79",
   flyway: "#CC0200",
+  react: "#61DAFB",
+  typescript: "#3178C6",
+  ts: "#3178C6",
+  vite: "#646CFF",
+  "node.js": "#5FA04E",
+  nodejs: "#5FA04E",
+  node: "#5FA04E",
+  lighthouse: "#F44B21",
+  websocket: "#010101",
+  websockets: "#010101",
+  "java swing": "#ED8B00",
 };
 
 interface TechIconProps {

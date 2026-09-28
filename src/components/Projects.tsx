@@ -5,7 +5,13 @@ import { Eyebrow } from "./Eyebrow";
 import { LiquidImage } from "./LiquidImage";
 import { RevealText } from "./RevealText";
 
-export function Projects() {
+import { ArrowUpRight } from "lucide-react";
+
+interface ProjectsProps {
+  onSelectProject?: (id: string) => void;
+}
+
+export function Projects({ onSelectProject }: ProjectsProps = {}) {
   const reducedMotion = usePrefersReducedMotion();
   const { ref: sectionRef, inView } = useInView<HTMLElement>();
   const { t, language } = useLanguage();
@@ -56,7 +62,28 @@ export function Projects() {
                   : `opacity 620ms cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms, transform 620ms cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms`,
               }}
             >
-              <article className="group cursor-pointer">
+              <article
+                className="group cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg"
+                onClick={() => {
+                  if (onSelectProject) {
+                    onSelectProject(project.id);
+                  } else {
+                    window.location.hash = `#/project/${project.id}`;
+                  }
+                }}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    if (onSelectProject) {
+                      onSelectProject(project.id);
+                    } else {
+                      window.location.hash = `#/project/${project.id}`;
+                    }
+                  }
+                }}
+              >
                 {/* Liquid Image */}
                 <LiquidImage
                   src={project.image}
@@ -71,8 +98,9 @@ export function Projects() {
                 <div className="mt-6 border-t border-line pt-5 flex items-start justify-between gap-6">
                   {/* Left: Name + Blurb */}
                   <div>
-                    <h3 className="font-sans text-h3 font-semibold tracking-[-0.01em] text-foreground transition-colors duration-340 ease-out group-hover:text-accent">
-                      {project.name}
+                    <h3 className="font-sans text-h3 font-semibold tracking-[-0.01em] text-foreground transition-colors duration-340 ease-out group-hover:text-accent flex items-center gap-2">
+                      <span>{project.name}</span>
+                      <ArrowUpRight className="size-5 opacity-0 -translate-x-1.5 translate-y-1.5 group-hover:opacity-100 group-hover:translate-x-0 group-hover:translate-y-0 transition-all duration-300 text-accent" />
                     </h3>
                     <p className="mt-2 max-w-[42ch] text-body text-muted">
                       {project.blurb}
