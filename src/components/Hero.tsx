@@ -21,14 +21,14 @@ export function Hero() {
           delay={2700}
           stagger={80}
           duration={760}
-          className="font-display uppercase leading-[1.08] tracking-[-0.01em] text-foreground text-[1.35rem] sm:text-h2 text-center"
+          className="font-display uppercase leading-[1.08] tracking-[-0.01em] text-foreground text-[clamp(1.85rem,7.5vw,2.5rem)] sm:text-h2 text-center"
         />
       </div>
 
       {/* Giant username h1 centered */}
       <div className="relative z-20 flex-1 flex flex-col items-center justify-center pb-12 sm:pb-24 select-none px-gutter my-auto">
         <h1
-          className="font-display uppercase leading-[0.82] tracking-[-0.01em] text-accent text-[clamp(2.5rem,10vw,13rem)] text-center whitespace-nowrap transition-transform duration-500 hover:scale-[1.02] cursor-default"
+          className="font-display uppercase leading-[0.82] tracking-[-0.01em] text-accent text-[clamp(3.5rem,15.5vw,5.5rem)] sm:text-[clamp(5rem,10vw,13rem)] text-center whitespace-nowrap transition-transform duration-500 hover:scale-[1.02] cursor-default"
           aria-label="nghlong3004"
         >
           <span className="block whitespace-nowrap overflow-hidden">
