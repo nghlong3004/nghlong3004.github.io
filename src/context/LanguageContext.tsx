@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import type { Language } from "../i18n/types";
 import { translations } from "../i18n/translations";
 import { LanguageContext } from "./languageContextDef";
@@ -18,19 +18,22 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     document.documentElement.setAttribute("lang", language);
   }, [language]);
 
-  const toggleLanguage = () => {
+  const toggleLanguage = useCallback(() => {
     setLanguage((prev) => (prev === "en" ? "vi" : "en"));
-  };
+  }, []);
+
+  const value = useMemo(
+    () => ({
+      language,
+      setLanguage,
+      toggleLanguage,
+      t: translations[language],
+    }),
+    [language, toggleLanguage]
+  );
 
   return (
-    <LanguageContext.Provider
-      value={{
-        language,
-        setLanguage,
-        toggleLanguage,
-        t: translations[language],
-      }}
-    >
+    <LanguageContext.Provider value={value}>
       {children}
     </LanguageContext.Provider>
   );

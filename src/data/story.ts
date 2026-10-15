@@ -8,7 +8,7 @@ export const STORY_DATA = {
   eyebrow: "The Story",
   heading: "Reliable systems are never an accident.",
   intro:
-    "I'm a senior-year engineering student who turned a love of algorithms into real-world backend work. From a real-time multiplayer game with A* bots to an AI-assisted QC platform — and now test automation at VinFast — the through-line never changed: pick the hard problem, design it properly, and measure whether it actually got better.",
+    "Starting from all-night League of Legends sessions, I gradually realized what I truly fell in love with: sitting in front of a computer, watching pixels light up with every keystroke, and losing myself in solving hard problems. From a real-time multiplayer game with A* bots to an AI-assisted QC platform — and now at VinFast — the through-line never changed: pick the hard problem, design it properly, and solve it to the end.",
   principles: [
     {
       index: "01",

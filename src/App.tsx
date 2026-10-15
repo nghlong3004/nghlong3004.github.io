@@ -3,11 +3,13 @@ import type Lenis from "lenis";
 import { useAdaptiveGrid } from "./hooks/useAdaptiveGrid";
 import { useLenis } from "./hooks/useLenis";
 import { useLanguage } from "./hooks/useLanguage";
+import { useTheme } from "./hooks/useTheme";
 import { ThemeProvider } from "./context/ThemeContext";
 import { LanguageProvider } from "./context/LanguageContext";
 import { Preloader } from "./components/Preloader";
 import { SiteNav } from "./components/SiteNav";
 import { NetworkCanvas } from "./components/NetworkCanvas";
+import GlowCursor from "./components/GlowCursor";
 import { Hero } from "./components/Hero";
 import { Marquee } from "./components/Marquee";
 import { Story } from "./components/Story";
@@ -21,6 +23,7 @@ import { ScrollProgressIndicator } from "./components/ScrollProgressIndicator";
 
 function AppContent({ lenisRef }: { lenisRef: React.RefObject<Lenis | null> }) {
   const { t } = useLanguage();
+  const { theme } = useTheme();
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(() => {
     if (typeof window === "undefined") return null;
     const hash = window.location.hash;
@@ -81,6 +84,17 @@ function AppContent({ lenisRef }: { lenisRef: React.RefObject<Lenis | null> }) {
       <SiteNav lenisRef={lenisRef} />
       <ScrollProgressIndicator />
       <NetworkCanvas />
+      <GlowCursor
+        className="!fixed !inset-0 pointer-events-none z-30"
+        theme={theme}
+        color={theme === "dark" ? "#38bdf8" : "#0284c7"}
+        intensity={1.1}
+        trailWidth={2}
+        linger={0.65}
+        glow={1.3}
+        hotspot={0.2}
+        clickBurst={true}
+      />
 
       {activeProject ? (
         <main className="relative w-full overflow-x-hidden">

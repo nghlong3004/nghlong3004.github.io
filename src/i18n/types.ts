@@ -118,11 +118,21 @@ export interface ContactTranslation {
   location: string;
 }
 
+export interface HeroTranslation {
+  roles: readonly string[];
+  headline: string;
+  subheadline: string;
+  status: string;
+  roleCurrent?: string;
+  location: string;
+  ctaWork: string;
+  ctaWorkHover?: string;
+  ctaContact: string;
+}
+
 export interface TranslationDictionary {
   nav: NavTranslation;
-  hero: {
-    roles: readonly string[];
-  };
+  hero: HeroTranslation;
   marquee: readonly string[];
   story: StoryTranslation;
   experience: ExperienceTranslation;

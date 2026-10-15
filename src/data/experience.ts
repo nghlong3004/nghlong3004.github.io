@@ -16,7 +16,7 @@ export const EXPERIENCE_DATA = {
   roles: [
     {
       company: "VinFast",
-      role: "Junior Automation Test",
+      role: "Working at VinFast",
       period: "07/2026 – Present",
       current: true,
       initials: "VF",

@@ -1,47 +1,90 @@
+import { ArrowDown, ArrowUpRight } from "lucide-react";
+import { useReducedMotion } from "motion/react";
 import { useLanguage } from "../hooks/useLanguage";
-import { RevealText } from "./RevealText";
+import CircularText from "./CircularText";
+import TypewriterTitle from "./kokonutui/type-writer";
+import "./Hero.css";
+
+const HERO_ROLE_SEQUENCES = [
+  { text: "DEVELOPER", deleteAfter: true, pauseAfter: 2200 },
+  { text: "BACKEND", deleteAfter: true, pauseAfter: 2200 },
+  { text: "AUTOMATION", deleteAfter: true, pauseAfter: 2200 },
+  { text: "BUILDER", deleteAfter: true, pauseAfter: 2200 },
+];
 
 export function Hero() {
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
+  const reducedMotion = useReducedMotion();
 
   return (
-    <section
-      id="top"
-      className="relative flex flex-col justify-between min-h-[100svh] overflow-hidden"
-      aria-label="Introduction"
-    >
+    <section id="top" className="hero" aria-labelledby="hero-name">
+      {/* Cột trái: Gom toàn bộ thông tin Typography & CTA (Phương án 3) */}
+      <div className="hero__content">
+        <div className="hero__intro">
+          <h1 id="hero-name" className="hero__name">
+            {t.hero.headline}
+          </h1>
 
-      {/* Centered role words */}
-      <div className="relative z-30 flex flex-col items-center justify-center text-center pt-24 sm:pt-32 px-gutter pointer-events-none">
-        <RevealText
-          key={language}
-          as="h2"
-          text={t.hero.roles}
-          mode="lines"
-          delay={2700}
-          stagger={80}
-          duration={760}
-          className="font-display uppercase leading-[1.08] tracking-[-0.01em] text-foreground text-[clamp(1.85rem,7.5vw,2.5rem)] sm:text-h2 text-center"
-        />
+          <div className="hero__role-row">
+            <div className="hero__role">
+              {reducedMotion ? (
+                <p className="hero__static-role">{HERO_ROLE_SEQUENCES[0].text}</p>
+              ) : (
+                <TypewriterTitle
+                  as="p"
+                  sequences={HERO_ROLE_SEQUENCES}
+                  startDelay={400}
+                  typingSpeed={70}
+                  deleteMode="select"
+                  typos={false}
+                  className="hero__typewriter"
+                  textClassName="hero__typed-role"
+                />
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div className="hero__details">
+          <p className="hero__description">{t.hero.subheadline}</p>
+
+          <div className="hero__links">
+            <a className="hero__work" href="#projects">
+              <span>{t.hero.ctaWork}</span>
+              <ArrowDown size={18} aria-hidden="true" />
+            </a>
+            <a className="hero__contact" href="#contact">
+              <span>{t.hero.ctaContact}</span>
+              <ArrowUpRight size={18} aria-hidden="true" />
+            </a>
+          </div>
+        </div>
       </div>
 
-      {/* Giant username h1 centered */}
-      <div className="relative z-20 flex-1 flex flex-col items-center justify-center pb-12 sm:pb-24 select-none px-gutter my-auto">
-        <h1
-          className="font-display uppercase leading-[0.82] tracking-[-0.01em] text-accent text-[clamp(3.5rem,15.5vw,5.5rem)] sm:text-[clamp(5rem,10vw,13rem)] text-center whitespace-nowrap transition-transform duration-500 hover:scale-[1.02] cursor-default"
-          aria-label="nghlong3004"
-        >
-          <span className="block whitespace-nowrap overflow-hidden">
-            <RevealText
-              text="nghlong3004"
-              mode="letters"
-              delay={2500}
-              stagger={52}
-              duration={900}
-              className="block whitespace-nowrap"
+      {/* Cột phải: Vòng tròn tâm điểm lớn bề thế */}
+      <div className="hero__visual">
+        <div className="hero__seal">
+          <CircularText
+            text={`SOFTWARE ENGINEERING • DEVELOPER • ${t.hero.headline.toUpperCase()} • `}
+            spinDuration={reducedMotion ? 0 : 25}
+            onHover="speedUp"
+            draggable={true}
+            hoverTilt={30}
+            size={240}
+            fontSize={13}
+            fontWeight={700}
+            className="hero__ring"
+          >
+            <img
+              src={`${import.meta.env.BASE_URL}favicon.webp`}
+              alt=""
+              width="120"
+              height="120"
+              className="hero__logo"
+              draggable={false}
             />
-          </span>
-        </h1>
+          </CircularText>
+        </div>
       </div>
     </section>
   );

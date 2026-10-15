@@ -16,6 +16,14 @@ export const translations: Record<Language, TranslationDictionary> = {
 
     hero: {
       roles: ["Developer", "Backend", "Automation", "Builder"],
+      headline: "NGUYEN HOANG LONG",
+      subheadline:
+        "From late-night gaming sessions to an obsession with glowing pixels, typing code, and cracking hard problems. Currently at VinFast.",
+      status: "Working at VinFast",
+      location: "Hanoi, Vietnam",
+      ctaWork: "Explore Selected Work",
+      ctaWorkHover: "Scroll Down",
+      ctaContact: "Get in Touch",
     },
 
     marquee: [
@@ -30,7 +38,7 @@ export const translations: Record<Language, TranslationDictionary> = {
       eyebrow: "The Story",
       heading: "Reliable systems are never an accident.",
       intro:
-        "I'm a senior-year engineering student who turned a love of algorithms into real-world backend work. From a real-time multiplayer game with A* bots to an AI-assisted QC platform — and now test automation at VinFast — the through-line never changed: pick the hard problem, design it properly, and measure whether it actually got better.",
+        "Starting from all-night League of Legends sessions, I gradually realized what I truly fell in love with: sitting in front of a computer, watching pixels light up with every keystroke, and losing myself in solving hard problems. From a real-time multiplayer game with A* bots to an AI-assisted QC platform — and now at VinFast — the through-line never changed: pick the hard problem, design it properly, and solve it to the end.",
 
       principles: [
         {
@@ -64,7 +72,7 @@ export const translations: Record<Language, TranslationDictionary> = {
       roles: [
         {
           company: "VinFast",
-          role: "Junior Automation Test",
+          role: "Working at VinFast",
           period: "07/2026 – Present",
           current: true,
           initials: "VF",
@@ -344,6 +352,14 @@ export const translations: Record<Language, TranslationDictionary> = {
 
     hero: {
       roles: ["Developer", "Backend", "Automation", "Builder"],
+      headline: "NGUYEN HOANG LONG",
+      subheadline:
+        "Bắt đầu từ những đêm chơi game thâu sáng, mình nhận ra niềm mê mẩn với chiếc máy tính, từng dòng pixel khi gõ phím và cảm giác giải được một bài toán khó. Hiện đang làm việc tại VinFast.",
+      status: "Làm việc tại VinFast",
+      location: "Hà Nội, Việt Nam",
+      ctaWork: "Khám phá dự án",
+      ctaWorkHover: "Cuộn xuống",
+      ctaContact: "Kết nối ngay",
     },
 
     marquee: [
@@ -358,7 +374,7 @@ export const translations: Record<Language, TranslationDictionary> = {
       eyebrow: "Câu chuyện",
       heading: "Reliable systems are never an accident.",
       intro:
-        "Mình là sinh viên kỹ thuật năm cuối, bắt đầu từ niềm yêu thích thuật toán và dần đưa nó vào những sản phẩm backend thực tế. Từ game multiplayer thời gian thực với bot A* đến nền tảng QC ứng dụng AI — và hiện tại là Automation Test tại VinFast — cách mình tiếp cận vấn đề vẫn luôn nhất quán: chọn bài toán khó, thiết kế cho đúng và đo lường xem giải pháp có thực sự tốt hơn hay không.",
+        "Xuất phát điểm từ những đêm chơi LOL thâu sáng, dần dà mình nhận ra điều mình thực sự mê là cảm giác ngồi trước chiếc máy tính: ngắm từng dòng pixel hiện lên khi gõ phím và đắm chìm vào giải quyết những bài toán khó. Từ tựa game multiplayer thời gian thực với bot A* đến nền tảng QC ứng dụng AI — và hiện tại là VinFast — hành trình ấy vẫn chỉ xoay quanh một điều: chọn bài toán khó, thiết kế cho đúng và tìm cách giải bằng được.",
 
       principles: [
         {
@@ -392,7 +408,7 @@ export const translations: Record<Language, TranslationDictionary> = {
       roles: [
         {
           company: "VinFast",
-          role: "Junior Automation Test",
+          role: "Làm việc tại VinFast",
           period: "07/2026 – Nay",
           current: true,
           initials: "VF",
