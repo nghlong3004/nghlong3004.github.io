@@ -23,6 +23,7 @@ export interface FoldfolioProps {
     nameLeft?: React.ReactNode
     nameRight?: React.ReactNode
     scene: Scene
+    glowColors?: [string, string, string]
     basicTone?: "tint" | "white" | "two"
     intro?: { on?: boolean; color?: string; line?: string; speed?: number }
     sceneImages?: { src: string; alt?: string }[]
@@ -41,6 +42,8 @@ export interface FoldfolioProps {
         time: string
         live: boolean
         tone: "auto" | "light" | "dark"
+        batteryText?: string
+        batteryLabel?: string
     }
     layout: {
         orientation: Orientation

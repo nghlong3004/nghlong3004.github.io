@@ -91,6 +91,19 @@ export function renderDevice({
                         }}
                     >
                         <span>5G</span>
+                        {status.batteryText !== undefined ? (
+                            <svg data-ff-battery="" width="32" height="18" viewBox="0 0 32 18"
+                                role="img" aria-label={status.batteryLabel || status.batteryText}
+                                style={{ display: "block" }}>
+                                <rect width="32" height="18" rx="9" fill="currentColor" opacity="0.8" />
+                                <path d="M9 0a9 9 0 0 0 0 18Z" fill="currentColor" />
+                                <text x="19" y="9" textAnchor="middle" dominantBaseline="central"
+                                    fontSize="11" fontWeight="600" style={{ fontVariantNumeric: "tabular-nums" }}
+                                    fill={autoTint ? "var(--ffsb-contrast, #111)" : status.tone === "dark" ? "#fff" : "#111"}>
+                                    {status.batteryText}
+                                </text>
+                            </svg>
+                        ) : (
                         <svg
                             width="25"
                             height="12"
@@ -126,6 +139,7 @@ export function renderDevice({
                                 opacity="0.55"
                             />
                         </svg>
+                        )}
                     </span>
                 )}
             </div>

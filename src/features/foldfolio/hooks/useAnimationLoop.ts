@@ -1,9 +1,12 @@
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import type { RefObject } from "react"
 import type { DeviceRefs } from "./useDeviceRefs"
 import { clamp, easeOut } from "../lib/math"
 import type { FoldfolioProps } from "../types"
 import type { GeometryState, LiveState, Reveal } from "../engine/types"
+
+// Parent layout effects can call the public ref before this hook's passive setup/replay.
+const scrollImmediately = (top: number) => window.scrollTo({ top, behavior: "instant" })
 
 export function useAnimationLoop({
     rootRef, topRef, R, isCanvas, geo, preview, reveals, fadeIn, motion, live, renderFrame, stepReveals, kick,
@@ -22,6 +25,7 @@ export function useAnimationLoop({
     stepReveals: (t: number) => boolean
     kick: RefObject<() => void>
 }) {
+    const jump = useRef<(top: number) => void>(scrollImmediately)
     // scroll → target, smoothed with a frame-rate independent lerp. The loop sleeps when
     // nothing moves, reads window.scrollY (no forced layout) and wakes up on scroll.
     useEffect(() => {
@@ -127,6 +131,19 @@ export function useAnimationLoop({
             raf = window.requestAnimationFrame(loop)
         }
         kick.current = wake
+        // Section transitions jump both the browser and the loop's private smoother together.
+        jump.current = (top) => {
+            window.scrollTo({ top, behavior: "instant" })
+            cur = readTarget()
+            window.cancelAnimationFrame(raf)
+            last = 0
+            running = false
+            if (document.visibilityState === "hidden") wake()
+            else {
+                running = true
+                loop(performance.now())
+            }
+        }
         const onResize = () => {
             measureTop()
             wake()
@@ -142,6 +159,7 @@ export function useAnimationLoop({
         const iv = window.setTimeout(measureTop, 1200)
         return () => {
             window.cancelAnimationFrame(raf)
+            jump.current = scrollImmediately
             running = false
             if (io) io.disconnect()
             window.clearTimeout(iv)
@@ -150,4 +168,5 @@ export function useAnimationLoop({
             document.removeEventListener("visibilitychange", wake)
         }
     }, [isCanvas, preview, motion.smoothing, motion.float])
+    return jump
 }

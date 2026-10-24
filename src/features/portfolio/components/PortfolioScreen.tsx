@@ -19,7 +19,7 @@ export function PortfolioScreen({ data, compact = false, expandedProject, onTogg
         <div className="portfolio-intro__copy">
           <p className="portfolio-role">{data.profile.role}<br />{data.profile.location}</p>
           <div className="portfolio-intro__summary">
-            <div data-framer-component-type="RichTextContainer"><h1>{data.profile.name}</h1></div>
+            <div data-framer-component-type="RichTextContainer"><h1 aria-label={data.profile.name}>{data.profile.displayName.split(' ').map((word) => <span key={word}>{word} </span>)}</h1></div>
             <p>{data.profile.intro}</p>
             <div className="portfolio-actions">
               <button type="button" onClick={() => onNavigate('projects')}>{data.ui.explore} <Icon size={15} /></button>
@@ -60,7 +60,7 @@ export function PortfolioScreen({ data, compact = false, expandedProject, onTogg
         <div data-framer-component-type="RichTextContainer"><h2>{data.ui.contactHeading}</h2></div>
         <p>{data.ui.contactIntro}</p>
         <a className="portfolio-email" href={`mailto:${data.profile.email}`}>{data.profile.email} <Icon size={24} /></a>
-        <div className="portfolio-socials">{data.links.filter((link) => link.label !== 'Email').map((link) => <a key={link.url} href={link.url} target="_blank" rel="noreferrer">{link.label} <Icon size={14} /></a>)}</div>
+        <div className="portfolio-socials">{data.links.filter((link) => link.label !== 'Email').map((link) => <a key={link.url} href={link.url} target="_blank" rel="noreferrer"><Icon name={link.icon} size={18} />{link.label}</a>)}</div>
         <p className="portfolio-signature">{data.profile.name}</p>
       </footer>
     </div>

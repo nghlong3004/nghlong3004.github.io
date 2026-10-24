@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local browser captures and diagnostic candidates; not release source.
+.taste-skill/before/
+.taste-skill/after/
+.taste-skill/after-device/
+.taste-skill/evidence/

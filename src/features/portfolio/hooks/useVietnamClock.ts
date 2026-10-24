@@ -1,10 +1,18 @@
 import { useEffect, useState } from 'react'
-import { formatVietnamTime } from '../lib/vietnamTime'
+import { formatVietnamTime, getCompletedAgeInVietnam } from '../lib/vietnamTime'
+
+function readClock() {
+  const date = new Date()
+  return { time: formatVietnamTime(date), age: getCompletedAgeInVietnam(date) }
+}
 
 export function useVietnamClock() {
-  const [time, setTime] = useState(formatVietnamTime)
+  const [clock, setClock] = useState(readClock)
   useEffect(() => {
-    const update = () => setTime(formatVietnamTime())
+    const update = () => {
+      const next = readClock()
+      setClock(current => current.time === next.time && current.age === next.age ? current : next)
+    }
     const interval = window.setInterval(update, 1000)
     document.addEventListener('visibilitychange', update)
     window.addEventListener('focus', update)
@@ -14,5 +22,5 @@ export function useVietnamClock() {
       window.removeEventListener('focus', update)
     }
   }, [])
-  return time
+  return clock
 }

@@ -371,8 +371,6 @@ export default function FoldfolioDevice(props: FoldfolioProps) {
         inner,
     }
 
-    useSectionNavigation(navigationRef, rootRef, R, geo)
-
     // Write a style only when it changes (keeps the browser from re-doing work every frame)
     const cache = useRef<WeakMap<HTMLElement, Record<string, string>>>(
         typeof WeakMap !== "undefined" ? new WeakMap() : (null as any)
@@ -412,7 +410,7 @@ export default function FoldfolioDevice(props: FoldfolioProps) {
         Math.min(G.H * s, G.W * s * 1.2) * (port ? 0.17 : 0.15)
     )
     const { paintScenes, sat, drawGlow, measureSat, measureLum } = useSceneImages({
-        sceneList, R, cardW, F, glowFlip, glowCur, kick, imgLum,
+        sceneList, R, cardW, F, glowColors: props.glowColors, glowFlip, glowCur, kick, imgLum,
     })
     const { motionTick, scan, reveals, stepReveals } = useScreenMotion({
         isCanvas, R, autoImgs, measureSat, paintScenes, screenColor, measureLum,
@@ -455,10 +453,11 @@ export default function FoldfolioDevice(props: FoldfolioProps) {
     useScreenFilters({ isCanvas, rootRef, R, scan, kick })
 
     const fadeIn = useRef(0)
-    useAnimationLoop({
+    const jump = useAnimationLoop({
         rootRef, topRef, R, isCanvas, geo, preview, reveals, fadeIn,
         motion, live, renderFrame, stepReveals, kick,
     })
+    useSectionNavigation(navigationRef, rootRef, R, geo, live, jump)
 
     usePageTransitions({ R, introCfg, geo, isCanvas, introLive, kick, G, fadeIn })
 

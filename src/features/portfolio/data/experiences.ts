@@ -4,7 +4,7 @@ export const experiences: Record<Language, PortfolioExperience[]> = {
   "vi": [
     {
       "company": "VinFast",
-      "role": "Làm việc tại VinFast",
+      "role": "Đang làm việc tại VinFast",
       "period": "07/2026 – Nay",
       "current": true,
       "logo": "/company/VinFast.png",
@@ -49,7 +49,7 @@ export const experiences: Record<Language, PortfolioExperience[]> = {
   "en": [
     {
       "company": "VinFast",
-      "role": "Working at VinFast",
+      "role": "Currently working at VinFast",
       "period": "07/2026 – Present",
       "current": true,
       "logo": "/company/VinFast.png",

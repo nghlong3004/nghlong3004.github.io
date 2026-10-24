@@ -99,7 +99,7 @@ export function renderScenes({
 
     // Glow: the image on screen, blown up into soft light behind the phone
     const glowPad = clamp(Math.min(G.W, G.H) * s * 0.32, 60, 170)
-    const glowW = G.W * s * 1.02 + glowPad * 2,
+    const glowW = G.W * s * (props.glowColors && !port ? 1.55 : 1.02) + glowPad * 2,
         glowH = G.H * s * 1.02 + glowPad * 2
     const glowPlates = (bh: number) =>
         [0, 1].map((i) => (
@@ -112,13 +112,13 @@ export function renderScenes({
                     width: "100%",
                     height: "100%",
                     opacity: 0,
-                    transition: "opacity .6s ease",
+                    transition: props.glowColors ? "none" : "opacity .6s ease",
                 }}
             />
         ))
     const glowLayer =
         scene === "glow" ? (
-            <div style={{ ...fill, pointerEvents: "none", overflow: "hidden" }}>
+            <div data-ff-glow="" style={{ ...fill, pointerEvents: "none", overflow: "hidden" }}>
                 <div
                     ref={R.glow}
                     style={{

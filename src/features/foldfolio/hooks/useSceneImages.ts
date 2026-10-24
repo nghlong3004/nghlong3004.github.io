@@ -10,12 +10,13 @@ const sized = (src: string, px: number) =>
         : src
 
 export function useSceneImages({
-    sceneList, R, cardW, F, glowFlip, glowCur, kick, imgLum,
+    sceneList, R, cardW, F, glowColors, glowFlip, glowCur, kick, imgLum,
 }: {
     sceneList: () => SceneImage[]
     R: DeviceRefs
     cardW: number
     F: string[]
+    glowColors?: [string, string, string]
     glowFlip: RefObject<number>
     glowCur: RefObject<string>
     kick: RefObject<() => void>
@@ -86,8 +87,12 @@ export function useSceneImages({
             x.translate(w / 2, h / 2)
             x.scale(w / 2, h / 2)
             const gr = x.createRadialGradient(0, 0, 0, 0, 0, 1)
-            gr.addColorStop(0, "rgba(0,0,0,1)")
-            gr.addColorStop(0.5, "rgba(0,0,0,.9)")
+            gr.addColorStop(0, glowColors ? "rgba(0,0,0,.55)" : "rgba(0,0,0,1)")
+            if (glowColors) {
+                gr.addColorStop(0.2, "rgba(0,0,0,.4)")
+                gr.addColorStop(0.45, "rgba(0,0,0,.16)")
+                gr.addColorStop(0.7, "rgba(0,0,0,.035)")
+            } else gr.addColorStop(0.5, "rgba(0,0,0,.9)")
             gr.addColorStop(1, "rgba(0,0,0,0)")
             x.fillStyle = gr
             x.fillRect(-1, -1, 2, 2)
@@ -95,12 +100,13 @@ export function useSceneImages({
             x.globalCompositeOperation = "source-over"
             cv.dataset.ok = "1"
         }
-        if (!src) {
+        if (!src || glowColors) {
             x.clearRect(0, 0, w, h)
             const gr = x.createLinearGradient(0, 0, w, h)
-            gr.addColorStop(0, F[2])
-            gr.addColorStop(0.5, F[0])
-            gr.addColorStop(1, F[1])
+            const colors = glowColors || F
+            gr.addColorStop(0, colors[2])
+            gr.addColorStop(0.5, colors[0])
+            gr.addColorStop(1, colors[1])
             x.fillStyle = gr
             x.fillRect(0, 0, w, h)
             mask()

@@ -5,22 +5,30 @@
 ```text
 .
 ├── AGENTS.md / TREE.md / README.md
+├── .github/workflows/deploy.yml       # Build dist and publish main to GitHub Pages
+├── docs/VERIFICATION.md               # Public verification summary; no session metadata
 ├── package.json / pnpm-lock.yaml
 ├── index.html / vite.config.ts / tsconfig*.json / .oxlintrc.json
-├── .taste-skill/                       # Direction và ghi chú kiểm tra thiết kế
-├── tests/portfolio.test.mjs            # Điều hướng, dữ liệu, asset local, múi giờ VN
+├── .taste-skill/                       # Reference notes; generated captures stay local/ignored
+├── tests/
+│   ├── portfolio.test.mjs              # Điều hướng, dữ liệu, asset local, múi giờ VN
+│   ├── navigation-transition.test.mjs  # Snapshot ownership, cleanup, early ref calls
+│   └── page-transitions.test.mjs       # Intro lifecycle/replay/cancellation and snapshot adoption
 ├── public/
 │   ├── project/                       # Ảnh chính và gallery 4 dự án
+│   │   └── vinqa/header.webp           # Supplied VinQA logo, locally downloaded bytes
 │   ├── company/                       # Logo VinFast / Vinsmart Future
 │   ├── portrait/reference.jpg         # Ảnh mẫu copy từ screenshot
-│   ├── fonts/                         # Sofia Sans Extra Condensed / Geist / Geist Mono + OFL
+│   ├── fonts/                         # Sofia Sans Extra Condensed 800/900 / Geist / Geist Mono + OFL
 │   ├── tmp/                           # 3 screenshot tham chiếu, giữ nguyên
 │   └── favicon.webp                   # Logo NL từ repo cũ
 └── src/
     ├── main.tsx                       # createRoot + StrictMode
     ├── app/
     │   ├── App.tsx                    # NGHLONG3004, VI/EN, state dự án, slot, nav
-    │   ├── config/device.ts           # Cấu hình app; Idle Float tắt
+    │   ├── config/
+    │   │   ├── device.ts              # Glow palette/default; Idle Float OFF
+    │   │   └── scenePreference.ts     # One-time stale-scene migration; preserve finish
     │   └── styles/globals.css
     └── features/
         ├── portfolio/
@@ -37,11 +45,11 @@
         │   │   ├── links.ts           # Email, GitHub, LinkedIn, Instagram
         │   │   └── labels.ts          # Nhãn giao diện và thông báo vi/en
         │   ├── hooks/                     # usePortfolioLanguage, useVietnamClock
-        │   ├── lib/vietnamTime.ts           # Intl timeZone Asia/Ho_Chi_Minh
+        │   ├── lib/                    # vietnamTime (clock/age), language preference resolution
         │   ├── styles/portfolio.css   # Font local + UI màn chính/lockscreen/contact
         │   └── components/
         │       ├── PortfolioScreen.tsx
-        │       ├── PortfolioCover.tsx # 3 thông báo; riêng bản compact
+        │       ├── PortfolioCover.tsx # Clock/portrait; job + VinQA, compact status; Instagram/LinkedIn
         │       ├── PortfolioContact.tsx
         │       ├── Icon.tsx                # SVG nét 1.5px, không dùng emoji cho nút
         │       ├── Portrait.tsx       # Crop tham chiếu bằng viewBox hoặc ảnh thật

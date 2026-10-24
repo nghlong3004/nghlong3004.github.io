@@ -12,6 +12,7 @@ export interface PortfolioPortrait {
 
 export interface PortfolioProfile {
   name: string
+  displayName: string
   role: string
   bio: string
   intro: string
@@ -69,6 +70,7 @@ export interface PortfolioImpact {
 export interface PortfolioLink {
   label: string
   url: string
+  icon: 'mail' | 'github' | 'linkedin' | 'instagram' | 'facebook'
 }
 
 export interface PortfolioData {

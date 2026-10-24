@@ -1,18 +1,22 @@
 import { useEffect, useState } from 'react'
 import type { Language } from '../types'
+import { resolvePortfolioLanguage } from '../lib/language'
 
 export function usePortfolioLanguage() {
-  const [language, setLanguage] = useState<Language>(() => {
-    try {
-      const saved = window.localStorage.getItem('lang')
-      return saved === 'en' ? 'en' : 'vi'
-    } catch {
-      return 'vi'
-    }
+  const [language, updateLanguage] = useState<Language>(() => {
+    let saved = null
+    try { saved = window.localStorage.getItem('lang') } catch { /* Detection also works without storage. */ }
+    const preferred = typeof navigator === 'undefined' ? []
+      : navigator.languages?.length ? navigator.languages : navigator.language ? [navigator.language] : []
+    return resolvePortfolioLanguage(saved, preferred)
   })
 
+  const setLanguage = (next: Language) => {
+    updateLanguage(next)
+    try { window.localStorage.setItem('lang', next) } catch { /* Reading stays available without storage. */ }
+  }
+
   useEffect(() => {
-    try { window.localStorage.setItem('lang', language) } catch { /* Reading stays available without storage. */ }
     document.documentElement.lang = language
     document.title = 'Nguyen Hoang Long — Backend & Automation'
     document.querySelector('meta[name="description"]')?.setAttribute('content', language === 'vi'

@@ -4,6 +4,7 @@ import { formatVietnamTime } from '../../features/portfolio/lib/vietnamTime'
 export const deviceConfig = {
   mode: 'fold',
   scene: 'glow',
+  glowColors: ['#95b8ad', '#b6c2de', '#dbc6b6'],
   finish: 'titanium',
   customFinish: '#C9D3E0',
   screenColor: '#f5f6f4',

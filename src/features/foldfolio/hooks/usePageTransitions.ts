@@ -19,7 +19,8 @@ export function usePageTransitions({
 }) {
     // page change: the device stays where it is, only the screen content fades in (driven
     // from the loop, so nothing is animated by the compositor)
-    const adopted = useRef(false)
+    const adopted = useRef<ReturnType<typeof takeSnapshot>>(undefined)
+    const replayIntro = useRef(false)
     // ---------- opening animation: a seam of light, the page parts along the fold,
     // your name rises, then the phone lifts into place and the controls settle.
     // Pure 2D (translate / scale / rotate / opacity) stepped from rAF; everything is
@@ -32,6 +33,7 @@ export function usePageTransitions({
         const dev = R.iDev.current,
             nm = R.iNames.current
         if (!cur || !a || !b || !seam || !dev) return
+        cur.style.display = ""
         cur.style.animation = "none"
         const sp = 1 / Math.max(0.4, Math.min(2, introCfg.speed || 1))
         const D = (ms: number) => ms * sp
@@ -48,6 +50,9 @@ export function usePageTransitions({
         const head = () =>
             document.querySelector("[data-ff-switcher]") as HTMLElement | null
         let done = false
+        let raf = 0
+        let timeout = 0
+        const controls = new Set<HTMLElement>()
         // no name beside the phone (inner pages): the phone comes in sooner
         const early = nm && nm.textContent && nm.textContent.trim() ? 0 : 280
         const set = (t: number) => {
@@ -80,6 +85,7 @@ export function usePageTransitions({
             const ku = o3(k(1600, 2250))
             ;[dots(), head()].forEach((el) => {
                 if (!el) return
+                controls.add(el)
                 el.style.opacity = String(+ku.toFixed(3))
                 el.style.translate = `0 ${((1 - ku) * 14).toFixed(1)}px`
             })
@@ -87,25 +93,33 @@ export function usePageTransitions({
         const end = () => {
             if (done) return
             done = true
+            replayIntro.current = false
+            window.cancelAnimationFrame(raf)
+            window.clearTimeout(timeout)
             cur.style.display = "none"
+            a.style.transform = ""
+            b.style.transform = ""
+            seam.style.transform = ""
+            seam.style.opacity = ""
             dev.style.transform = ""
             dev.style.opacity = ""
             if (nm) {
                 nm.style.opacity = ""
                 nm.style.translate = ""
             }
-            ;[dots(), head()].forEach((el) => {
-                if (!el) return
+            controls.forEach((el) => {
                 el.style.opacity = ""
                 el.style.translate = ""
             })
             window.removeEventListener("scroll", onScroll)
+            window.removeEventListener("resize", end)
             document.removeEventListener("visibilitychange", end)
         }
         const onScroll = () => {
             if (window.scrollY > 60) end()
         }
         window.addEventListener("scroll", onScroll, { passive: true })
+        window.addEventListener("resize", end)
         document.addEventListener("visibilitychange", end)
         set(0)
         const t0 = performance.now()
@@ -114,11 +128,17 @@ export function usePageTransitions({
             if (done) return
             const t = now - t0
             set(t)
-            if (t < total) window.requestAnimationFrame(step)
+            if (t < total) raf = window.requestAnimationFrame(step)
             else end()
         }
-        window.requestAnimationFrame(step)
-        window.setTimeout(end, total + 1500)
+        raf = window.requestAnimationFrame(step)
+        timeout = window.setTimeout(end, total + 1500)
+        return () => {
+            const interrupted = !done
+            end()
+            replayIntro.current = interrupted
+            return interrupted
+        }
     }
     useIsoLayoutEffect(() => {
         if (isCanvas || typeof window === "undefined") return
@@ -127,28 +147,27 @@ export function usePageTransitions({
             seen = window.sessionStorage.getItem("ff-seen") === "1"
             window.sessionStorage.setItem("ff-seen", "1")
         } catch {}
-        // opening animation: only on the first page of a visit, at the top, in a visible tab
-        {
-            const reduced =
-                window.matchMedia &&
-                window.matchMedia("(prefers-reduced-motion: reduce)").matches
-            const run =
-                introLive &&
-                !seen &&
-                !document.getElementById(SNAP_ID) &&
-                document.visibilityState === "visible" &&
-                window.scrollY < 40 &&
-                !reduced
-            if (run) playIntro()
-            else if (R.iCur.current) R.iCur.current.style.display = "none"
-        }
-        if (document.getElementById(SNAP_ID)) {
+        const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        const hidden = document.visibilityState === "hidden"
+        const snapshot = document.getElementById(SNAP_ID) as ReturnType<typeof takeSnapshot> | null
+        // Same-instance effect replay may retry an unfinished intro; a new seen visit may not.
+        const run = introLive && (!seen || replayIntro.current) && !snapshot &&
+            !hidden && window.scrollY < 40 && !reduced
+        replayIntro.current = false
+        const cancelIntro = run ? playIntro() : undefined
+        if (!run && R.iCur.current) R.iCur.current.style.display = "none"
+        adopted.current = undefined
+        if (reduced || hidden) {
+            fadeIn.current = 0
+            ;[R.cL.current, R.cR.current, R.cOpen.current].forEach((c) => {
+                if (c) c.style.opacity = "1"
+            })
+            if (snapshot && !snapshot.__section) releaseSnapshot(0, snapshot)
+        } else if (snapshot) {
             // the previous page left a still copy of itself on top: this page draws at full
             // opacity underneath and the copy fades out once the screen is ready
-            adopted.current = true
-            return
-        }
-        if (seen) {
+            if (!snapshot.__section) adopted.current = snapshot
+        } else if (seen && !run) {
             // before the first paint: content hidden, then the loop fades it in
             ;[R.cL.current, R.cR.current, R.cOpen.current].forEach((c) => {
                 if (c) c.style.opacity = "0"
@@ -156,21 +175,27 @@ export function usePageTransitions({
             fadeIn.current = performance.now()
             kick.current()
         }
-    }, [isCanvas])
-    // leaving the page: keep a still copy of the stage on screen for the next page
-    useIsoLayoutEffect(() => {
-        if (isCanvas || typeof window === "undefined") return
         return () => {
-            if (R.stage.current) takeSnapshot(R.stage.current)
+            // Decide before ending: cleanup must never promote an unfinished curtain to a page snapshot.
+            const interrupted = cancelIntro?.() ?? false
+            if (!interrupted && R.stage.current) takeSnapshot(R.stage.current)
         }
     }, [isCanvas])
     useEffect(() => {
-        if (!adopted.current || isCanvas || typeof window === "undefined")
+        const snapshot = adopted.current
+        if (!snapshot || isCanvas || typeof window === "undefined")
             return
-        adopted.current = false
+        adopted.current = undefined
         const t0 = Date.now()
         let id = 0
+        let raf = 0
+        let fallback = 0
+        let cancelled = false
+        const release = () => {
+            if (!cancelled) releaseSnapshot(360, snapshot)
+        }
         const check = () => {
+            if (cancelled || !snapshot.isConnected) return
             const main = R.cOpen.current || R.cR.current || R.cL.current
             let ready = true
             if (main) {
@@ -186,18 +211,25 @@ export function usePageTransitions({
             }
             if (ready || Date.now() - t0 > 1200) {
                 kick.current()
-                if (document.visibilityState === "hidden") releaseSnapshot(0)
+                if (document.visibilityState === "hidden" ||
+                    window.matchMedia("(prefers-reduced-motion: reduce)").matches) releaseSnapshot(0, snapshot)
                 else {
                     // two frames so this page has really painted underneath
-                    window.requestAnimationFrame(() =>
-                        window.requestAnimationFrame(() => releaseSnapshot(360))
-                    )
-                    window.setTimeout(() => releaseSnapshot(360), 500)
+                    raf = window.requestAnimationFrame(() => {
+                        raf = window.requestAnimationFrame(release)
+                    })
+                    fallback = window.setTimeout(release, 500)
                 }
             } else id = window.setTimeout(check, 40)
         }
         id = window.setTimeout(check, 60)
-        return () => window.clearTimeout(id)
+        return () => {
+            cancelled = true
+            window.clearTimeout(id)
+            window.clearTimeout(fallback)
+            window.cancelAnimationFrame(raf)
+            releaseSnapshot(0, snapshot)
+        }
     }, [isCanvas])
 
 }

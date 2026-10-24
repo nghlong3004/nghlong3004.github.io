@@ -31,6 +31,8 @@ test('both languages preserve the full dataset and stable project identifiers', 
     assert.equal(impacts[language].length, 4)
     assert.equal(stories[language].principles.length, 4)
     assert.equal(profiles[language].email, 'nghlong3004@gmail.com')
+    assert.equal(profiles[language].displayName, 'HOANG LONG')
+    assert.equal(projects[language].find(project => project.id === 'vinqa').image.src, '/project/vinqa/header.webp')
     for (const project of projects[language]) {
       assert.ok(project.details.length && project.role.length)
       assert.ok(project.sourceCode)
@@ -44,16 +46,64 @@ test('both languages preserve the full dataset and stable project identifiers', 
 test('all project screenshots and company logos resolve locally', () => {
   const assets = [
     '/favicon.webp', profiles.vi.portrait.src,
-    '/fonts/geist-regular.ttf', '/fonts/sofia-extra-condensed-black.ttf',
+    '/fonts/geist-regular.ttf', '/fonts/sofia-extra-condensed-black.ttf', '/fonts/sofia-extra-condensed-extrabold.ttf',
     ...projects.vi.flatMap(project => [project.image.src, ...project.images]),
     ...experiences.vi.flatMap(job => [job.logo, job.logoDark].filter(Boolean)),
   ]
   for (const asset of assets) assert.ok(existsSync(new URL(`../public${asset}`, import.meta.url)), asset)
 })
 
-import { formatVietnamTime } from '../src/features/portfolio/lib/vietnamTime.ts'
+test('social destinations preserve the shared username and recognizable icon identity', () => {
+  assert.deepEqual(links.map(({ label, url, icon }) => [label, url, icon]), [
+    ['Email', 'mailto:nghlong3004@gmail.com', 'mail'],
+    ['GitHub', 'https://github.com/nghlong3004', 'github'],
+    ['LinkedIn', 'https://www.linkedin.com/in/nghlong3004', 'linkedin'],
+    ['Instagram', 'https://www.instagram.com/nghlong3004', 'instagram'],
+    ['Facebook', 'https://fb.com/nghlong3004', 'facebook'],
+  ])
+  assert.equal(experiences.vi.find(job => job.current).role, 'Đang làm việc tại VinFast')
+  assert.equal(experiences.en.find(job => job.current).role, 'Currently working at VinFast')
+})
+
+import { formatVietnamTime, getCompletedAgeInVietnam } from '../src/features/portfolio/lib/vietnamTime.ts'
+import { resolvePortfolioLanguage } from '../src/features/portfolio/lib/language.ts'
+import { applyGlowDefault } from '../src/app/config/scenePreference.ts'
 
 test('the live clock always uses Vietnam time, including midnight across a UTC date boundary', () => {
   assert.equal(formatVietnamTime(new Date('2026-10-23T16:45:00Z')), '23:45')
   assert.equal(formatVietnamTime(new Date('2026-10-23T17:05:00Z')), '00:05')
+})
+
+test('age uses the Vietnam civil birthday and stays unchanged across New Year', () => {
+  assert.equal(getCompletedAgeInVietnam(new Date('2026-06-05T16:59:59Z')), 20)
+  assert.equal(getCompletedAgeInVietnam(new Date('2026-06-05T17:00:00Z')), 21)
+  assert.equal(getCompletedAgeInVietnam(new Date('2026-12-31T16:59:59Z')), 21)
+  assert.equal(getCompletedAgeInVietnam(new Date('2026-12-31T17:00:00Z')), 21)
+  assert.equal(getCompletedAgeInVietnam(new Date('2027-06-05T17:00:00Z')), 22)
+})
+
+test('explicit language wins; supported browser preferences are ordered; unknown falls back to VI', () => {
+  assert.equal(resolvePortfolioLanguage('vi', ['en-US']), 'vi')
+  assert.equal(resolvePortfolioLanguage('en', ['vi-VN']), 'en')
+  assert.equal(resolvePortfolioLanguage(null, ['en-GB', 'vi']), 'en')
+  assert.equal(resolvePortfolioLanguage(null, ['vi-VN', 'en']), 'vi')
+  assert.equal(resolvePortfolioLanguage(null, ['ja-JP', 'EN-us']), 'en')
+  assert.equal(resolvePortfolioLanguage('invalid', ['en']), 'en')
+  assert.equal(resolvePortfolioLanguage(null, ['ja-JP']), 'vi')
+  assert.equal(resolvePortfolioLanguage(null, []), 'vi')
+})
+
+test('Glow migrates a stale scene once without discarding finish or later explicit choices', () => {
+  const saved = new Map([['foldfolio:style', JSON.stringify({ scene: 'orbit', finish: 'coral' })]])
+  const storage = { getItem: key => saved.get(key) ?? null, setItem: (key, value) => saved.set(key, value) }
+  applyGlowDefault(storage)
+  assert.deepEqual(JSON.parse(saved.get('foldfolio:style')), { scene: 'glow', finish: 'coral' })
+  saved.set('foldfolio:style', JSON.stringify({ scene: 'split', finish: 'sage' }))
+  applyGlowDefault(storage)
+  assert.deepEqual(JSON.parse(saved.get('foldfolio:style')), { scene: 'split', finish: 'sage' })
+  saved.clear(); saved.set('foldfolio:style', 'null'); applyGlowDefault(storage)
+  assert.deepEqual(JSON.parse(saved.get('foldfolio:style')), { scene: 'glow' })
+  assert.doesNotThrow(() => applyGlowDefault({ getItem() { throw Error('blocked') }, setItem() { throw Error('blocked') } }))
+  assert.equal(labels.vi.open, 'Cuộn để mở')
+  assert.equal(labels.en.open, 'Scroll to unfold')
 })

@@ -12,13 +12,15 @@ export function PortfolioCover({ data, time, compact = false, onNavigate, style 
 }) {
   const current = data.experience.find((job) => job.current)
   const project = data.projects.find((item) => item.id === 'vinqa')
+  const linkedIn = data.links.find((link) => link.icon === 'linkedin')
+  const instagram = data.links.find((link) => link.icon === 'instagram')
   return (
-    <div data-ui="" className={`portfolio-cover${compact ? ' portfolio-cover--compact' : ''}`} style={style}>
-      <Portrait portrait={data.profile.portrait} className="portfolio-cover__portrait" />
+    <div data-ui="" aria-label={data.profile.name} className={`portfolio-cover${compact ? ' portfolio-cover--compact' : ''}`} style={style}>
+      <Portrait portrait={data.profile.portrait} fit={data.profile.portrait.referenceCrop ? 'contain' : 'cover'} className="portfolio-cover__portrait" />
       <header className="portfolio-cover__identity">
         <p className="portfolio-cover__clock">{time}</p>
-        <p className="portfolio-cover__name">{data.profile.name}</p>
         <p className="portfolio-cover__role">{data.profile.role}</p>
+        {current && <button type="button" className="portfolio-cover__status" onClick={() => onNavigate('experience')}>{current.role}</button>}
       </header>
       <div className="portfolio-notifications">
         {current && <button type="button" className="portfolio-notification" onClick={() => onNavigate('experience')}>
@@ -29,14 +31,11 @@ export function PortfolioCover({ data, time, compact = false, onNavigate, style 
           <img src={project.image.src} alt="" width="36" height="36" />
           <span><strong>{project.title}</strong><span>{data.ui.projectNotification}</span></span>
         </button>}
-        <a className="portfolio-notification" href={`mailto:${data.profile.email}`}>
-          <span className="portfolio-notification__app"><Icon name="mail" size={18} /></span>
-          <span><strong>{data.ui.contactNotification}</strong><span>{data.profile.email}</span></span>
-        </a>
       </div>
       <div className="portfolio-cover__bottom">
-        <p>{data.ui.coverHint}</p>
-        <button type="button" onClick={() => onNavigate('intro')}>{data.ui.open} <Icon name="up" size={13} /></button>
+        {instagram && <a className="portfolio-cover__shortcut" href={instagram.url} aria-label={instagram.label} target="_blank" rel="noreferrer"><Icon name={instagram.icon} size={24} /></a>}
+        <button type="button" onClick={() => onNavigate('intro')}>{data.ui.open}</button>
+        {linkedIn && <a className="portfolio-cover__shortcut" href={linkedIn.url} aria-label={linkedIn.label} target="_blank" rel="noreferrer"><Icon name={linkedIn.icon} size={24} /></a>}
       </div>
     </div>
   )

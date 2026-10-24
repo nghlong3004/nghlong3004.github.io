@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
 import FoldfolioDevice from '../features/foldfolio/FoldfolioDevice'
 import type { FoldfolioHandle } from '../features/foldfolio/types'
 import { PortfolioScreen } from '../features/portfolio/components/PortfolioScreen'
@@ -9,14 +9,19 @@ import { usePortfolioLanguage } from '../features/portfolio/hooks/usePortfolioLa
 import { useVietnamClock } from '../features/portfolio/hooks/useVietnamClock'
 import '../features/portfolio/styles/portfolio.css'
 import { deviceConfig } from './config/device'
+import { applyGlowDefault } from './config/scenePreference'
 
 export default function App() {
+  useLayoutEffect(() => {
+    try { applyGlowDefault(window.localStorage) } catch { /* Storage can be unavailable. */ }
+  }, [])
   const device = useRef<FoldfolioHandle>(null)
-  const time = useVietnamClock()
+  const { time, age } = useVietnamClock()
   const { language, setLanguage } = usePortfolioLanguage()
   const [expandedProject, setExpandedProject] = useState<string | null>(null)
   const [selectedSection, setSelectedSection] = useState('intro')
   const data = portfolio[language]
+  const [nameLeft, nameRight] = data.profile.displayName.split(' ')
   const navigate = (section: string) => {
     device.current?.scrollToSection(section)
     setSelectedSection(section.startsWith('project-') ? 'projects' : section)
@@ -25,15 +30,19 @@ export default function App() {
 
   return (
     <>
-      <button type="button" className="portfolio-brand" onClick={() => window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })}>NGHLONG3004</button>
-      <div className="portfolio-language" role="group" aria-label={data.ui.language}>
+      <button type="button" className="portfolio-brand" aria-label={`NGHLONG3004 — ${data.profile.name}`} onClick={() => window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })}>NGHLONG3004</button>
+      <div className="portfolio-language" role="group" aria-label={data.ui.language} hidden>
         <button type="button" lang="vi" aria-label="Tiếng Việt" aria-pressed={language === 'vi'} onClick={() => setLanguage('vi')}>VI</button>
         <button type="button" lang="en" aria-label="English" aria-pressed={language === 'en'} onClick={() => setLanguage('en')}>EN</button>
       </div>
       <FoldfolioDevice
         ref={device}
         {...deviceConfig}
-        status={{ ...deviceConfig.status, time }}
+        status={{ ...deviceConfig.status, time, batteryText: String(age), batteryLabel: language === 'vi'
+          ? `${age} tuổi — không phải mức pin thiết bị`
+          : `Age ${age} — not device battery level` }}
+        nameLeft={<span className="portfolio-scene-name">{nameLeft}</span>}
+        nameRight={<span className="portfolio-scene-name">{nameRight}</span>}
         screen={<PortfolioScreen data={data} expandedProject={expandedProject} onToggle={toggleProject} onNavigate={navigate} />}
         screenPortrait={<PortfolioScreen data={data} compact expandedProject={expandedProject} onToggle={toggleProject} onNavigate={navigate} />}
         cover={<PortfolioCover time={time} data={data} onNavigate={navigate} />}

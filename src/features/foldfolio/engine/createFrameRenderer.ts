@@ -195,17 +195,19 @@ export function createFrameRenderer({
                 const sl = Math.min((vw * 0.86) / ns.lw, (space * 0.62) / ns.lh)
                 const sr = Math.min((vw * 0.86) / ns.rw, (space * 0.62) / ns.rh)
                 const off = closedH / 2 + space * 0.1
+                // Balance visible capitals, not the name frames' unused descender space.
+                const nameCy = g.cy + space * 0.075
                 const slide = vw * 0.8 * eo(pe)
                 S(
                     nl,
                     "transform",
-                    `translate(calc(${(vw / 2 - slide).toFixed(1)}px - 50%), calc(${g.cy - off}px - 100%)) scale(${sl.toFixed(4)})`
+                    `translate(calc(${(vw / 2 - slide).toFixed(1)}px - 50%), calc(${nameCy - off}px - 100%)) scale(${sl.toFixed(4)})`
                 )
                 S(nl, "transformOrigin", "50% 100%")
                 S(
                     nr,
                     "transform",
-                    `translate(calc(${(vw / 2 + slide).toFixed(1)}px - 50%), ${g.cy + off}px) scale(${sr.toFixed(4)})`
+                    `translate(calc(${(vw / 2 + slide).toFixed(1)}px - 50%), ${nameCy + off}px) scale(${sr.toFixed(4)})`
                 )
                 S(nr, "transformOrigin", "50% 0%")
             }
@@ -311,11 +313,16 @@ export function createFrameRenderer({
                       ) as HTMLElement[])
                     : []
                 L.bars.forEach((el) => {
-                    el.style.color = el.dataset.ffsb === "right" ? colR : colL
+                    const ink = el.dataset.ffsb === "right" ? colR : colL
+                    el.style.color = ink
+                    el.style.setProperty("--ffsb-contrast", ink === "#111" ? "#fff" : "#111")
                     // one bar across an open landscape screen: its right group (5G, battery) follows the right side
                     if (el.dataset.ffsb === "all" && !P) {
                         const r = el.lastElementChild as HTMLElement | null
-                        if (r) r.style.color = colR
+                        if (r) {
+                            r.style.color = colR
+                            r.style.setProperty("--ffsb-contrast", colR === "#111" ? "#fff" : "#111")
+                        }
                     }
                 })
             }

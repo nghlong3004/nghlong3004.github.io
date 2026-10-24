@@ -12,8 +12,8 @@ export const projects: Record<Language, PortfolioProject[]> = {
       "summary": "Nền tảng ứng dụng AI để scan URL và tạo báo cáo kỹ thuật. Async Redis workers giúp giảm thời gian submit scan từ ~30s xuống ~200ms.",
       "tagline": "Nền tảng kiểm thử chất lượng web tự động đa dịch vụ với 9 công cụ quét.",
       "image": {
-        "src": "/project/vinqa.webp",
-        "alt": "VinQA — Đánh Giá Chất Lượng AI"
+        "src": "/project/vinqa/header.webp",
+        "alt": "Logo VinQA — nền tảng kiểm thử giao diện và chất lượng phần mềm tự động"
       },
       "images": [
         "/project/vinqa/vinqa_1.webp",
@@ -287,8 +287,8 @@ export const projects: Record<Language, PortfolioProject[]> = {
       "summary": "AI-assisted platform that scans URLs and generates actionable technical reports. Async Redis workers cut scan submission from ~30s to ~200ms.",
       "tagline": "Multi-service automated web quality testing platform with 9 scanning tools.",
       "image": {
-        "src": "/project/vinqa.webp",
-        "alt": "VinQA — AI Quality Assessment"
+        "src": "/project/vinqa/header.webp",
+        "alt": "VinQA logo — automated UI testing and software quality assurance platform"
       },
       "images": [
         "/project/vinqa/vinqa_1.webp",
