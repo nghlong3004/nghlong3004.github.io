@@ -1,6 +1,64 @@
 # Portfolio verification
 
-## Automated checks
+## Current release verification
+
+The initial Home/entry screen uses the supplied original 1080×1073 JPEG as a full-screen
+device wallpaper. The local asset is byte-identical to the attachment (SHA-256
+`0f51f12fbfdd28f6f0d091a0eb2fdf5f9b3440bdb6bf0246157c266fddb34df2`). Responsive cover cropping
+and focal positioning keep the face visible; a top scrim supports white clock/status text.
+This treatment is scoped to entry, not the outer browser/hardware or the About/final portraits.
+Those retain the previous screenshot sample. Neither picture is asserted to be the owner's portrait.
+
+Distinct About/Work/Experience/Contact views replace concatenated navigation destinations.
+Only the active view is mounted; the existing device still unfolds and scrolls that view's
+content. Motion now intentionally runs with `prefers-reduced-motion: reduce`; prior bypass
+requirements below describe the historical published baseline only and are superseded in this release.
+This is an explicit accessibility limitation for motion-sensitive visitors. Focus, keyboard,
+labels, lifecycle cleanup and no-idle-float remain required. The following local checks apply
+to these new interactions; the older published baseline is recorded separately below.
+
+Official Kokonut Marker Text and Slide to Confirm retain their source designs. Slide completion
+returns the initial entry/About state with no call/audio/external action; the final screen is
+light and separate from the new entry wallpaper, retaining GitHub-left/LinkedIn-right. Component dependencies are `motion`
+and `lucide-react`; see THIRD_PARTY_NOTICES.md. Official React Bits/Kokonut discovery registries
+are in components.json; MCP is configured in the local client, not claimed connected here.
+
+Local verification (Chromium, Node 24.22.0, pnpm 12.14.0):
+
+- Production build and all 52 tests pass. Lint has zero errors and 40 warnings, including
+  upstream component/imperative-engine ref/effect patterns; no rules were disabled.
+- Accepted before the wallpaper follow-up: eight actual-app cases at 1440×900 and 390×844,
+  VI/EN, normal/reduced-motion media. Each checks
+  active-only view groups, folded opening, open switching, repeated/rapid requests, focus,
+  shared expansion across views/language changes/resize, and both job/VinQA notifications.
+- Both hardware copies retain aligned Marker Text. Final controls are inert/ARIA-hidden at
+  entry and while open, active at the final light surface, and hidden again after return.
+  GitHub remains left and LinkedIn right. Keyboard return passes; mobile partial drag cancels
+  and full drag returns to entry. Returning resets About and scroll without replaying the intro.
+- Cold visits animate under both media preferences; same-session reloads skip the staged intro.
+  Tests cover StrictMode cleanup/replay, obsolete navigation cancellation, content growth/shrink,
+  resize position mapping, snapshot ownership, marker observers/frames/timers and slider unmount.
+- New wallpaper: 320, 390, 768, 1024 and 1440px widths, VI/EN, checking edge-to-edge coverage,
+  loaded original asset, visible focal region, no page overflow and retained About/final portrait.
+  Sampled image/scrim contrast is about 5.9–6.6:1 for white clock/status text, not a full
+  accessibility audit. Desktop/mobile four-view navigation and keyboard slider return-to-wallpaper
+  were rechecked with the new image. Notifications and social controls remain above the wallpaper.
+
+The main JavaScript chunk is about 506 kB minified (165 kB gzip), producing Vite's 500 kB warning.
+No chunk-splitting redesign was included. Deployment success must be checked separately through
+the exact-head GitHub Actions run and live assets, not inferred from these local checks.
+
+The generic design inspector was also run at 1440, 768 and 390px: it reports 9 failures and
+9 warnings, not a clean pass. These include the retained hardware gradients/shadows, metadata
+monospace, staged title timing, the intentionally superseded reduced-motion policy, and its
+measurement of clipped/hidden duplicate hardware content as ordinary page layout. The focused
+interaction checks above remain separate. Inspector motion sampling saw 38/38/41 moving elements,
+with no horizontal overflow or broken images. Its generic layout/style findings were not used to
+redesign the approved device or add unrelated imagery/video.
+
+## Historical published baseline (6e103db)
+
+### Automated checks
 
 The accepted portfolio changes were checked with Node 24.22.0 and pnpm 12.14.0:
 
@@ -15,7 +73,7 @@ Run `pnpm install --frozen-lockfile`, `pnpm build`, `pnpm test` and `pnpm lint` 
 the code checks. Raw browser captures, local source snapshots and session diagnostics remain
 local rather than being bundled into the repository or the deployed site.
 
-## Browser and reference coverage
+### Browser and reference coverage
 
 The reference was investigated with REA and supplemental Chromium observations. Fresh normal
 entry follows seam → curtains/names → device lift → controls. Same-session reloads and fresh
@@ -50,7 +108,7 @@ not invented copies of template routes.
 Chromium coverage is not a physical-device, cross-browser or assistive-technology audit.
 Dynamic OS motion-preference changes during the intro and the exhaustive hardware/scene/finish
 cross-product were not tested. Reference captures are not frame-complete or proof of identical
-upstream source/pre-JavaScript pixels. The portrait remains a supplied screenshot sample, not
-the owner's photo. Instagram's local recognizable gradient is not certified downloaded brand
+upstream source/pre-JavaScript pixels. The About/final portrait remains a supplied screenshot sample;
+the entry photograph is also not asserted to depict the owner. Instagram's local recognizable gradient is not certified downloaded brand
 artwork and does not provide uniform text-contrast ratios; labels, focus styles and white link
 surfaces remain. Deployment status must be checked separately from local build verification.

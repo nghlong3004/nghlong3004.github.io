@@ -11,6 +11,8 @@ export const labels: Record<Language, PortfolioLabels> = {
     contactHeading: 'Bắt đầu một cuộc trò chuyện.',
     contactIntro: 'Về backend, automation hay một bài toán thú vị — kết nối với mình qua email.',
     gallery: 'Hình ảnh dự án', language: 'Ngôn ngữ',
+    slideReturn: 'Trượt để về màn hình đầu', returning: 'Đang trở về', returned: 'Đã trở về',
+    confirmHint: 'Nhấn Enter hoặc phím cách để xác nhận.',
   },
   en: {
     intro: 'About', story: 'Pick the hard problem.', experience: 'Experience',
@@ -22,5 +24,7 @@ export const labels: Record<Language, PortfolioLabels> = {
     contactHeading: 'Start a conversation.',
     contactIntro: 'Backend, automation, or an interesting problem — get in touch by email.',
     gallery: 'Project images', language: 'Language',
+    slideReturn: 'Slide to return to entry', returning: 'Returning', returned: 'Returned',
+    confirmHint: 'Press Enter or Space to confirm.',
   },
 }

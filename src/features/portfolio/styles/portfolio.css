@@ -26,6 +26,18 @@
 .portfolio-portrait { display: block; width: 100%; height: 100%; object-fit: cover; overflow: hidden; background: #eef1f0; }
 
 .portfolio-screen { padding: 0 32px 64px; }
+.portfolio-screen[data-portfolio-view] { min-height: 660px; }
+.portfolio-screen--launch { animation: portfolio-view-open 300ms cubic-bezier(.16,1,.3,1) both; transform-origin: 50% 16%; }
+@keyframes portfolio-view-open { from { opacity: 0; transform: translateY(12px) scale(.985); } to { opacity: 1; transform: none; } }
+.portfolio-view-announcement { position: fixed; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.portfolio-view-header { padding: 66px 0 28px; }
+.portfolio-view-header > p { margin-bottom: 16px; }
+.portfolio-view-header + .portfolio-section { margin-top: 0; }
+.portfolio-screen .portfolio-view-header h1 { font-size: 84px; line-height: .98; }
+.portfolio-screen[data-portfolio-view="contact"] { padding: 0; background: #171914; }
+.portfolio-screen[data-portfolio-view="contact"] .portfolio-footer { margin: 0; padding-top: 66px; min-height: 660px; }
+.portfolio-screen[data-portfolio-view="contact"] h1 { font-size: 84px; line-height: 1; max-width: 18ch; margin-bottom: 28px; }
+.portfolio-screen[data-portfolio-view="contact"] .portfolio-meta { margin-bottom: 22px; color: #ced1c7; }
 .portfolio-screen h1 { font: 900 100px/.84 'Sofia Sans Extra Condensed', sans-serif; letter-spacing: -.005em; text-transform: uppercase; }
 .portfolio-screen h2 { font: 900 72px/1.02 'Sofia Sans Extra Condensed', sans-serif; letter-spacing: -.025em; margin-bottom: 32px; text-wrap: balance; }
 .portfolio-screen h3 { font: 500 26px/1.18 'Geist', sans-serif; letter-spacing: -.035em; margin-bottom: 15px; }
@@ -88,8 +100,9 @@
 .portfolio-nav button:hover { background: #555d50; color: white; }
 
 .portfolio-cover { padding: 0; position: relative; overflow: hidden; background: #f0f2f1; }
-.portfolio-cover__portrait { position: absolute; top: 150px; bottom: 0; left: 0; right: 0; height: calc(100% - 150px); background: transparent; }
-.portfolio-cover__identity { position: absolute; top: 54px; left: 24px; right: 24px; text-align: center; z-index: 1; }
+.portfolio-cover__portrait { position: absolute; inset: 0; width: 100%; height: 100%; object-position: 52% 38%; background: transparent; }
+.portfolio-cover::after { content: ''; position: absolute; inset: 0 0 auto; height: 300px; background: linear-gradient(180deg, rgb(0 0 0 / .64), rgb(0 0 0 / .56) 72%, transparent); pointer-events: none; }
+.portfolio-cover__identity { position: absolute; top: 54px; left: 24px; right: 24px; text-align: center; z-index: 1; color: white; }
 .portfolio-cover__clock { font: 800 132px/.9 'Sofia Sans Extra Condensed', sans-serif; letter-spacing: -.015em; font-variant-numeric: tabular-nums; }
 .portfolio-cover__role { font-size: 13px; font-weight: 500; line-height: 1.3; margin-top: 6px !important; }
 .portfolio-cover__identity .portfolio-cover__status { display: none; border: 0; padding: 0; background: none; color: inherit; font-size: 13px; font-weight: 500; line-height: 1.3; }
@@ -109,17 +122,20 @@
 .portfolio-cover--compact .portfolio-cover__clock { font-size: 76px; }
 .portfolio-cover--compact .portfolio-cover__role { display: none; }
 .portfolio-cover--compact .portfolio-cover__status { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 44px; margin-top: -9.5px; }
-.portfolio-cover--compact .portfolio-cover__portrait { top: 70px; height: calc(100% - 70px); }
+.portfolio-cover--compact .portfolio-cover__portrait { object-position: 52% 36%; }
+.portfolio-cover--compact::after { height: 190px; }
 .portfolio-cover--compact .portfolio-notifications { left: 16px; right: 16px; bottom: 68px; }
 .portfolio-cover--compact .portfolio-notification:first-child:not(:last-child) { display: none; }
 .portfolio-cover--compact .portfolio-cover__bottom { left: 16px; right: 16px; bottom: 14px; }
 .portfolio-cover--compact .portfolio-cover__bottom button { padding-block: 8px; }
 .portfolio-cover--compact .portfolio-cover__shortcut { width: 40px; height: 40px; }
 
-.portfolio-call { position: relative; display: flex; flex-direction: column; align-items: center; padding: 64px 26px 26px; gap: 16px; text-align: center; background: #11120f; color: #f6f7f1; }
+.portfolio-call { position: relative; display: flex; flex-direction: column; align-items: center; padding: 64px 26px 26px; gap: 16px; text-align: center; background: #f0f2f1; color: #151613; }
 .portfolio-call__name { font: 900 48px/1 'Sofia Sans Extra Condensed', sans-serif; text-transform: uppercase; letter-spacing: -.035em; }
 .portfolio-call__portrait { width: 130px; height: 130px; border-radius: 50%; margin-top: 32px; }
 .portfolio-call .portfolio-socials { width: 100%; justify-content: space-between; margin-top: auto; }
+.portfolio-call__completion { width: 100%; display: flex; justify-content: center; margin-top: auto; }
+.portfolio-call__completion + .portfolio-socials { margin-top: 0; }
 .portfolio-call .portfolio-socials a { display: grid; place-items: center; width: 44px; height: 44px; }
 .portfolio-socials a { min-height: 32px; }
 .portfolio-socials svg { flex-shrink: 0; }
@@ -128,10 +144,16 @@
 .portfolio-call--compact .portfolio-call__portrait { width: 74px; height: 74px; margin-top: 4px; }
 
 .portfolio-screen--compact { padding: 0 24px 46px; }
+.portfolio-screen--compact[data-portfolio-view] { min-height: 718px; }
+.portfolio-screen--compact .portfolio-view-header { padding-top: 58px; }
+.portfolio-screen--compact .portfolio-view-header h1 { font-size: 62px; }
+.portfolio-screen--compact[data-portfolio-view="contact"] .portfolio-footer { min-height: 718px; padding: 58px 24px 78px; }
+.portfolio-screen--compact[data-portfolio-view="contact"] h1 { font-size: 62px; }
 .portfolio-screen--compact h1 { font-size: 78px; }
 .portfolio-screen--compact h1 span { display: block; }
 .portfolio-screen--compact h2 { font-size: 52px; }
 .portfolio-screen--compact .portfolio-section { margin-top: 68px; }
+.portfolio-screen--compact .portfolio-view-header + .portfolio-section { margin-top: 0; }
 .portfolio-screen--compact .portfolio-intro { display: block; height: 850px; margin: 0 -24px; }
 .portfolio-screen--compact .portfolio-intro__copy { height: 470px; padding: 54px 24px 28px; }
 .portfolio-screen--compact .portfolio-role { font-family: 'Geist Mono', monospace; font-size: 12px; }
@@ -158,9 +180,6 @@
   .portfolio-language { left: 141px; font-size: 13px; gap: 7px; }
   .portfolio-nav { font-size: 13px; }
   .portfolio-nav button { padding-inline: 10px; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .portfolio-screen *, .portfolio-cover *, .portfolio-call * { animation: none !important; transition: none !important; }
 }
 @media (max-width: 360px) {
   .portfolio-language { top: 50px; left: 22px; }

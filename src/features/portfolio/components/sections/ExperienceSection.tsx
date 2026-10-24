@@ -2,10 +2,9 @@ import type { PortfolioData } from '../../types'
 
 export function ExperienceSection({ data }: { data: PortfolioData }) {
   return (
-    <section className="portfolio-section" data-ff-section="experience">
-      <div data-framer-component-type="RichTextContainer"><h2>{data.ui.experience}</h2></div>
+    <section className="portfolio-section" data-ff-section="experience" aria-label={data.ui.experience}>
       {data.experience.map((job) => (
-        <article className="portfolio-experience" key={job.company}>
+        <article className="portfolio-experience" key={job.company} data-ff-section={job.current ? 'job-current' : undefined} tabIndex={-1} aria-label={job.company}>
           <div>
             {job.logo && <img className="portfolio-company" src={job.logo} alt={job.company} width="140" height="48" />}
             <h3>{job.company}</h3>

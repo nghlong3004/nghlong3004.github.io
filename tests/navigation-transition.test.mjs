@@ -149,16 +149,17 @@ check('page-exit cleanup during a section transition does not leave an orphan ov
   assert.equal(f.frames.size, 0); assert.equal(f.timers.size, 0)
 })
 
-check('reduced-motion and hidden lifecycle snapshots are skipped and clear an older overlay', f => {
+check('reduced-motion still animates snapshots; hidden lifecycle clears an older overlay', f => {
   const previous = takeSnapshot(f.stage, true)
   f.window.matchMedia = () => ({ matches: true })
-  assert.equal(takeSnapshot(f.stage), undefined)
+  const reduced = takeSnapshot(f.stage, true)
+  assert.ok(reduced?.isConnected)
   assert.equal(previous.isConnected, false)
-  assert.equal(f.timers.size, 0)
-  f.window.matchMedia = () => ({ matches: false })
   f.document.visibilityState = 'hidden'
   assert.equal(takeSnapshot(f.stage), undefined)
+  assert.equal(reduced.isConnected, false)
   assert.equal(f.document.getElementById(SNAP_ID), null)
+  assert.equal(f.timers.size, 0)
 })
 
 check('the real animation hook jump works before any passive effect has run', f => {

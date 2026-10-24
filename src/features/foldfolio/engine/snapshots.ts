@@ -17,8 +17,7 @@ export const takeSnapshot = (stage: HTMLElement, section = false) => {
         else prev.remove()
     }
     // An interrupted section transition must not turn into a stale page-exit overlay on unmount.
-    if ((!section && prev?.__section) || document.visibilityState === "hidden" ||
-        window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return
+    if ((!section && prev?.__section) || document.visibilityState === "hidden") return
     const r = stage.getBoundingClientRect()
     if (r.bottom <= 0 || r.top >= window.innerHeight || !r.width) return
     const clone = stage.cloneNode(true) as HTMLElement

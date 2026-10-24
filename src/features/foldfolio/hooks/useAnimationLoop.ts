@@ -30,9 +30,6 @@ export function useAnimationLoop({
     // nothing moves, reads window.scrollY (no forced layout) and wakes up on scroll.
     useEffect(() => {
         if (typeof window === "undefined") return
-        const reduce =
-            window.matchMedia &&
-            window.matchMedia("(prefers-reduced-motion: reduce)").matches
         let raf = 0
         let running = false
         let cur = -1
@@ -73,7 +70,7 @@ export function useAnimationLoop({
             io.observe(rootRef.current)
         }
         const needsTime = () => {
-            if (isCanvas || reduce || !inView) return false
+            if (isCanvas || !inView) return false
             if (reveals.current.length || fadeIn.current) return true
             const g = geo.current
             if (g.scene === "orbit") return true
@@ -83,7 +80,7 @@ export function useAnimationLoop({
             const target = readTarget()
             const dt = last ? Math.min(64, t - last) : 16.7
             last = t
-            if (cur < 0 || reduce || isCanvas) cur = target
+            if (cur < 0 || isCanvas) cur = target
             else {
                 const a =
                     1 -

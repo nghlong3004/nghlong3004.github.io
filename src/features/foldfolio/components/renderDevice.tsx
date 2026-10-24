@@ -457,6 +457,8 @@ export function renderDevice({
             {callNode && (
                 <div
                     ref={R.call}
+                    inert
+                    aria-hidden="true"
                     style={{
                         ...fill,
                         opacity: 0,

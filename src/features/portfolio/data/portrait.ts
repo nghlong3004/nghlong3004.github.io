@@ -1,8 +1,13 @@
 import type { PortfolioPortrait } from '../types'
 
-// Replace src with your own photo and remove referenceCrop when it is ready.
+// About and the final screen keep the original screenshot sample.
 export const portrait: PortfolioPortrait = {
   src: '/portrait/reference.jpg',
   alt: 'Chân dung mẫu — thay bằng ảnh Nguyễn Hoàng Long',
   referenceCrop: true,
+}
+
+export const entryPortrait: PortfolioPortrait = {
+  src: '/portrait/entry-wallpaper.jpg',
+  alt: 'User-supplied portrait for the entry wallpaper',
 }

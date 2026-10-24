@@ -136,6 +136,9 @@ export function createFrameRenderer({
                 const on = clamp((p3 - 0.02) * 6, 0, 1)
                 S(R.call.current, "opacity", String(+on.toFixed(3)))
                 S(R.call.current, "pointerEvents", on > 0.5 ? "auto" : "none")
+                const hidden = on <= 0.5
+                if (R.call.current.inert !== hidden) R.call.current.inert = hidden
+                if (R.call.current.getAttribute("aria-hidden") !== String(hidden)) R.call.current.setAttribute("aria-hidden", String(hidden))
             }
         }
 

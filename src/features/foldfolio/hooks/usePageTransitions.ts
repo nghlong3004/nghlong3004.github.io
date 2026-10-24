@@ -147,17 +147,16 @@ export function usePageTransitions({
             seen = window.sessionStorage.getItem("ff-seen") === "1"
             window.sessionStorage.setItem("ff-seen", "1")
         } catch {}
-        const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches
         const hidden = document.visibilityState === "hidden"
         const snapshot = document.getElementById(SNAP_ID) as ReturnType<typeof takeSnapshot> | null
         // Same-instance effect replay may retry an unfinished intro; a new seen visit may not.
         const run = introLive && (!seen || replayIntro.current) && !snapshot &&
-            !hidden && window.scrollY < 40 && !reduced
+            !hidden && window.scrollY < 40
         replayIntro.current = false
         const cancelIntro = run ? playIntro() : undefined
         if (!run && R.iCur.current) R.iCur.current.style.display = "none"
         adopted.current = undefined
-        if (reduced || hidden) {
+        if (hidden) {
             fadeIn.current = 0
             ;[R.cL.current, R.cR.current, R.cOpen.current].forEach((c) => {
                 if (c) c.style.opacity = "1"
@@ -211,8 +210,7 @@ export function usePageTransitions({
             }
             if (ready || Date.now() - t0 > 1200) {
                 kick.current()
-                if (document.visibilityState === "hidden" ||
-                    window.matchMedia("(prefers-reduced-motion: reduce)").matches) releaseSnapshot(0, snapshot)
+                if (document.visibilityState === "hidden") releaseSnapshot(0, snapshot)
                 else {
                     // two frames so this page has really painted underneath
                     raf = window.requestAnimationFrame(() => {

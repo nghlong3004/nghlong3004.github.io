@@ -10,13 +10,12 @@ export function ProjectsSection({ data, expandedProject, onToggle }: {
 }) {
   const prefix = useId()
   return (
-    <section className="portfolio-section portfolio-projects" data-ff-section="projects">
-      <div data-framer-component-type="RichTextContainer"><h2>{data.ui.projects}</h2></div>
+    <section className="portfolio-section portfolio-projects" data-ff-section="projects" aria-label={data.ui.projects}>
       {data.projects.map((project) => {
         const expanded = expandedProject === project.id
         const panelId = `${prefix}-${project.id}`
         return (
-          <article key={project.id} className="portfolio-project" data-ff-section={`project-${project.id}`}>
+          <article key={project.id} className="portfolio-project" data-ff-section={`project-${project.id}`} tabIndex={-1} aria-label={project.title}>
             <div className="portfolio-project__overview">
               <div className="portfolio-project__image" data-framer-background-image-wrapper="">
                 <img src={project.image.src} alt={project.image.alt} width="960" height="600" loading="lazy" />

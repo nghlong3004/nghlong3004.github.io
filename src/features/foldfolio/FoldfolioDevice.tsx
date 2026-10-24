@@ -32,8 +32,7 @@ import type { FoldfolioProps, Finish, Scene, ScreenMotion } from "./types"
 import type { GeometryState, LiveState, TintSection } from "./engine/types"
 import { useIsoLayoutEffect } from "./hooks/useIsoLayoutEffect"
 import { useDeviceRefs } from "./hooks/useDeviceRefs"
-import { useReducedMotion } from "./hooks/useReducedMotion"
-import { useSectionNavigation } from "./hooks/useSectionNavigation"
+import { useSectionNavigation, useScreenNavigationRequest } from "./hooks/useSectionNavigation"
 import { useSceneImages } from "./hooks/useSceneImages"
 import { useScreenMotion } from "./hooks/useScreenMotion"
 import { usePagePreload, useScreenFilters } from "./hooks/useScreenNavigation"
@@ -235,7 +234,7 @@ export default function FoldfolioDevice(props: FoldfolioProps) {
         }
         startTransition(() => setPageBg(bg || "#ffffff"))
     }, [isCanvas])
-    useEffect(() => {
+    useIsoLayoutEffect(() => {
         const el = measureRef.current
         if (!el) return
         const upd = () => {
@@ -256,7 +255,7 @@ export default function FoldfolioDevice(props: FoldfolioProps) {
             ts.forEach((t) => window.clearTimeout(t))
             if (ro) ro.disconnect()
         }
-    }, [Hs, port, mode])
+    }, [Hs, port, mode, props.screenNavigation?.key])
     const innerMax = Math.max(0, contentH - Hs)
 
     // ---------- scroll phases (page pixels)
@@ -399,8 +398,7 @@ export default function FoldfolioDevice(props: FoldfolioProps) {
         MOTION_DEFAULTS,
         props.screenMotion
     )
-    const reducedMotion = useReducedMotion()
-    const motionOn = mo.on && !isCanvas && !reducedMotion
+    const motionOn = mo.on && !isCanvas
     const introCfg = Object.assign(
         { on: true, color: "", line: "rgba(17,17,17,.55)", speed: 1 },
         props.intro
@@ -457,7 +455,11 @@ export default function FoldfolioDevice(props: FoldfolioProps) {
         rootRef, topRef, R, isCanvas, geo, preview, reveals, fadeIn,
         motion, live, renderFrame, stepReveals, kick,
     })
-    useSectionNavigation(navigationRef, rootRef, R, geo, live, jump)
+    const cancelSection = useSectionNavigation(navigationRef, rootRef, R, geo, live, jump)
+    useScreenNavigationRequest({
+        request: props.screenNavigation, rootRef, measureRef, refs: R, geometry: geo,
+        live, jump, cancelSection, contentH, setContentH, isCanvas,
+    })
 
     usePageTransitions({ R, introCfg, geo, isCanvas, introLive, kick, G, fadeIn })
 

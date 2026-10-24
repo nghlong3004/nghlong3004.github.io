@@ -1,4 +1,5 @@
 export type Language = 'vi' | 'en'
+export type PortfolioView = 'about' | 'work' | 'experience' | 'contact'
 
 export type ContentBlock =
   | { type: 'paragraph'; text: string }
@@ -107,4 +108,8 @@ export interface PortfolioLabels {
   contactIntro: string
   gallery: string
   language: string
+  slideReturn: string
+  returning: string
+  returned: string
+  confirmHint: string
 }

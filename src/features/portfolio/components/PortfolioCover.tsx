@@ -1,10 +1,11 @@
 import type { CSSProperties } from 'react'
-import type { PortfolioData } from '../types'
+import type { PortfolioData, PortfolioPortrait } from '../types'
 import { Portrait } from './Portrait'
 import { Icon } from './Icon'
 
-export function PortfolioCover({ data, time, compact = false, onNavigate, style }: {
+export function PortfolioCover({ data, portrait, time, compact = false, onNavigate, style }: {
   data: PortfolioData
+  portrait: PortfolioPortrait
   time: string
   compact?: boolean
   onNavigate: (section: string) => void
@@ -16,14 +17,14 @@ export function PortfolioCover({ data, time, compact = false, onNavigate, style 
   const instagram = data.links.find((link) => link.icon === 'instagram')
   return (
     <div data-ui="" aria-label={data.profile.name} className={`portfolio-cover${compact ? ' portfolio-cover--compact' : ''}`} style={style}>
-      <Portrait portrait={data.profile.portrait} fit={data.profile.portrait.referenceCrop ? 'contain' : 'cover'} className="portfolio-cover__portrait" />
+      <Portrait portrait={portrait} className="portfolio-cover__portrait" />
       <header className="portfolio-cover__identity">
         <p className="portfolio-cover__clock">{time}</p>
         <p className="portfolio-cover__role">{data.profile.role}</p>
-        {current && <button type="button" className="portfolio-cover__status" onClick={() => onNavigate('experience')}>{current.role}</button>}
+        {current && <button type="button" className="portfolio-cover__status" onClick={() => onNavigate('job-current')}>{current.role}</button>}
       </header>
       <div className="portfolio-notifications">
-        {current && <button type="button" className="portfolio-notification" onClick={() => onNavigate('experience')}>
+        {current && <button type="button" className="portfolio-notification" onClick={() => onNavigate('job-current')}>
           <span className="portfolio-notification__app"><img src={current.logo || '/favicon.webp'} alt="" width="28" height="28" /></span>
           <span><strong>{current.role}</strong><span>{current.period}</span></span>
         </button>}

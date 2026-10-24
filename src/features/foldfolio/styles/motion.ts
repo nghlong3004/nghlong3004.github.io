@@ -28,7 +28,6 @@ export const MOTION_CSS = `
 }
 @keyframes ffm-show{from{opacity:0;translate:0 14px}to{opacity:1;translate:0 0}}
 .ffm-show{animation:ffm-show .55s ${EASE} both}
-@media (prefers-reduced-motion: reduce){.ffm-on .ffm-t,.ffm-on .ffm-h,.ffm-on .ffm-i,.ffm-on .ffm-c{opacity:1;translate:none;filter:none;clip-path:none}.ffm-show{animation:none}}
 `
 
 export const abs: CSSProperties = { position: "absolute" }

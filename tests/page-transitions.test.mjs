@@ -88,10 +88,20 @@ check('a genuine seen session skips intro and keeps the existing ordinary screen
   assert.equal(f.frames.size,0)
 })
 
-check('reduced-motion seen/open content is immediately opaque without an entry fade', {seen:true,reduced:true}, f=>{
+check('reduced-motion seen/open content retains the ordinary entry fade', {seen:true,reduced:true}, f=>{
   assert.equal(f.R.iCur.current.style.display,'none')
-  for(const key of ['cL','cR','cOpen'])assert.equal(f.R[key].current.style.opacity,'1')
-  assert.equal(f.fadeIn.current,0)
+  for(const key of ['cL','cR','cOpen'])assert.equal(f.R[key].current.style.opacity,'0')
+  assert.equal(f.fadeIn.current,100)
+  assert.equal(f.frames.size,0);assert.equal(f.timers.size,0)
+})
+
+check('reduced-motion cold visit still runs the nominal intro', {reduced:true}, f=>{
+  assert.equal(f.R.iCur.current.style.display,'')
+  assert.equal(f.R.iDev.current.style.opacity,'0')
+  f.frame(1000)
+  assert.ok(+f.R.iDev.current.style.opacity>0)
+  f.frame(1300)
+  assert.equal(f.R.iCur.current.style.display,'none')
   assert.equal(f.frames.size,0);assert.equal(f.timers.size,0)
 })
 

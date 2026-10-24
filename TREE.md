@@ -5,20 +5,27 @@
 ```text
 .
 ├── AGENTS.md / TREE.md / README.md
+├── THIRD_PARTY_NOTICES.md             # Official Kokonut component attribution and MIT license
 ├── .github/workflows/deploy.yml       # Build dist and publish main to GitHub Pages
 ├── docs/VERIFICATION.md               # Public verification summary; no session metadata
 ├── package.json / pnpm-lock.yaml
+├── components.json                   # Official React Bits/Kokonut MCP registry discovery only
 ├── index.html / vite.config.ts / tsconfig*.json / .oxlintrc.json
 ├── .taste-skill/                       # Reference notes; generated captures stay local/ignored
 ├── tests/
 │   ├── portfolio.test.mjs              # Điều hướng, dữ liệu, asset local, múi giờ VN
 │   ├── navigation-transition.test.mjs  # Snapshot ownership, cleanup, early ref calls
-│   └── page-transitions.test.mjs       # Intro lifecycle/replay/cancellation and snapshot adoption
+│   ├── page-transitions.test.mjs       # Intro lifecycle/replay/cancellation and snapshot adoption
+│   ├── portfolio-views.test.mjs        # Real active-view markup and destination resolution
+│   ├── marker-text.test.mjs            # Official mark parity, scaled geometry and cleanup
+│   ├── kokonut-components.test.mjs     # Official slider markup and localized keyboard labels
+│   └── screen-navigation.test.mjs      # Active-content requests and open/fold reconciliation
 ├── public/
 │   ├── project/                       # Ảnh chính và gallery 4 dự án
 │   │   └── vinqa/header.webp           # Supplied VinQA logo, locally downloaded bytes
 │   ├── company/                       # Logo VinFast / Vinsmart Future
-│   ├── portrait/reference.jpg         # Ảnh mẫu copy từ screenshot
+│   ├── portrait/reference.jpg         # Shared About/final screenshot sample, unchanged
+│   ├── portrait/entry-wallpaper.jpg   # Original supplied JPEG; initial SCREEN wallpaper only
 │   ├── fonts/                         # Sofia Sans Extra Condensed 800/900 / Geist / Geist Mono + OFL
 │   ├── tmp/                           # 3 screenshot tham chiếu, giữ nguyên
 │   └── favicon.webp                   # Logo NL từ repo cũ
@@ -36,7 +43,7 @@
         │   ├── data/
         │   │   ├── portfolio.ts       # Ghép Record<Language, PortfolioData>
         │   │   ├── profiles.ts        # Tên, nghề, bio, địa điểm, email
-        │   │   ├── portrait.ts        # THAY AVATAR TẠI ĐÂY
+        │   │   ├── portrait.ts        # Shared portrait + separate entryPortrait wallpaper
         │   │   ├── projects.ts        # 4 dự án, công nghệ, links, mô tả/gallery
         │   │   ├── stories.ts         # Câu chuyện và nguyên tắc
         │   │   ├── experiences.ts     # 2 nơi làm việc
@@ -45,10 +52,12 @@
         │   │   ├── links.ts           # Email, GitHub, LinkedIn, Instagram
         │   │   └── labels.ts          # Nhãn giao diện và thông báo vi/en
         │   ├── hooks/                     # usePortfolioLanguage, useVietnamClock
-        │   ├── lib/                    # vietnamTime (clock/age), language preference resolution
+        │   ├── lib/                    # vietnamTime, language, navigation destinations, class helper
         │   ├── styles/portfolio.css   # Font local + UI màn chính/lockscreen/contact
         │   └── components/
         │       ├── PortfolioScreen.tsx
+        │       ├── views/              # About, Work, Experience, Contact; only active view mounted
+        │       ├── kokonut/            # Official Marker Text / Slide to Confirm source adaptations
         │       ├── PortfolioCover.tsx # Clock/portrait; job + VinQA, compact status; Instagram/LinkedIn
         │       ├── PortfolioContact.tsx
         │       ├── Icon.tsx                # SVG nét 1.5px, không dùng emoji cho nút
@@ -70,7 +79,6 @@
             ├── hooks/
             │   ├── useDeviceRefs.ts
             │   ├── useIsoLayoutEffect.ts
-            │   ├── useReducedMotion.ts
             │   ├── useSectionNavigation.ts # React ref scrollToSection
             │   ├── useSceneImages.ts
             │   ├── useScreenMotion.ts

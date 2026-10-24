@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
-import { existsSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
+import { createHash } from 'node:crypto'
 import test from 'node:test'
 import { getSectionScrollY } from '../src/features/foldfolio/engine/navigation.ts'
 import { projects } from '../src/features/portfolio/data/projects.ts'
@@ -10,6 +11,7 @@ import { impacts } from '../src/features/portfolio/data/impacts.ts'
 import { stories } from '../src/features/portfolio/data/stories.ts'
 import { labels } from '../src/features/portfolio/data/labels.ts'
 import { links } from '../src/features/portfolio/data/links.ts'
+import { entryPortrait, portrait } from '../src/features/portfolio/data/portrait.ts'
 
 const geometry = { mode: 'fold', U1: 1000, s: 0.8, innerMax: 2000 }
 test('navigation opens the device and scales a section offset below the status bar', () => {
@@ -51,6 +53,17 @@ test('all project screenshots and company logos resolve locally', () => {
     ...experiences.vi.flatMap(job => [job.logo, job.logoDark].filter(Boolean)),
   ]
   for (const asset of assets) assert.ok(existsSync(new URL(`../public${asset}`, import.meta.url)), asset)
+})
+
+test('entry wallpaper retains supplied bytes without changing the shared screenshot portrait', () => {
+  assert.equal(entryPortrait.src, '/portrait/entry-wallpaper.jpg')
+  assert.equal(entryPortrait.referenceCrop, undefined)
+  assert.equal(portrait.src, '/portrait/reference.jpg')
+  assert.equal(portrait.referenceCrop, true)
+  assert.equal(profiles.vi.portrait, portrait)
+  assert.equal(profiles.en.portrait, portrait)
+  const bytes = readFileSync(new URL(`../public${entryPortrait.src}`, import.meta.url))
+  assert.equal(createHash('sha256').update(bytes).digest('hex'), '0f51f12fbfdd28f6f0d091a0eb2fdf5f9b3440bdb6bf0246157c266fddb34df2')
 })
 
 test('social destinations preserve the shared username and recognizable icon identity', () => {

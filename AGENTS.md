@@ -30,8 +30,9 @@
 - `useVietnamClock` supplies one `{ time, age }` snapshot. Age is completed years for 2005-06-06 on the Vietnam civil date; display it inside the battery-shaped pill with age/not-device-battery accessibility text. Never read the device battery API for this indicator.
 - Project có summary, công nghệ, liveUrl/sourceCode tùy chọn, ảnh chính/gallery, details/role dạng `ContentBlock[]` (paragraph/list). Không đưa lại HTML thô vào dữ liệu hoặc thêm parser HTML.
 - `App.tsx` giữ `expandedProject` dùng chung: hai nửa màn hình phải bung cùng dự án. `ProjectsSection` dùng `useId` để aria-controls không trùng giữa các bản sao.
-- **Thay avatar:** sửa `src/features/portfolio/data/portrait.ts`: trỏ `src` đến ảnh mới trong `public/portrait/`, đổi alt và bỏ `referenceCrop`. Cả cover, màn chính và contact dùng chung cấu hình này.
+- **Thay avatar:** sửa `src/features/portfolio/data/portrait.ts`. `portrait` dùng chung About/final; `entryPortrait` chỉ dành cho Home/entry wallpaper. App truyền cấu hình qua props, không để component import dữ liệu. Trỏ `src` đến asset local mới, đổi alt trung thực và bỏ `referenceCrop` nếu ảnh không phải screenshot.
 - Avatar hiện là ảnh mẫu từ screenshot người dùng cung cấp, copy vào `public/portrait/reference.jpg`. `Portrait.tsx` dùng SVG viewBox để chỉ hiển thị phần chân dung; không sửa ảnh gốc. Không được mô tả đây là chân dung thật của chủ portfolio.
+- Entry dùng JPEG gốc `public/portrait/entry-wallpaper.jpg`, không chỉnh/tạo lại ảnh. Chỉ `.portfolio-cover__portrait` phủ toàn bộ SCREEN bằng `inset:0`, `object-fit:cover` và focal position responsive; không phủ browser/hardware hoặc đổi About/final thành wallpaper. Giữ scrim đủ tương phản cho clock/status và controls. Không khẳng định người trong ảnh là chủ portfolio.
 - Các ảnh `public/tmp/` là tham chiếu thiết kế của người dùng; không xóa. Không dùng ảnh chân dung stock trong repo cũ làm giải thưởng.
 - Font Sofia Sans Extra Condensed (tên/đồng hồ/tiêu đề), Geist (nội dung/UI) và Geist Mono (metadata ngắn theo trang gốc) được self-host trong `public/fonts/`, có OFL đi kèm. Thiết kế bám ảnh tham chiếu: nền sáng, tên lớn, chân dung, lockscreen và thanh thông báo. Giữ thiết kế phần cứng có sẵn.
 - Component slot phải nhận và chuyển `style` xuống phần tử gốc. Muốn thêm section: model → data vi/en → component → ghép trong PortfolioScreen.
@@ -41,14 +42,16 @@
 
 - Không tự đổi timing, easing, geometry, storage key, dependency hay thiết kế khi task chỉ sửa cấu trúc/dữ liệu.
 - Idle Float trong cấu hình app phải tắt: người dùng yêu cầu chữ/máy đứng yên khi không cuộn. Không tự bật lại.
-- `FoldfolioHandle.scrollToSection(key)` qua React ref là API điều hướng. Đích dùng `data-ff-section`, tính offset chưa scale rồi đổi sang timeline mở máy; không dùng native hash/scrollIntoView cho slot.
+- App navigation renders exactly one active portfolio view: About=introduction/story, Work=projects/results, Experience=jobs/honors, Contact=contact. The final folded screen stays separate. Changing destinations changes content state, not an anchor within concatenated views; shared project expansion stays in App.
+- About uses the official Kokonut Marker Text in controlled mode for synchronized hardware copies. Refresh local ink coordinates after folding/focus and scroll completion; keep upstream strokes/timings. The light final folded screen uses official Slide to Confirm to return to entry/About, with keyboard support and no call/audio/external action. Retain GitHub-left/LinkedIn-right and THIRD_PARTY_NOTICES.md.
+- `screenNavigation?: { key: string; target?: string }` requests opening/resetting already-rendered content; undefined initially preserves the cover. New request keys reset to the active view's top or intra-view `data-ff-section` target, keeping an open device open. `FoldfolioHandle.scrollToSection(key)` remains a reusable intra-view API. Do not use native hashes/scrollIntoView for slots or remount the whole device.
 - `fold`: cuộn mở máy → cuộn nội dung → đóng máy → call screen. `open`: máy luôn mở, cuộn trang di chuyển nội dung.
 - Orientation `auto` dựa trên độ rộng/tỉ lệ viewport. Screen thiết kế landscape `976 × 660`, portrait `358 × 718`; xem `config/constants.ts`.
 - `renderDevice` và `renderScenes` là hàm trả JSX gọi trực tiếp. Giữ DOM, slot và ref: scanner/filter/tint dựa vào cấu trúc này. Không tự thêm wrapper hoặc đổi thành component.
 - `geo`, `live`, `R` và callback ref `renderFrame`, `scan`, `motionTick`, `paintScenes`, `kick` giữ trạng thái engine. rAF ghi DOM qua `S`, không set state mỗi frame.
 - Giữ cách gán callback ref trong render và dependency array hiện tại nếu chưa kiểm chứng thay đổi vòng đời.
 - `useDeviceRefs`: từng `useRef` phải khai báo riêng, ngoài object literal; React Compiler từng cache nhầm hook call nằm trong object literal.
-- `useReducedMotion` tắt các reveal giấu chữ khi hệ điều hành yêu cầu giảm chuyển động.
+- Current explicit motion policy: do NOT bypass intro, smoothing, reveals, snapshots or view transitions for `prefers-reduced-motion: reduce`. The obsolete reduced-motion hook/branches are removed, not replaced with a false stub. This intentionally does not honor motion-sensitive OS preferences; retain keyboard/focus/labels, no flashes/strobes, no idle float, and complete lifecycle cleanup.
 - Giữ cleanup listener/observer/timer/rAF; kiểm tra cả StrictMode, resize và chuyển tab.
 - Key: `foldfolio:style` cho localStorage/custom event; `ff-seen`, `ff-warm:*` cho sessionStorage; `ff-pagesnap` cho snapshot DOM.
 - Dùng `import type` vì `verbatimModuleSyntax` bật. Không thêm package Framer để chạy local.
@@ -66,7 +69,7 @@ pnpm test
 Dev mặc định ở `http://localhost:5173/`. Build chạy TypeScript trước Vite. Lint còn warning về refs/effects của engine; không tắt rule hàng loạt hoặc đổi animation chỉ để hết warning.
 
 - Đổi nội dung: kiểm tra đủ Việt/Anh, desktop/mobile, screen/cover/call; thông báo mở đúng kinh nghiệm/VinQA và email.
-- Kiểm tra khi đứng yên vài giây: vị trí chữ không được nhấp nhô. Kiểm tra bung dự án đồng bộ hai nửa màn và giữ trạng thái khi đổi ngôn ngữ.
+- Check idle stability, shared project expansion across both halves/view switches/language changes, genuine per-view DOM separation and scrolling, folded/open navigation, notifications and focus. Verify motion actually runs under both normal and reduce media preferences.
 - Đổi engine/render: kiểm tra `fold` đầu/giữa/cuối và `open`, Basic/Glow/Orbit, finish, header/bottom switcher, resize/reload.
 - Kiểm tra motion/filter bằng nội dung dài, heading/counter/ảnh/link lọc; màn hình trống không kiểm chứng được chúng.
 - Thêm/bớt/di chuyển file: cập nhật `TREE.md` và toàn bộ import. Xóa file hết caller thay vì giữ re-export dự phòng.
