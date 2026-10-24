@@ -7,14 +7,14 @@ import { ContactView } from './views/ContactView'
 import { HomeView } from './views/HomeView'
 import { ProjectsView } from './views/ProjectsView'
 
-export function PortfolioScreen({ data, view, launch = false, compact = false, expandedProject, onToggle, onNavigate, workFilter, onWorkFilterChange, contactDraft, onContactDraftChange, style }: {
+export function PortfolioScreen({ data, view, launch = false, compact = false, expandedProject, onToggle, onNavigate, workFilter, onWorkFilterChange, contactDraft, onContactDraftChange, contactValidation, onContactValidationChange, onContactFocusField, style }: {
   view: PortfolioView
   launch?: boolean
   compact?: boolean
   style?: CSSProperties
 } & PortfolioViewProps) {
   const label = { home: data.ui.home, work: data.ui.work, projects: data.ui.archive, about: data.ui.intro, experience: data.ui.experience, contact: data.ui.contact }[view]
-  const viewProps: PortfolioViewProps = { data, expandedProject, onToggle, onNavigate, workFilter, onWorkFilterChange, contactDraft, onContactDraftChange }
+  const viewProps: PortfolioViewProps = { data, expandedProject, onToggle, onNavigate, workFilter, onWorkFilterChange, contactDraft, onContactDraftChange, contactValidation, onContactValidationChange, onContactFocusField }
   return (
     <div className={`portfolio-screen${compact ? ' portfolio-screen--compact' : ''}${launch ? ' portfolio-screen--launch' : ''}`}
       data-portfolio-view={view} data-ff-section="view-root" role="region" aria-label={label} tabIndex={-1} style={style}>

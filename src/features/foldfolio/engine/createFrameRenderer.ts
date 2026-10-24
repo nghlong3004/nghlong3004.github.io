@@ -128,12 +128,33 @@ export function createFrameRenderer({
             S(R.overlay.current, "visibility", o > 0.01 ? "visible" : "hidden")
             S(R.creaseL.current, "opacity", flat ? "0" : "1")
             S(R.creaseR.current, "opacity", flat ? "0" : "1")
+            const interactiveStatus = R.statusInteractive?.current
+            if (interactiveStatus) {
+                S(interactiveStatus, "visibility", flat ? "visible" : "hidden")
+                if (interactiveStatus.getAttribute("aria-hidden") !== String(!flat))
+                    interactiveStatus.setAttribute("aria-hidden", String(!flat))
+            }
             const screenOverlay = R.screenOverlay.current
             if (screenOverlay) {
                 S(screenOverlay, "visibility", flat ? "visible" : "hidden")
                 if (screenOverlay.inert === flat) screenOverlay.inert = !flat
                 if (screenOverlay.getAttribute("aria-hidden") !== String(!flat))
                     screenOverlay.setAttribute("aria-hidden", String(!flat))
+            }
+            const interactive = R.cInteractive?.current
+            if (interactive) {
+                if (!flat && interactive.contains(document.activeElement))
+                    R.dev.current?.focus({ preventScroll: true })
+                S(interactive, "visibility", flat ? "visible" : "hidden")
+                if (!flat) {
+                    interactive.setAttribute("data-ff-fold-inert", "")
+                    if (!interactive.inert) interactive.inert = true
+                } else if (interactive.hasAttribute("data-ff-fold-inert")) {
+                    interactive.removeAttribute("data-ff-fold-inert")
+                    interactive.inert = false
+                }
+                if (interactive.getAttribute("aria-hidden") !== String(!flat))
+                    interactive.setAttribute("aria-hidden", String(!flat))
             }
             // floor shadows (transform only)
             const vis = P ? 1 : 0.5 + 0.5 * pe
@@ -163,6 +184,7 @@ export function createFrameRenderer({
                 (P ? -g.halfH - inner : -inner).toFixed(2) + "px"
             )
             S(R.cOpen.current, "top", y + "px")
+            S(R.cInteractive?.current, "top", y + "px")
             L.inner = inner
             motionTick.current(inner, pe)
         }

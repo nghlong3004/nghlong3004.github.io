@@ -133,7 +133,7 @@ export function useScreenFilters({
                 h.style.color = col
             })
         }
-        ;[R.cL.current, R.cR.current, R.cOpen.current].forEach((root) => {
+        ;[R.cL.current, R.cR.current, R.cOpen.current, R.cInteractive?.current].forEach((root) => {
             if (!root) return
             const anchors = Array.from(
                 root.querySelectorAll("a")
@@ -218,7 +218,7 @@ export function useScreenFilters({
                 tgt && tgt.closest ? tgt.closest("a") : null
             ) as HTMLAnchorElement | null
             if (!a) return
-            const inScreen = [R.cL.current, R.cR.current, R.cOpen.current].some(
+            const inScreen = [R.cL.current, R.cR.current, R.cOpen.current, R.cInteractive?.current].some(
                 (r) => r && r.contains(a)
             )
             if (!inScreen) return

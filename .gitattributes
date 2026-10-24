@@ -1,0 +1,3 @@
+# Preserve verified upstream SVG/license bytes, including their original CRLF.
+public/technology/LICENSE.playwright.txt -text
+public/technology/promptfoo.svg -text

@@ -205,6 +205,11 @@ export default function FoldfolioDevice(props: FoldfolioProps) {
             ? props.screenPortrait
             : props.screen
     )
+    const screenInteractiveNode = first(
+        port && first(props.screenInteractivePortrait)
+            ? props.screenInteractivePortrait
+            : props.screenInteractive
+    )
     const coverNode = first(
         port && first(props.coverPortrait) ? props.coverPortrait : props.cover
     )
@@ -265,7 +270,7 @@ export default function FoldfolioDevice(props: FoldfolioProps) {
             ts.forEach((t) => window.clearTimeout(t))
             if (ro) ro.disconnect()
         }
-    }, [Hs, port, mode, props.screenNavigation?.key])
+    }, [Hs, port, mode, props.screenNavigation?.key, !!screenInteractiveNode])
     const innerMax = Math.max(0, contentH - Hs)
 
     // ---------- scroll phases (page pixels)
@@ -428,18 +433,6 @@ export default function FoldfolioDevice(props: FoldfolioProps) {
         geo, motion, live, S, R, motionTick, sceneList, sat, glowCur, glowFlip, drawGlow, status,
         tintMap, imgLum, rootRef,
     })
-    // after every React render: forget cached styles and redraw once with the new geometry
-    useIsoLayoutEffect(() => {
-        cache.current = new WeakMap()
-        live.current.k = -1
-        live.current.inner = -1
-        live.current.tint = ""
-        live.current.bars = null
-        live.current.rc = ""
-        paintScenes.current()
-        renderFrame.current(live.current.cur, performance.now())
-        kick.current()
-    })
     useEffect(() => {
         glowCur.current = ""
         paintScenes.current()
@@ -465,13 +458,34 @@ export default function FoldfolioDevice(props: FoldfolioProps) {
         rootRef, topRef, R, isCanvas, geo, preview, reveals, fadeIn,
         motion, live, renderFrame, stepReveals, kick,
     })
-    const cancelSection = useSectionNavigation(navigationRef, rootRef, R, geo, live, jump)
+    const { cancel: cancelSection, reveal: revealScreenElement } =
+        useSectionNavigation(navigationRef, rootRef, R, geo, live, jump)
     useScreenNavigationRequest({
         request: props.screenNavigation, rootRef, measureRef, refs: R, geometry: geo,
         live, jump, cancelSection, contentH, setContentH, isCanvas,
     })
+    // Navigation remaps the old scroll offset before the new fold geometry can
+    // briefly hide an otherwise focused flat screen during viewport resize.
+    useIsoLayoutEffect(() => {
+        cache.current = new WeakMap()
+        live.current.k = -1
+        live.current.inner = -1
+        live.current.tint = ""
+        live.current.bars = null
+        live.current.rc = ""
+        paintScenes.current()
+        renderFrame.current(live.current.cur, performance.now())
+        kick.current()
+    })
 
     usePageTransitions({ R, introCfg, geo, isCanvas, introLive, kick, G, fadeIn })
+    useIsoLayoutEffect(() => {
+        const interactive = R.cInteractive.current
+        return () => {
+            if (interactive?.contains(document.activeElement))
+                R.dev.current?.focus({ preventScroll: true })
+        }
+    }, [!!screenInteractiveNode, props.screenNavigation?.key])
 
     // live clock for the status bar
     const [clock, setClock] = useState(status.time)
@@ -499,7 +513,11 @@ export default function FoldfolioDevice(props: FoldfolioProps) {
     const { device } = renderDevice({
         G, b, F, status, port, clock, R, halfW, halfH, Ws, mode, measureRef, screenNode, land,
         inner, screenColor, coverNode, rootRef, live, geo, callNode, cRight, cLeaf, hingeBleed,
-        cAll, Ro, Hs, navNode, screenOverlayNode, signalLevel,
+        cAll, Ro, Hs, navNode, screenOverlayNode, screenInteractiveNode,
+        onInteractiveFocus: (event) => {
+            if (event.target instanceof HTMLElement)
+                revealScreenElement.current(event.target)
+        }, signalLevel,
     })
 
     const { splitLayer, namesLayer, glowLayer, orbitLayer, curtainBg } = renderScenes({
@@ -536,7 +554,7 @@ export default function FoldfolioDevice(props: FoldfolioProps) {
                     top: 0,
                     width: "100%",
                     height: stageH,
-                    overflow: "hidden",
+                    overflow: screenInteractiveNode ? "clip" : "hidden",
                     background: pageBg || undefined,
                 }}
             >

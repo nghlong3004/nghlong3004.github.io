@@ -1,0 +1,17 @@
+Technology logo assets
+
+playwright.svg: unmodified Playwright logo, copyright Microsoft Corporation.
+Source: https://github.com/microsoft/playwright/blob/91a765d1681cb3eeb0d0fb89fefec3cf0d21bd9b/packages/web/src/assets/playwright-logo.svg
+Repository license: Apache-2.0; see LICENSE.playwright.txt and NOTICE.playwright.txt.
+Apache-2.0 section 6 does not grant trademark rights. Microsoft's brand guidelines:
+https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks
+No affiliation, endorsement, or separate trademark permission is claimed.
+
+promptfoo.svg: unmodified Promptfoo panda logo, copyright Promptfoo.
+Source: https://github.com/promptfoo/promptfoo/blob/c0b88a324175c60019cc80de1b2e32b4c849d4c3/site/static/img/logo-panda.svg
+Repository license: MIT; see LICENSE.promptfoo.txt (copyright Promptfoo 2025).
+Official brand download: https://www.promptfoo.dev/press/
+https://www.promptfoo.dev/img/logo-panda.svg
+Repository licensing does not imply ownership of the brand or endorsement.
+
+Both marks identify technologies used in public projects, not portfolio branding.

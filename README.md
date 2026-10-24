@@ -17,7 +17,7 @@ Glow is restored to the original softened image-derived mode, not a fixed palett
 - **Screen composition:** `src/app/App.tsx`.
 - **Source map:** [TREE.md](TREE.md). **Agent instructions:** [AGENTS.md](AGENTS.md).
 
-The supplied photograph is used consistently without claiming it depicts the portfolio owner. The old `public/portrait/reference.jpg` and `public/tmp/` design references remain preserved but are not profile portraits in the UI. The display-font trial uses self-hosted Alumni Sans for names, clocks and headings in BOTH Vietnamese and English, retaining Geist body/UI and Geist Mono metadata. Alumni supports the Vietnamese characters missing from the original Sofia Sans Extra Condensed files; its condensed proportions differ, so publication is a visual trial, not aesthetic approval. Original Sofia files remain preserved but unused. Fonts and their OFL licenses live in `public/fonts/`; see [font provenance](THIRD_PARTY_NOTICES.md#fonts). The app uses a Framer editor adapter; no Framer runtime or backend is required.
+The supplied photograph is used consistently without claiming it depicts the portfolio owner. The old `public/portrait/reference.jpg` and `public/tmp/` design references remain preserved but are not profile portraits in the UI. The accepted bilingual display family is self-hosted Alumni Sans, retaining Geist body/UI and Geist Mono metadata. Original Sofia files remain preserved but unused. Fonts and their OFL licenses live in `public/fonts/`; see [font provenance](THIRD_PARTY_NOTICES.md#fonts). The app uses a Framer editor adapter; no Framer runtime or backend is required.
 
 ```sh
 pnpm build
@@ -27,10 +27,10 @@ pnpm test
 
 Navigation selects distinct Home, Work, Projects, About and Contact views; only the selected
 view is mounted and scrolled. Home has real metrics/selected work/principles/employers;
-Work a filtered grid/index; Projects a dark Archive gallery; About introduction/achievements.
-Experience retains all jobs/honors via Home/About and VinFast. Project details use one adapted
+Work a filtered grid/index; Projects a light overview with one tile per project; About introduction/achievements.
+Experience retains safe public history/honors and the simple current-employer fact. Project details use one adapted
 Kokonut drawer inside the screen, with keyboard/focus containment. Contact's shared brief form
-prepares an email draft in your mail app, without server sending/storage. The final folded
+uses typed bilingual inline validation and prepares an email draft in your mail app, without server sending/storage. The final folded
 GitHub/LinkedIn screen remains separate; no separate URL routes are required.
 About uses Kokonut's Marker Text on the introduction. The light final folded screen adds
 Kokonut's Slide to Confirm: slide or press Enter/Space to return to the entry/Home state.
@@ -38,7 +38,17 @@ It does not initiate a call, recording or external action. See [component attrib
 
 Motion policy: animations intentionally run even with an OS/browser reduced-motion preference.
 There is no reduced-motion bypass, which is an accessibility limitation for motion-sensitive
-visitors. Idle Float stays OFF; keyboard, focus, labels and cleanup remain supported.
+visitors. Idle Float stays OFF; the shared cellular signal and technology-logo loop are the only
+authorized idle animation. Technology displays use official React Bits LogoLoop adapted for the
+phone's copied surfaces, with real public-project technology labels, shared pause/phase,
+hover/focus suspension and hidden/offscreen cleanup. There is no visible pause control or dot
+separator. Genuine official/credible local logos cover technologies missing from the installed
+icon set, with source/license notices; generic concepts are not given invented brand marks. Social brand icons come
+from scoped React Icons imports; the Contact block keeps four icons together and email on its own row.
+
+Privacy: current employment is disclosed only as the current-employer fact, not duties, internal
+work or associated metrics. Local source changes cannot erase earlier releases, caches or Git
+history; no history rewrite is performed. Review the current local candidate before publication.
 
 Tests require Node with TypeScript type stripping. Browser checks cover notifications, shared project expansion, automatic/stored language, age boundaries, resizing, motion consistency and idle stability. See [verification notes](docs/VERIFICATION.md) for coverage and limitations.
 

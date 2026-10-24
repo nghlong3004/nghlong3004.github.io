@@ -8,6 +8,11 @@ export interface PortfolioContactDraft {
   message: string
 }
 
+export interface PortfolioContactValidation {
+  touched: Partial<Record<keyof PortfolioContactDraft, boolean>>
+  submitted: boolean
+}
+
 export interface PortfolioViewProps {
   data: PortfolioData
   onNavigate: (destination: string) => void
@@ -17,6 +22,9 @@ export interface PortfolioViewProps {
   onWorkFilterChange: (category: string) => void
   contactDraft: PortfolioContactDraft
   onContactDraftChange: (field: keyof PortfolioContactDraft, value: string) => void
+  contactValidation: PortfolioContactValidation
+  onContactValidationChange: (next: PortfolioContactValidation) => void
+  onContactFocusField?: (element: HTMLElement) => void
 }
 
 export type ContentBlock =

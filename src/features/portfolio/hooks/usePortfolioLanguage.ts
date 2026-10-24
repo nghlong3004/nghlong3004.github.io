@@ -18,10 +18,10 @@ export function usePortfolioLanguage() {
 
   useEffect(() => {
     document.documentElement.lang = language
-    document.title = 'Nguyen Hoang Long — Backend & Automation'
+    document.title = 'Nguyen Hoang Long — Portfolio'
     document.querySelector('meta[name="description"]')?.setAttribute('content', language === 'vi'
-      ? 'Portfolio Nguyễn Hoàng Long: backend, automation, kinh nghiệm tại VinFast và các dự án thực tế.'
-      : 'Nguyen Hoang Long: backend systems, test automation, experience at VinFast and selected projects.')
+      ? 'Portfolio Nguyễn Hoàng Long: dự án, quá trình học lập trình và thành tích.'
+      : 'Nguyen Hoang Long: projects, learning to code and honors.')
   }, [language])
 
   return { language, setLanguage }

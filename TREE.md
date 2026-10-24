@@ -5,7 +5,8 @@
 ```text
 .
 ├── AGENTS.md / TREE.md / README.md
-├── THIRD_PARTY_NOTICES.md             # Official Kokonut component attribution and MIT license
+├── .gitattributes                    # Preserve exact upstream technology asset/license bytes
+├── THIRD_PARTY_NOTICES.md             # Kokonut, React Bits and icon provenance/licenses
 ├── .github/workflows/deploy.yml       # Build dist and publish main to GitHub Pages
 ├── docs/VERIFICATION.md               # Public verification summary; no session metadata
 ├── package.json / pnpm-lock.yaml
@@ -26,11 +27,17 @@
 │   ├── status-surface.test.mjs         # Nested full-width background boundaries for status tint
 │   ├── screen-motion-cleanup.test.mjs  # Counter/reveal timeout and rAF disposal/StrictMode
 │   ├── typography.test.mjs             # Bilingual display family and actual Vietnamese font coverage
+│   ├── privacy-copy.test.mjs          # Fact-only current employer and grounded bilingual copy
+│   ├── brand-icons.test.mjs           # Locked library icons and honest technology aliases
+│   ├── contact-validation.test.mjs    # Typed localized errors, touched/submission state
+│   ├── screen-interaction.test.mjs    # Continuous native interaction, focus/viewport lifecycle
+│   ├── technology-loop.test.mjs       # Shared loop timeline, pause/cleanup and public tech inputs
 │   └── *-view.test.mjs                 # Home/Work/Projects/About/Contact callbacks and content
 ├── public/
 │   ├── project/                       # Ảnh chính và gallery 4 dự án
 │   │   └── vinqa/header.webp           # Supplied VinQA logo, locally downloaded bytes
 │   ├── company/                       # Logo VinFast / Vinsmart Future
+│   ├── technology/                    # Genuine Playwright/Promptfoo SVGs + upstream licenses/NOTICE
 │   ├── portrait/reference.jpg         # Retained old screenshot reference; not rendered as avatar
 │   ├── portrait/entry-wallpaper.jpg   # Original supplied JPEG; shared by ALL profile portraits
 │   ├── fonts/                         # Alumni variable / Geist / Geist Mono + OFL; original Sofia retained unused
@@ -41,7 +48,7 @@
     ├── app/
     │   ├── App.tsx                    # NGHLONG3004, VI/EN, state dự án, slot, nav
     │   ├── config/
-    │   │   ├── device.ts              # Glow palette/default; Idle Float OFF
+    │   │   ├── device.ts              # Image-derived Glow default; Idle Float OFF
     │   │   └── scenePreference.ts     # One-time stale-scene migration; preserve finish
     │   └── styles/globals.css
     └── features/
@@ -58,17 +65,20 @@
         │   │   ├── impacts.ts         # 4 số liệu kết quả
         │   │   ├── links.ts           # Email, GitHub, LinkedIn, Instagram
         │   │   └── labels.ts          # Nhãn giao diện và thông báo vi/en
-        │   ├── hooks/                     # usePortfolioLanguage, useVietnamClock
-        │   ├── lib/                    # vietnamTime, language, navigation destinations, class helper
+        │   ├── hooks/                 # Language/clock plus provider-owned technology loop controller
+        │   ├── lib/                   # Time/language/navigation, brand/technology maps, Contact validation
         │   ├── styles/portfolio.css   # Fonts + shared pf-* tokens, cover/final/Experience
         │   ├── styles/{home,work,projects,about,contact,project-overlay}.css # Scoped compositions
+        │   ├── styles/{logo-loop,technology-loop}.css # Official line-loop styles + portfolio treatment
         │   └── components/
         │       ├── PortfolioScreen.tsx
         │       ├── views/              # Home, Work, Projects, About, Experience, Contact; active only
         │       ├── kokonut/            # Marker Text / Slide to Confirm / ProjectOverlay adaptations
+        │       ├── reactbits/          # Line-only LogoLoop adaptation + complete MIT/Commons Clause notice
+        │       ├── TechnologyLoop.tsx # Public technology wrapper + one provider for all screen copies
         │       ├── PortfolioCover.tsx # Clock/portrait; job + VinQA, compact status; Instagram/LinkedIn
         │       ├── PortfolioContact.tsx
-        │       ├── Icon.tsx                # SVG nét 1.5px, không dùng emoji cho nút
+        │       ├── Icon.tsx            # Utility SVGs + scoped react-icons brands; no emoji
         │       ├── Portrait.tsx       # Shared img renderer; layout comes from each consumer
         │       ├── ContentBlocks.tsx  # Paragraph/list, không inject HTML
         │       └── sections/
@@ -127,4 +137,4 @@ rg -n 'float|needsTime|renderFrame' src/features/foldfolio src/app/config
 pnpm test
 ```
 
-Hai nửa màn hình là hai bản render của cùng dữ liệu. State tương tác phải ở App, aria ID phải riêng từng bản, đích điều hướng dùng data-ff-section và được tìm trong screen ref thay vì document ID/hash.
+Hai nửa phần cứng vẫn có bản render hình ảnh cùng dữ liệu khi gập. Khi phẳng, slot screenInteractive là một DOM tương tác liên tục; bản sao phần cứng inert/aria-hidden. App giữ draft/validation/filter/project state và một TechnologyLoopProvider. Đích điều hướng dùng data-ff-section trong ref nội dung hiện hành, không dùng document ID/hash.

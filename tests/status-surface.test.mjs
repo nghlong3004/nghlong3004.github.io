@@ -126,6 +126,22 @@ test('padded compact Home recognizes dark metrics then light body at original ne
   } finally { f.restore() }
 })
 
+test('nested full-width padded page restores compact light body without accepting narrow columns', () => {
+  const f = useFixture(358)
+  try {
+    const page = f.slot.append(new Element({ width: 358, height: 2100, surface: true }))
+    page.paddingLeft = page.paddingRight = '26px'
+    page.append(new Element({ top: 800, width: 358, background: dark, surface: true }))
+    page.append(new Element({ top: 1048, width: 306, background: light, surface: true }))
+    const column = page.append(new Element({ top: 1500, width: 153 }))
+    column.append(new Element({ width: 153, background: dark, surface: true }))
+    const sections = f.scan()
+    assert.deepEqual(ink(sections, 837), ['#fff', '#fff'])
+    assert.deepEqual(ink(sections, 1085), ['#111', '#111'])
+    assert.deepEqual(ink(sections, 1537), ['#111', '#111'])
+  } finally { f.restore() }
+})
+
 test('90% content-width cutoff rejects narrow/hidden markers but preserves legacy children and offsetParent tops', () => {
   const f = useFixture(1000)
   try {
@@ -147,7 +163,7 @@ test('five actual views mark surface boundaries, not arbitrary cards or controls
   const expected = {
     Home: ['pf-page home-page', 'home-hero', '', 'home-impact', 'pf-section home-work', 'pf-section home-contact'],
     Work: ['pf-page pf-work', 'pf-metrics pf-work__metrics', 'pf-section pf-work__contact'],
-    Projects: ['pf-page pf-page--dark pf-projects'],
+    Projects: ['pf-page pf-projects'],
     About: ['pf-page about-view', 'about-view__hero', '', 'about-view__copy pf-page--dark', 'about-view__numbers', 'about-view__body', 'pf-section about-view__contact'],
     Contact: ['contact-view', 'pf-page pf-page--dark contact-view__hero', '', 'pf-page contact-view__brief'],
   }

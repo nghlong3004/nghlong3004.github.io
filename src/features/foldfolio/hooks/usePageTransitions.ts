@@ -158,7 +158,7 @@ export function usePageTransitions({
         adopted.current = undefined
         if (hidden) {
             fadeIn.current = 0
-            ;[R.cL.current, R.cR.current, R.cOpen.current].forEach((c) => {
+            ;[R.cL.current, R.cR.current, R.cOpen.current, R.cInteractive?.current].forEach((c) => {
                 if (c) c.style.opacity = "1"
             })
             if (snapshot && !snapshot.__section) releaseSnapshot(0, snapshot)
@@ -168,7 +168,7 @@ export function usePageTransitions({
             if (!snapshot.__section) adopted.current = snapshot
         } else if (seen && !run) {
             // before the first paint: content hidden, then the loop fades it in
-            ;[R.cL.current, R.cR.current, R.cOpen.current].forEach((c) => {
+            ;[R.cL.current, R.cR.current, R.cOpen.current, R.cInteractive?.current].forEach((c) => {
                 if (c) c.style.opacity = "0"
             })
             fadeIn.current = performance.now()
@@ -195,7 +195,7 @@ export function usePageTransitions({
         }
         const check = () => {
             if (cancelled || !snapshot.isConnected) return
-            const main = R.cOpen.current || R.cR.current || R.cL.current
+            const main = R.cInteractive?.current || R.cOpen.current || R.cR.current || R.cL.current
             let ready = true
             if (main) {
                 const top = main.getBoundingClientRect().top

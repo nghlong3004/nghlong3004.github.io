@@ -35,6 +35,37 @@ export function useSectionNavigation(
   const frame = useRef(0)
   const fallback = useRef(0)
   const cancel = useRef<() => void>(() => {})
+  const reveal = useRef<(element: HTMLElement) => boolean>(() => false)
+  reveal.current = (element) => {
+    const root = rootRef.current
+    const screen = refs.cInteractive?.current
+    if (!root || !screen || screen.inert || !element.isConnected || !screen.contains(element)) return false
+    const top = sectionTop(screen, element)
+    if (top === null) return false
+    const g = geometry.current
+    const inner = live.current.inner
+    let upper = 52
+    let lower = g.Hs - 84
+    const viewport = window.visualViewport
+    const screenTop = refs.overlay?.current?.getBoundingClientRect().top
+    if (viewport && screenTop !== undefined) {
+      // Only the focus reveal follows the visual viewport; hardware geometry stays unchanged.
+      upper = Math.max(upper, (viewport.offsetTop - screenTop) / (g.s || 1) + 20)
+      lower = Math.min(lower, (viewport.offsetTop + viewport.height - screenTop) / (g.s || 1) - 20)
+    }
+    const visibleTop = top - inner
+    let next = inner
+    if (visibleTop < upper) next = top - upper
+    else if (visibleTop + element.offsetHeight > lower)
+      next = lower > upper + element.offsetHeight
+        ? top + element.offsetHeight - lower : top - upper
+    next = Math.max(0, Math.min(next, g.innerMax))
+    if (Math.abs(next - inner) > 1) {
+      const rootTop = root.getBoundingClientRect().top + window.scrollY
+      jump.current(rootTop + (g.mode === 'fold' ? g.U1 : 0) + next * g.s)
+    }
+    return true
+  }
   useIsoLayoutEffect(() => {
     cancel.current = () => {
       window.cancelAnimationFrame(frame.current)
@@ -47,11 +78,37 @@ export function useSectionNavigation(
       cancel.current = () => {}
     }
   }, [])
+  useIsoLayoutEffect(() => {
+    const viewport = window.visualViewport
+    if (!viewport) return
+    let frame = 0
+    const update = () => {
+      window.cancelAnimationFrame(frame)
+      frame = window.requestAnimationFrame(() => {
+        if (document.activeElement instanceof HTMLElement)
+          reveal.current(document.activeElement)
+      })
+    }
+    viewport.addEventListener('resize', update)
+    viewport.addEventListener('scroll', update)
+    return () => {
+      viewport.removeEventListener('resize', update)
+      viewport.removeEventListener('scroll', update)
+      window.cancelAnimationFrame(frame)
+    }
+  }, [])
+  useIsoLayoutEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      if (document.activeElement instanceof HTMLElement)
+        reveal.current(document.activeElement)
+    })
+    return () => window.cancelAnimationFrame(frame)
+  }, [geometry.current.s, geometry.current.Hs, geometry.current.port, geometry.current.innerMax])
 
   useImperativeHandle(ref, () => ({
     scrollToSection(sectionKey) {
       const root = rootRef.current
-      const screen = refs.cOpen.current || refs.cR.current
+      const screen = refs.cInteractive?.current || refs.cOpen.current || refs.cR.current
       if (!root || !screen) return
       const target = findSection(screen, sectionKey)
       if (!target) return
@@ -83,8 +140,13 @@ export function useSectionNavigation(
         fallback.current = window.setTimeout(() => releaseSnapshot(360, outgoing), 500)
       }
     },
+    focusScreenElement(element) {
+      if (!reveal.current(element)) return false
+      element.focus({ preventScroll: true })
+      return document.activeElement === element
+    },
   }), [rootRef, refs, geometry, live, jump])
-  return cancel
+  return { cancel, reveal }
 }
 
 // A key denotes a new screen request, not an anchor on a concatenated page. Reconcile
@@ -169,7 +231,8 @@ export function useScreenNavigationRequest({ request, rootRef, measureRef, refs,
         U3: g.U3, innerMax: g.innerMax, Hs: g.Hs, port: g.port }
       return
     }
-    const screen = g.mode === 'fold' ? refs.cR.current : refs.cOpen.current
+    const screen = refs.cInteractive?.current ||
+      (g.mode === 'fold' ? refs.cR.current : refs.cOpen.current)
     if (!screen) return
     const target = findSection(screen, request.target || 'view-root') || findSection(screen, 'view-root')
     if (!target) return

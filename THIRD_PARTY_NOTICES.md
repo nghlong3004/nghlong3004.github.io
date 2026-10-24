@@ -1,5 +1,24 @@
 # Third-party notices
 
+## React Bits LogoLoop
+
+The line-loop treatment is adapted from David Haz's official React Bits TypeScript/CSS
+LogoLoop at commit `e12c22192ac7b4b452c5e2feb9b586d74765d696`:
+[source](https://github.com/DavidHDev/react-bits/tree/e12c22192ac7b4b452c5e2feb9b586d74765d696/src/ts-default/Animations/LogoLoop),
+[documentation](https://reactbits.dev/animations/logo-loop).
+The complete **MIT + Commons Clause** license is retained in
+`src/features/portfolio/components/reactbits/LICENSE.react-bits.txt`; this is not plain MIT.
+
+This portfolio uses a line-only adaptation: upstream list/node markup, hover scaling
+and CSS are retained; provider-scoped synchronization, layout-space measurement,
+keyboard-focus pause and lifecycle gating replace independent clocks. No visible pause
+control or bullet separator is rendered. Unused links,
+drag/advanced layouts and reduced-motion bypasses are omitted. Intro is a shared opacity
+intro rather than the full upstream staggered treatment. Current upstream does provide
+the advanced layouts/API; their omission here is deliberate. No React Bits package or
+additional animation framework is installed. Technology names come from public project
+data, with library logos or honest text fallback; logo use does not imply endorsement.
+
 ## Fonts
 
 - **Alumni Sans** by Robert Leuschke / the Alumni Sans Project Authors, variable
@@ -16,6 +35,44 @@
   no longer selected by application CSS because of incomplete Vietnamese coverage.
 
 The font licenses are separate from the component MIT license below.
+
+## Brand and technology icons
+
+Scoped imports from `react-icons`5.7.0 replace hand-maintained social-brand SVG paths.
+The React Icons wrapper is MIT-licensed; its license does not replace the licenses of
+the included icon artwork. [React Icons sources and licenses](https://github.com/react-icons/react-icons/blob/master/packages/react-icons/src/icons/index.ts).
+
+- Social logos and the Java logo use Font Awesome Free6 brands, ©Fonticons, Inc.,
+  under [CC BY4.0](https://creativecommons.org/licenses/by/4.0/).
+  [Font Awesome licensing](https://fontawesome.com/license/free).
+- Other selected technology logos use Simple Icons under CC0-1.0; per-logo brand
+  guidance and trademarks remain with their owners.
+  [Simple Icons disclaimer](https://github.com/simple-icons/simple-icons/blob/develop/DISCLAIMER.md).
+
+Only explicit named exports from `react-icons/fa6` and `react-icons/si` are imported.
+Technologies missing from those sets can use verified official local assets below.
+Generic protocol/algorithm labels remain text, never an unrelated product's logo.
+These marks identify existing public project technologies and links; they imply no
+endorsement, certification or ownership of the trademarks.
+
+### Official local technology assets
+
+- Playwright: unmodified SVG from Microsoft Playwright commit
+  `91a765d1681cb3eeb0d0fb89fefec3cf0d21bd9b`,
+  [official source](https://github.com/microsoft/playwright/blob/91a765d1681cb3eeb0d0fb89fefec3cf0d21bd9b/packages/web/src/assets/playwright-logo.svg).
+  The full Apache-2.0 license and repository NOTICE accompany it in `public/technology/`.
+  Copyright licensing does not establish trademark permission. This local candidate
+  does not claim separate logo/publication clearance; review the
+  [Microsoft brand guidelines](https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks)
+  before a future publication decision.
+- Promptfoo: unmodified panda SVG from Promptfoo commit
+  `c0b88a324175c60019cc80de1b2e32b4c849d4c3`, byte-identical to the
+  [official press download](https://www.promptfoo.dev/press/).
+  The full upstream MIT license is retained in `public/technology/`.
+
+`public/technology/NOTICE.txt` records pins, source URLs and attribution. OAuth2/JWT,
+WebSocket and A* Pathfinding remain text because they describe combined standards,
+a protocol and an algorithm, not a single product whose logo can honestly stand for them.
 
 Marker Text and Slide to Confirm are adapted from the official Kokonut UI registry:
 

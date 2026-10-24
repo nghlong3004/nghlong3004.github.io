@@ -5,7 +5,7 @@
 .pf-projects__intro { max-width: 62ch; }
 .pf-projects__gallery { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px var(--pf-grid-gap); margin-top: 34px; }
 .pf-projects__tile { min-width: 0; margin: 0; }
-.pf-projects__image { position: relative; display: block; width: 100%; aspect-ratio: 3 / 4; padding: 0; border: 0; border-radius: 12px; overflow: hidden; background: transparent; color: var(--pf-on-dark); cursor: pointer; }
+.pf-projects__image { position: relative; display: block; width: 100%; aspect-ratio: 3 / 4; padding: 0; border: 0; border-radius: 12px; overflow: hidden; background: var(--pf-surface); color: var(--pf-ink); cursor: pointer; }
 .pf-projects__image img { display: block; width: 100%; height: 100%; object-fit: contain; transition: transform .9s cubic-bezier(.16,1,.3,1); }
 .pf-projects__image:hover img { transform: scale(1.06); }
 .portfolio-screen .pf-projects__image:focus-visible { outline: 2px solid var(--pf-accent); outline-offset: 4px; }

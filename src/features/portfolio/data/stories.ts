@@ -2,44 +2,44 @@ import type { Language, PortfolioStory } from '../types'
 
 export const stories: Record<Language, PortfolioStory> = {
   "vi": {
-    "intro": "Xuất phát điểm từ những đêm chơi LOL thâu sáng, dần dà mình nhận ra điều mình thực sự mê là cảm giác ngồi trước chiếc máy tính: ngắm từng dòng pixel hiện lên khi gõ phím và đắm chìm vào giải quyết những bài toán khó. Từ tựa game multiplayer thời gian thực với bot A* đến nền tảng QC ứng dụng AI — và hiện tại là VinFast — hành trình ấy vẫn chỉ xoay quanh một điều: chọn bài toán khó, thiết kế cho đúng và tìm cách giải bằng được.",
+    "intro": "Mình đến với lập trình từ sở thích chơi game và sự tò mò về cách phần mềm được tạo ra. Qua các dự án như Boom Online và Olympic HUMG, mình có dịp thử ý tưởng, sửa lỗi và học thêm từ những lần làm chưa tốt. Mình muốn ghi lại quá trình ấy qua từng dự án cụ thể.",
     "principles": [
       {
-        "title": "Thiết kế để sẵn sàng mở rộng",
-        "body": "Các tác vụ nặng nên được đưa vào queue thay vì giữ request thread phải chờ. Mình đã đưa thời gian submit một scan từ ~30s xuống ~200ms bằng workflow async với Redis."
+        "title": "Hiểu trước khi làm",
+        "body": "Mình bắt đầu bằng việc làm rõ nhu cầu và giới hạn của dự án, rồi chọn cách triển khai vừa đủ."
       },
       {
-        "title": "Tự động hóa những việc lặp lại",
-        "body": "Manual testing không thể scale mãi. Mình xây dựng framework kiểm thử có thể tái sử dụng, để mỗi tool mới chỉ cần tập trung vào core logic — đồng thời có UI để sử dụng thay vì chỉ phụ thuộc vào CLI."
+        "title": "Làm từng bước nhỏ",
+        "body": "Mình chia việc thành những phần có thể kiểm tra riêng, thử một cách đơn giản trước rồi điều chỉnh khi cần."
       },
       {
-        "title": "Bảo mật phải có ngay từ thiết kế",
-        "body": "OAuth2/JWT, owner-scoped APIs, mã hóa secret keys, SSRF protection và rate limiting — đều được tính đến ngay từ đầu thay vì bổ sung sau khi hệ thống đã hoàn thiện."
+        "title": "Kiểm tra và ghi chép",
+        "body": "Mình cố gắng kiểm tra các thay đổi và ghi lại cách chạy dự án để bản thân và người đọc có thể xem lại."
       },
       {
-        "title": "Đo lường mọi thứ",
-        "body": "Nếu chưa theo dõi được thì chưa thể coi là hoàn thiện. Mình sử dụng Prometheus, Grafana và Langfuse tracing — đồng thời giảm chi phí LLM-as-a-Judge từ ~$1,200 xuống ~$500."
+        "title": "Học từ phản hồi",
+        "body": "Khi có góp ý hoặc gặp lỗi, mình xem lại cách làm và dùng những điều học được cho lần tiếp theo."
       }
     ]
   },
   "en": {
-    "intro": "Starting from all-night League of Legends sessions, I gradually realized what I truly fell in love with: sitting in front of a computer, watching pixels light up with every keystroke, and losing myself in solving hard problems. From a real-time multiplayer game with A* bots to an AI-assisted QC platform — and now at VinFast — the through-line never changed: pick the hard problem, design it properly, and solve it to the end.",
+    "intro": "I came to programming through games and a curiosity about how software is made. Projects like Boom Online and Olympic HUMG gave me room to try ideas, fix mistakes and learn from what did not work. I want to share that process through the projects themselves.",
     "principles": [
       {
-        "title": "Design for scale from day one",
-        "body": "Blocking work belongs in queues, not request threads. I turned a ~30s scan submission into a ~200ms async Redis workflow."
+        "title": "Understand before building",
+        "body": "I start by clarifying a project's needs and constraints, then choose an approach that fits."
       },
       {
-        "title": "Automate the repetitive",
-        "body": "Manual checks don't scale. I build reusable test frameworks where new tools only need core logic — with a UI, not just a CLI."
+        "title": "Take small steps",
+        "body": "I break work into parts I can check independently, try a simple approach first and adjust when needed."
       },
       {
-        "title": "Security is a feature",
-        "body": "OAuth2/JWT, owner-scoped APIs, encrypted keys, SSRF protection and rate limiting — designed in from the start, never bolted on."
+        "title": "Check and document",
+        "body": "I aim to check changes and document how to run each project so I and others can revisit it."
       },
       {
-        "title": "Measure everything",
-        "body": "If it isn't monitored, it isn't done. Prometheus, Grafana and Langfuse tracing — and LLM-judge costs cut from ~$1,200 to ~$500."
+        "title": "Learn from feedback",
+        "body": "Feedback and bugs are a reason to revisit my approach and carry what I learn into the next project."
       }
     ]
   }

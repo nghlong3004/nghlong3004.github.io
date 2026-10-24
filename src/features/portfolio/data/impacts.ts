@@ -8,11 +8,11 @@ export const impacts: Record<Language, PortfolioImpact[]> = {
     },
     {
       "value": "200ms",
-      "label": "Độ trễ khi submit scan, giảm từ ~30s"
+      "label": "VinQA · Thời gian gửi yêu cầu quét, từ ~30s"
     },
     {
-      "value": "58%",
-      "label": "Giảm chi phí LLM-as-a-Judge, từ ~$1,200 xuống ~$500"
+      "value": "3",
+      "label": "Lĩnh vực đạt giải: Giải tích, Đại số, Tin học"
     },
     {
       "value": "6",
@@ -26,11 +26,11 @@ export const impacts: Record<Language, PortfolioImpact[]> = {
     },
     {
       "value": "200ms",
-      "label": "Scan submission latency, down from ~30s"
+      "label": "VinQA · Scan submission time, down from ~30s"
     },
     {
-      "value": "58%",
-      "label": "Lower LLM-as-a-Judge cost, ~$1,200 to ~$500"
+      "value": "3",
+      "label": "Award subjects: Calculus, Algebra, Informatics"
     },
     {
       "value": "6",

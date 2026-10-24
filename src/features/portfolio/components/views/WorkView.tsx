@@ -16,8 +16,8 @@ export function WorkView({ data, onNavigate, onToggle, workFilter, onWorkFilterC
         <p className="pf-meta">{vi ? 'Dự án chọn lọc' : 'Selected projects'} · {years.join('—')}</p>
       </div>
       <p className="pf-work__intro">{vi
-        ? 'Từ nền tảng kiểm thử AI đến giáo dục và game thời gian thực. Mở một dự án để xem câu chuyện và cách triển khai.'
-        : 'From AI testing platforms to education and real-time games. Open a project for the story and the engineering behind it.'}</p>
+        ? 'Các dự án về kiểm thử phần mềm, giáo dục và game. Mở từng dự án để xem mô tả, vai trò và mã nguồn.'
+        : 'Projects in software testing, education and games. Open a project to see its description, my contribution and source code.'}</p>
       <div className="pf-work__filters" role="group" aria-label={vi ? 'Lọc dự án theo lĩnh vực' : 'Filter projects by category'}>
         <button type="button" className="pf-action" aria-pressed={!selectedCategory} onClick={() => onWorkFilterChange('all')}>{vi ? 'Tất cả' : 'All'}</button>
         {categories.map(project => <button type="button" className="pf-action" key={project.id}

@@ -44,7 +44,10 @@ test('App navigation selects notifications, clears selection only when leaving, 
   assert.ok(!/useEffect\([^]*?setExpandedProject/.test(source.split('const navigate')[0]))
   const nav = source.slice(source.indexOf('nav={<nav'))
   assert.deepEqual([...nav.matchAll(/\['(home|work|projects|about|experience|contact)',/g)].map(match => match[1]), ['home', 'work', 'projects', 'about', 'contact'])
-  for (const prop of ['workFilter={workFilter}', 'onWorkFilterChange={setWorkFilter}', 'contactDraft={contactDraft}', 'onContactDraftChange={changeContactDraft}']) assert.equal(source.split(prop).length - 1, 2)
+  for (const prop of ['workFilter={workFilter}', 'onWorkFilterChange={setWorkFilter}', 'contactDraft={contactDraft}', 'onContactDraftChange={changeContactDraft}', 'contactValidation={contactValidation}', 'onContactValidationChange={setContactValidation}']) assert.ok(source.includes(prop))
+  for (const prop of ['screenInteractive={screen}', 'screenInteractivePortrait={screenPortrait}', 'ref={deviceRef}', 'onContactFocusField={focusContactField}']) assert.ok(source.includes(prop))
+  assert.equal((source.match(/<TechnologyLoopProvider>/g) || []).length, 1)
+  assert.match(source, /deviceRef.current\?\.focusScreenElement\(element\)/)
 })
 
 test('shared CSS primitives keep reference geometry and only notification image backing transparent', () => {
@@ -63,9 +66,9 @@ test('actual VI/EN view markup contains only the active destination and its appr
     const { portfolio } = await server.ssrLoadModule('/src/features/portfolio/data/portfolio.ts')
     const { PortfolioCover } = await server.ssrLoadModule('/src/features/portfolio/components/PortfolioCover.tsx')
     const { PortfolioContact } = await server.ssrLoadModule('/src/features/portfolio/components/PortfolioContact.tsx')
-    const groups = { home: ['intro', 'impact', 'projects', 'capabilities', 'employment', 'contact'], about: ['intro', 'story', 'about-impact', 'about-capabilities', 'about-honors', 'about-employers', 'about-contact'], work: ['projects', 'impact'], projects: ['projects'], experience: ['experience', 'honors'], contact: ['contact'] }
+    const groups = { home: ['intro', 'impact', 'projects', 'capabilities', 'tools', 'employment', 'contact'], about: ['intro', 'story', 'about-impact', 'about-capabilities', 'about-honors', 'about-employers', 'about-contact'], work: ['projects', 'impact'], projects: ['projects'], experience: ['experience', 'honors'], contact: ['contact'] }
     for (const language of ['vi', 'en']) for (const [view, sections] of Object.entries(groups)) {
-      const html = renderToStaticMarkup(createElement(PortfolioScreen, { data: portfolio[language], view, launch: true, expandedProject: 'vinqa', onToggle() {}, onNavigate() {}, workFilter: 'all', onWorkFilterChange() {}, contactDraft: { name: '', email: '', location: '', message: '' }, onContactDraftChange() {} }))
+      const html = renderToStaticMarkup(createElement(PortfolioScreen, { data: portfolio[language], view, launch: true, expandedProject: 'vinqa', onToggle() {}, onNavigate() {}, workFilter: 'all', onWorkFilterChange() {}, contactDraft: { name: '', email: '', location: '', message: '' }, onContactDraftChange() {}, contactValidation: { touched: {}, submitted: false }, onContactValidationChange() {} }))
       assert.ok(html.includes(`data-portfolio-view="${view}"`))
       assert.ok(html.includes('data-ff-section="view-root"'))
       for (const key of Object.values(groups).flat()) assert.equal(html.includes(`data-ff-section="${key}"`), sections.includes(key), `${language}/${view}/${key}`)

@@ -11,7 +11,7 @@ function elements(node) {
   return [node, ...elements(node.props?.children)]
 }
 
-test('Projects archive uses actual bilingual imagery, unique targets and shared callbacks', async () => {
+test('Projects gallery shows one primary image per project with unique targets and shared callbacks', async () => {
   const server = await createServer({ configFile: false, optimizeDeps: { noDiscovery: true, include: [] }, server: { middlewareMode: true, hmr: false, ws: false }, appType: 'custom' })
   try {
     const { ProjectsView } = await server.ssrLoadModule('/src/features/portfolio/components/views/ProjectsView.tsx')
@@ -23,29 +23,29 @@ test('Projects archive uses actual bilingual imagery, unique targets and shared 
       const tree = ProjectsView(props)
       const all = elements(tree)
       const html = renderToStaticMarkup(createElement(ProjectsView, props))
-      assert.ok(html.includes('pf-page pf-page--dark pf-projects'))
+      assert.ok(html.includes('pf-page pf-projects'))
+      assert.ok(!html.includes('pf-page--dark'))
       assert.ok(html.includes(`<h1>${data.ui.archive}</h1>`))
       assert.ok(!html.includes('data-ff-section="impact"') && !html.includes('data-ff-section="experience"'))
       assert.ok(!html.includes('Red Wall') && !html.includes('Rotterdam'))
       const images = all.filter(node => node.type === 'img')
-      const expected = data.projects.flatMap(project => [...new Set([project.image.src, ...project.images])])
-      assert.equal(images.length, expected.length)
-      assert.deepEqual(images.map(node => node.props.src).sort(), expected.sort())
+      const expected = data.projects.map(project => project.image.src)
+      assert.equal(images.length, data.projects.length)
+      assert.deepEqual(images.map(node => node.props.src), expected)
       for (const image of images) {
         assert.ok(existsSync(new URL(`../public${image.props.src}`, import.meta.url)))
         assert.ok(image.props.alt.length > 0)
       }
       const buttons = all.filter(node => node.type === 'button' && node.props['aria-haspopup'] === 'dialog')
       assert.equal(buttons.length, images.length)
-      // The first row represents all four projects before their additional gallery images.
-      buttons.slice(0, data.projects.length).forEach((button, index) => {
+      buttons.forEach((button, index) => {
         button.props.onClick()
         assert.equal(toggles.at(-1), data.projects[index].id)
       })
       for (const project of data.projects) {
         assert.equal(all.filter(node => node.props?.['data-ff-section'] === `project-${project.id}`).length, 1)
-        const projectButtons = buttons.filter(node => node.props['aria-label'].includes(`: ${project.title} —`))
-        assert.ok(projectButtons.length)
+        const projectButtons = buttons.filter(node => node.props['aria-label'] === `${data.ui.open}: ${project.title}`)
+        assert.equal(projectButtons.length, 1)
         for (const button of projectButtons) {
           assert.equal(button.props['aria-expanded'], project.id === 'vinqa')
           button.props.onClick()

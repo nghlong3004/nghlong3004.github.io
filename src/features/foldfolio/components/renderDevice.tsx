@@ -9,7 +9,7 @@ import { abs, fill } from "../styles/motion"
 export function renderDevice({
     G, b, F, status, port, clock, R, halfW, halfH, Ws, mode, measureRef, screenNode, land, inner,
     screenColor, coverNode, rootRef, live, geo, callNode, cRight, cLeaf, hingeBleed, cAll, Ro, Hs,
-    navNode, screenOverlayNode, signalLevel,
+    navNode, screenOverlayNode, screenInteractiveNode, onInteractiveFocus, signalLevel,
 }: {
     G: Geometry
     b: number
@@ -40,6 +40,8 @@ export function renderDevice({
     Hs: number
     navNode: React.ReactElement | null
     screenOverlayNode: React.ReactElement | null
+    screenInteractiveNode?: React.ReactElement | null
+    onInteractiveFocus?: React.FocusEventHandler<HTMLDivElement>
     signalLevel: number
 }) {
     // ---------------------------------------------------------------- styles
@@ -56,10 +58,12 @@ export function renderDevice({
               : "#fff"
     const autoTint = status.tone !== "dark" && status.tone !== "light"
 
-    const statusBar = (part: "all" | "left" | "right") =>
+    const statusBar = (part: "all" | "left" | "right", interactive = false) =>
         status.show ? (
             <div
+                ref={interactive ? R.statusInteractive : undefined}
                 data-ffsb={autoTint ? part : undefined}
+                aria-hidden={screenInteractiveNode ? interactive ? foldMode : true : undefined}
                 style={{
                     ...abs,
                     left: 0,
@@ -80,6 +84,7 @@ export function renderDevice({
                             : "none",
                     pointerEvents: "none",
                     zIndex: 6,
+                    visibility: interactive && foldMode ? "hidden" : undefined,
                 }}
             >
                 {part !== "right" && <span>{clock}</span>}
@@ -236,7 +241,8 @@ export function renderDevice({
         return (
             <div
                 ref={ref}
-                aria-hidden={which === "L" ? true : undefined}
+                inert={!!screenInteractiveNode}
+                aria-hidden={screenInteractiveNode || which === "L" ? true : undefined}
                 style={{
                     ...abs,
                     left: offX,
@@ -246,7 +252,7 @@ export function renderDevice({
             >
                 <div
                     ref={
-                        which === (mode === "fold" ? "R" : "open")
+                        !screenInteractiveNode && which === (mode === "fold" ? "R" : "open")
                             ? measureRef
                             : undefined
                     }
@@ -493,6 +499,7 @@ export function renderDevice({
     const device = (
         <div
             ref={R.dev}
+            tabIndex={screenInteractiveNode ? -1 : undefined}
             style={{
                 ...abs,
                 left: -G.W / 2,
@@ -632,13 +639,29 @@ export function renderDevice({
                     width: Ws,
                     height: Hs,
                     borderRadius: Ri,
-                    overflow: "hidden",
+                    overflow: screenInteractiveNode ? "clip" : "hidden",
                     pointerEvents: "none",
                     opacity: foldMode ? 0 : 1,
                     zIndex: 10,
                 }}
             >
-                {!foldMode && statusBar("all")}
+                {screenInteractiveNode && (
+                    <div
+                        ref={R.cInteractive}
+                        data-ff-screen-interactive=""
+                        data-ff-fold-inert={foldMode ? "" : undefined}
+                        inert={foldMode}
+                        aria-hidden={foldMode ? "true" : undefined}
+                        onFocusCapture={onInteractiveFocus}
+                        style={{ ...abs, left: 0, top: 0, width: Ws, zIndex: 1,
+                            visibility: foldMode ? "hidden" : "visible", pointerEvents: "auto" }}
+                    >
+                        <div ref={measureRef} style={{ width: Ws }}>
+                            <Slot node={screenInteractiveNode} width={Ws} />
+                        </div>
+                    </div>
+                )}
+                {screenInteractiveNode ? statusBar("all", true) : !foldMode && statusBar("all")}
                 {navNode && (
                     <div
                         style={{
@@ -649,6 +672,7 @@ export function renderDevice({
                             display: "flex",
                             justifyContent: "center",
                             pointerEvents: "auto",
+                            zIndex: 7,
                         }}
                     >
                         <Slot node={navNode} />

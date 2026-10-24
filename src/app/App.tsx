@@ -1,11 +1,13 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import '../features/portfolio/styles/portfolio.css'
 import FoldfolioDevice from '../features/foldfolio/FoldfolioDevice'
-import type { PortfolioContactDraft, PortfolioView } from '../features/portfolio/types'
+import type { FoldfolioHandle } from '../features/foldfolio/types'
+import type { PortfolioContactDraft, PortfolioContactValidation, PortfolioView } from '../features/portfolio/types'
 import { PortfolioScreen } from '../features/portfolio/components/PortfolioScreen'
 import { PortfolioCover } from '../features/portfolio/components/PortfolioCover'
 import { PortfolioContact } from '../features/portfolio/components/PortfolioContact'
 import { ProjectOverlay } from '../features/portfolio/components/kokonut/ProjectOverlay'
+import { TechnologyLoopProvider } from '../features/portfolio/components/TechnologyLoop'
 import { portfolio } from '../features/portfolio/data/portfolio'
 import { usePortfolioLanguage } from '../features/portfolio/hooks/usePortfolioLanguage'
 import { useVietnamClock } from '../features/portfolio/hooks/useVietnamClock'
@@ -22,9 +24,11 @@ export default function App() {
   const [expandedProject, setExpandedProject] = useState<string | null>(null)
   const [workFilter, setWorkFilter] = useState('all')
   const [contactDraft, setContactDraft] = useState<PortfolioContactDraft>({ name: '', email: '', location: '', message: '' })
+  const [contactValidation, setContactValidation] = useState<PortfolioContactValidation>({ touched: {}, submitted: false })
   const changeContactDraft = (field: keyof PortfolioContactDraft, value: string) => setContactDraft(current => ({ ...current, [field]: value }))
   const [navigation, setNavigation] = useState<{ view: PortfolioView; target?: string; revision: number; open: boolean }>({ view: 'home', revision: 0, open: false })
   const entryFrame = useRef(0)
+  const deviceRef = useRef<FoldfolioHandle>(null)
   useEffect(() => () => window.cancelAnimationFrame(entryFrame.current), [])
   const data = portfolio[language]
   const [nameLeft, nameRight] = data.profile.displayName.split(' ')
@@ -53,9 +57,12 @@ export default function App() {
     entryFrame.current = window.requestAnimationFrame(focusEntry)
   }
   const toggleProject = (id: string) => setExpandedProject((current) => current === id ? null : id)
+  const focusContactField = (element: HTMLElement) => { deviceRef.current?.focusScreenElement(element) }
+  const screen = <PortfolioScreen key={navigation.revision} view={navigation.view} launch={navigation.open} data={data} expandedProject={expandedProject} onToggle={toggleProject} onNavigate={navigate} workFilter={workFilter} onWorkFilterChange={setWorkFilter} contactDraft={contactDraft} onContactDraftChange={changeContactDraft} contactValidation={contactValidation} onContactValidationChange={setContactValidation} onContactFocusField={focusContactField} />
+  const screenPortrait = <PortfolioScreen key={navigation.revision} view={navigation.view} launch={navigation.open} data={data} compact expandedProject={expandedProject} onToggle={toggleProject} onNavigate={navigate} workFilter={workFilter} onWorkFilterChange={setWorkFilter} contactDraft={contactDraft} onContactDraftChange={changeContactDraft} contactValidation={contactValidation} onContactValidationChange={setContactValidation} onContactFocusField={focusContactField} />
 
   return (
-    <>
+    <TechnologyLoopProvider>
       <button type="button" className="portfolio-brand" aria-label={`NGHLONG3004 — ${data.profile.name}`} onClick={returnToEntry}>NGHLONG3004</button>
       <div role="status" aria-live="polite" aria-atomic="true" className="portfolio-view-announcement">{navigation.open && `${data.ui.current}: ${{ home: data.ui.home, work: data.ui.work, projects: data.ui.archive, about: data.ui.intro, experience: data.ui.experience, contact: data.ui.contact }[navigation.view]}`}</div>
       <div className="portfolio-language" role="group" aria-label={data.ui.language} hidden>
@@ -63,6 +70,7 @@ export default function App() {
         <button type="button" lang="en" aria-label="English" aria-pressed={language === 'en'} onClick={() => setLanguage('en')}>EN</button>
       </div>
       <FoldfolioDevice
+        ref={deviceRef}
         {...deviceConfig}
         screenNavigation={navigation.open ? { key: `${navigation.view}:${navigation.revision}`, target: navigation.target || 'view-root' } : undefined}
         status={{ ...deviceConfig.status, time, batteryText: String(age), batteryLabel: language === 'vi'
@@ -70,8 +78,10 @@ export default function App() {
           : `Age ${age} — not device battery level` }}
         nameLeft={<span className="portfolio-scene-name">{nameLeft}</span>}
         nameRight={<span className="portfolio-scene-name">{nameRight}</span>}
-        screen={<PortfolioScreen key={navigation.revision} view={navigation.view} launch={navigation.open} data={data} expandedProject={expandedProject} onToggle={toggleProject} onNavigate={navigate} workFilter={workFilter} onWorkFilterChange={setWorkFilter} contactDraft={contactDraft} onContactDraftChange={changeContactDraft} />}
-        screenPortrait={<PortfolioScreen key={navigation.revision} view={navigation.view} launch={navigation.open} data={data} compact expandedProject={expandedProject} onToggle={toggleProject} onNavigate={navigate} workFilter={workFilter} onWorkFilterChange={setWorkFilter} contactDraft={contactDraft} onContactDraftChange={changeContactDraft} />}
+        screen={screen}
+        screenPortrait={screenPortrait}
+        screenInteractive={screen}
+        screenInteractivePortrait={screenPortrait}
         screenOverlay={<ProjectOverlay data={data} projectId={expandedProject} onClose={() => setExpandedProject(null)} />}
         cover={<PortfolioCover time={time} data={data} onNavigate={navigate} />}
         coverPortrait={<PortfolioCover time={time} data={data} compact onNavigate={navigate} />}
@@ -88,6 +98,6 @@ export default function App() {
         </nav>}
         sceneImages={data.projects.map((project) => project.image)}
       />
-    </>
+    </TechnologyLoopProvider>
   )
 }

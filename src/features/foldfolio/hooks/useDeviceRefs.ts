@@ -19,6 +19,7 @@ export function useDeviceRefs() {
     const cL = useRef<HTMLDivElement>(null)
     const cR = useRef<HTMLDivElement>(null)
     const cOpen = useRef<HTMLDivElement>(null)
+    const cInteractive = useRef<HTMLDivElement>(null)
     const shF = useRef<HTMLDivElement>(null)
     const shB = useRef<HTMLDivElement>(null)
     const shR = useRef<HTMLDivElement>(null)
@@ -27,6 +28,7 @@ export function useDeviceRefs() {
     const call = useRef<HTMLDivElement>(null)
     const overlay = useRef<HTMLDivElement>(null)
     const screenOverlay = useRef<HTMLDivElement>(null)
+    const statusInteractive = useRef<HTMLDivElement>(null)
     const creaseL = useRef<HTMLDivElement>(null)
     const creaseR = useRef<HTMLDivElement>(null)
     const nmL = useRef<HTMLDivElement>(null)
@@ -56,6 +58,7 @@ export function useDeviceRefs() {
         cL,
         cR,
         cOpen,
+        cInteractive,
         shF,
         shB,
         shR,
@@ -64,6 +67,7 @@ export function useDeviceRefs() {
         call,
         overlay,
         screenOverlay,
+        statusInteractive,
         creaseL,
         creaseR,
         nmL,

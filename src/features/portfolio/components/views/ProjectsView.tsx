@@ -4,26 +4,23 @@ import '../../styles/projects.css'
 
 export function ProjectsView({ data, expandedProject, onToggle, onNavigate }: PortfolioViewProps) {
   const vi = data.ui.language === 'Ngôn ngữ'
-  const tiles = data.projects.flatMap(project =>
-    [...new Set([project.image.src, ...project.images])].map((src, imageIndex) => ({ project, src, imageIndex })),
-  ).sort((a, b) => a.imageIndex - b.imageIndex)
 
-  return <div className="pf-page pf-page--dark pf-projects" data-ff-surface>
+  return <div className="pf-page pf-projects" data-ff-surface>
     <header className="pf-header pf-projects__header">
       <div className="pf-projects__heading">
         <div data-framer-component-type="RichTextContainer"><h1>{data.ui.archive}</h1></div>
         <p className="pf-meta">{vi ? 'Giao diện · Kiểm thử AI · Trò chơi' : 'Interfaces · AI testing · Games'}</p>
       </div>
       <p className="pf-projects__intro">{vi
-        ? 'Hình ảnh từ các dự án kiểm thử AI, giáo dục và trò chơi. Mở từng hình để xem dự án và vai trò của tôi.'
-        : 'A visual archive of AI testing, education and game projects. Open an image to explore the project and my role.'}</p>
+        ? 'Một số dự án về kiểm thử phần mềm, giáo dục, trò chơi và công cụ cộng đồng. Mở từng dự án để xem mô tả, phần đóng góp và liên kết.'
+        : 'A selection of projects in software testing, education, games and community tools. Open a project to read its overview, contribution and links.'}</p>
     </header>
 
     <section className="pf-projects__gallery" data-ff-section="projects" aria-label={data.ui.gallery}>
-      {tiles.map(({ project, src, imageIndex }) => <figure
+      {data.projects.map(project => <figure
         className="pf-projects__tile"
-        key={`${project.id}-${src}`}
-        data-ff-section={imageIndex === 0 ? `project-${project.id}` : undefined}
+        key={project.id}
+        data-ff-section={`project-${project.id}`}
       >
         <button
           className="pf-projects__image"
@@ -31,12 +28,12 @@ export function ProjectsView({ data, expandedProject, onToggle, onNavigate }: Po
           onClick={() => onToggle(project.id)}
           aria-haspopup="dialog"
           aria-expanded={expandedProject === project.id}
-          aria-label={`${data.ui.open}: ${project.title} — ${data.ui.gallery} ${imageIndex + 1}`}
+          aria-label={`${data.ui.open}: ${project.title}`}
         >
           <div data-framer-background-image-wrapper="true" style={{ height: '100%' }}><img
-            src={src}
-            alt={imageIndex === 0 ? project.image.alt : `${project.title} — ${data.ui.gallery} ${imageIndex}`}
-            loading={imageIndex === 0 ? 'eager' : 'lazy'}
+            src={project.image.src}
+            alt={project.image.alt}
+            loading="lazy"
             decoding="async"
           /></div>
           <span className="pf-projects__open" aria-hidden="true"><Icon /></span>

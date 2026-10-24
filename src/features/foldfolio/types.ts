@@ -7,6 +7,7 @@ export type Orientation = "auto" | "landscape" | "portrait"
 
 export interface FoldfolioHandle {
     scrollToSection(sectionKey: string): void
+    focusScreenElement(element: HTMLElement): boolean
 }
 
 export interface FoldfolioProps {
@@ -14,6 +15,8 @@ export interface FoldfolioProps {
     mode: Mode
     screen?: React.ReactNode
     screenPortrait?: React.ReactNode
+    screenInteractive?: React.ReactNode
+    screenInteractivePortrait?: React.ReactNode
     screenOverlay?: React.ReactNode
     screenOverlayPortrait?: React.ReactNode
     screenNavigation?: { key: string; target?: string }

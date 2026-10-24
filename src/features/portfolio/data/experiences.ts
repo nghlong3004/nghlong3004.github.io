@@ -5,23 +5,12 @@ export const experiences: Record<Language, PortfolioExperience[]> = {
     {
       "company": "VinFast",
       "role": "Đang làm việc tại VinFast",
-      "period": "07/2026 – Nay",
+      "period": "Hiện tại",
       "current": true,
       "logo": "/company/VinFast.png",
       "logoDark": "/company/VinFast-dark.png",
-      "tech": [
-        "Java",
-        "Python",
-        "Playwright",
-        "CI/CD",
-        "Langfuse"
-      ],
-      "highlights": [
-        "Xây dựng automation cho research chatbot, knowledge base, ASR/TTS và API E2E scripts.",
-        "Xây dựng và duy trì CI/CD pipelines với GitLab.",
-        "Giảm chi phí LLM-as-a-Judge từ ~$1,200 xuống ~$500.",
-        "Thiết kế framework kiểm thử có thể tái sử dụng — tool mới chỉ cần tập trung vào core logic, đồng thời có UI thay vì phải thao tác hoàn toàn qua CLI."
-      ]
+      "tech": [],
+      "highlights": []
     },
     {
       "company": "Vinsmart Future",
@@ -50,23 +39,12 @@ export const experiences: Record<Language, PortfolioExperience[]> = {
     {
       "company": "VinFast",
       "role": "Currently working at VinFast",
-      "period": "07/2026 – Present",
+      "period": "Present",
       "current": true,
       "logo": "/company/VinFast.png",
       "logoDark": "/company/VinFast-dark.png",
-      "tech": [
-        "Java",
-        "Python",
-        "Playwright",
-        "CI/CD",
-        "Langfuse"
-      ],
-      "highlights": [
-        "Built automation for research chatbots, knowledge base, ASR/TTS, and API E2E scripts.",
-        "Built and maintain CI/CD pipelines with GitLab.",
-        "Cut LLM-as-a-Judge costs from ~$1,200 to ~$500.",
-        "Designed a reusable testing framework — new tools only need core logic, with a UI instead of CLI commands."
-      ]
+      "tech": [],
+      "highlights": []
     },
     {
       "company": "Vinsmart Future",

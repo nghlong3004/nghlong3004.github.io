@@ -8,13 +8,12 @@ export function ExperienceSection({ data }: { data: PortfolioData }) {
           <div>
             {job.logo && <img className="portfolio-company" src={job.logo} alt={job.company} width="140" height="48" />}
             <h3>{job.company}</h3>
-            <p className="portfolio-meta">{job.period}</p>
-            {job.current && <p className="portfolio-current">{data.ui.current}</p>}
+            {!job.current && <p className="portfolio-meta">{job.period}</p>}
           </div>
           <div>
             <h4>{job.role}</h4>
-            <ul>{job.highlights.map((highlight) => <li key={highlight}>{highlight}</li>)}</ul>
-            <p className="portfolio-tech">{job.tech.join(' / ')}</p>
+            {job.highlights.length > 0 && <ul>{job.highlights.map((highlight) => <li key={highlight}>{highlight}</li>)}</ul>}
+            {job.tech.length > 0 && <p className="portfolio-tech">{job.tech.join(' / ')}</p>}
           </div>
         </article>
       ))}

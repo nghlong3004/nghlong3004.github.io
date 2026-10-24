@@ -1,5 +1,80 @@
 # Portfolio verification
 
+## Local content and interaction follow-up — 2026-10-25
+
+This follow-up is local-only, based on published `c3e993d`. The Alumni visual result
+was accepted before this work; the display/body/metadata font roles and original portrait
+remain unchanged. No new commit, push or deployment is authorized.
+
+- Projects uses the shared light theme and one overview tile per real project. The
+  earlier repetition came from rendering every gallery image as another overview tile,
+  not just from the necessary synchronized hardware copies. Extra images stay in the drawer.
+- Current employment is fact-only. Connected bilingual copy, metrics and metadata were
+  revised without changing independent public projects, past experience or honors.
+  A private in-memory comparison finds zero removed payload matches in the built client
+  assets and current public source/docs; positive-whitelist data tests are separate.
+  This does not erase the earlier published release, caches or Git history.
+- One continuous native-interaction DOM is active when flat; the hardware copies remain
+  inert folding visuals. Shared values alone could not mirror native caret/selection,
+  and focus previously scrolled a clipping ancestor by29px. Clip-only ancestry and
+  engine-backed focus reveal fix that path. Geometry/scroll reconciliation now precedes
+  redraw so viewport shrink does not briefly fold the screen and evict focus.
+- Contact uses typed VI/EN inline validation, shared touched/submitted state, linked
+  field errors and safe first-invalid focus. Native popup UI is suppressed with
+  `noValidate`, while required/email semantics remain. The form prepares an encoded
+  mailto draft only; there is no sending backend or delivery claim.
+- Contact's four library-brand icons share one row; email is centered separately.
+  A scoped specificity correction keeps GitHub/Facebook visible over their light circles.
+  Original entry/final social placements are retained.
+- React Bits LogoLoop is adapted from the pinned official TypeScript/CSS source under
+  MIT + Commons Clause, not plain MIT. One provider synchronizes hardware/canonical
+  copies using layout-space measurements and owns hover/focus, hidden/offscreen cleanup.
+  The latest requested revision removes visible pause controls and bullet separators,
+  and adds genuine sourced Playwright/promptfoo logos where library exports are missing.
+  Both naturally cycle fully inside the device in desktop/mobile VI/EN captures.
+  Generic combined-standard/protocol/algorithm names remain text, not invented brands.
+  See THIRD_PARTY_NOTICES.md for pins, licenses and the unresolved Playwright logo
+  publication/trademark-clearance caveat. Exact upstream bytes are preserved by scoped
+  Git attributes, including CRLF where supplied.
+
+Current evidence: production build,110 tests and lint pass (0 errors,41 warnings;
+the existing main-bundle warning remains). Four Chromium1440×900/390×844 VI/EN integrated
+cases pass gallery/light theme, dialog containment/focus restoration, typing/selection,
+inline validation, draft retention and mailto preparation. Viewport shrink preserves the
+same textarea object and selection3/15/backward with zero intermediate focus events.
+Two additional mobile cases select text with a real pointer drag across the physical
+horizontal seam; clipping ancestors remain at zero scroll offsets. Four social-color
+cases confirm the visible marks. Four revised-loop cases verify three-copy phase,
+hover/focus pause, hidden-tab stop/resume, no detached writes after view exit, actual
+local-image loading and continued motion under reduced-motion emulation, without a
+visible pause control. Four behavior cases cover employer/project notifications,
+single-dialog focus restoration, Marker Text parity, Work filters, shared signal/age,
+real fold-away inert/focus handling, final slider return and warm canonical visibility.
+Ten reload traces retain eight stable warm visits and two animated cold visits, with
+no app scroll reset; native browser scroll restoration remains variable.
+
+Screenshot review also found a compact Home tint issue: nested page padding made the
+scanner reject the light body boundary. The bounded scan-time correction retains the
+narrow-column cutoff, with six surface tests passing. Four final natural-cycle logo
+captures confirm dark status text over the light body and no idle device movement.
+Earlier resize-focus, social-color and inherited-bullet failures are preserved as
+failures followed by specific repairs; early fixture/CLI assumptions are not UI passes.
+
+Compared with the published base, the complete follow-up adds38,050 raw JS/CSS bytes,
+14,654 gzip bytes and11,701 Brotli bytes. The two local logos add13,396 raw bytes
+(5,257 gzip) separately. Isolated social-icon integration added349 gzip bytes; it is
+not the full loop cost. Selected/unused SVG-path probes supplement scoped named imports,
+not an exhaustive module-level tree-shaking or frame-rate certification.
+
+These are emulated Chromium checks, not physical IME/mobile-keyboard, mobile mail-client,
+non-Chromium or assistive-technology certification. Initial engine fixtures include
+open mode; the full scene/finish/device cross-product is not claimed. No current
+implementation or private evidence is published by this local task, and prior live/history
+exposure remains unchanged until a separately authorized publication decision.
+
+The following sections describe earlier releases and their original verification scope;
+current light Projects/privacy/interaction requirements supersede those earlier choices.
+
 ## Bilingual Alumni display trial — 2026-10-25
 
 Alumni Sans is used for the display role in BOTH Vietnamese and English, while Geist

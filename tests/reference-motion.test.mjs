@@ -11,7 +11,7 @@ const tag = node => node.openingElement.name.name
 const children = node => node.children.filter(child => child.type === 'JSXElement')
 
 test('all five views expose deterministic image and heading markers to the existing scanner', () => {
-  const expected = { Home: [2, 6], Work: [1, 3], Projects: [1, 2], About: [1, 6], Contact: [1, 2] }
+  const expected = { Home: [2, 7], Work: [1, 3], Projects: [1, 2], About: [1, 6], Contact: [1, 2] }
   for (const view of views) {
     let images = 0, headings = 0
     traverse(trees[view], { JSXElement(path) {

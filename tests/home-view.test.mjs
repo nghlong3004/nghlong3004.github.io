@@ -13,7 +13,7 @@ test('Home renders real bilingual content in reference order without inline proj
     for (const language of ['vi', 'en']) {
       const data = portfolio[language]
       const html = renderToStaticMarkup(createElement(HomeView, { data, expandedProject: 'vinqa', onNavigate() {}, onToggle() {} }))
-      const sections = ['intro', 'impact', 'projects', 'capabilities', 'employment', 'contact'].map(key => html.indexOf(`data-ff-section="${key}"`))
+      const sections = ['intro', 'impact', 'projects', 'capabilities', 'tools', 'employment', 'contact'].map(key => html.indexOf(`data-ff-section="${key}"`))
       assert.ok(sections.every((position, i) => position >= 0 && (i === 0 || position > sections[i - 1])))
       assert.ok(html.includes(data.profile.portrait.src) && html.includes(data.profile.portrait.alt))
       for (const item of data.impact) assert.ok(html.includes(item.value))

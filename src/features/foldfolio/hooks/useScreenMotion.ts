@@ -64,7 +64,7 @@ export function useScreenMotion({
     scan.current = () => {
         if (!active.current || typeof document === "undefined" || isCanvas) return
         const generation = epoch.current
-        const roots = [R.cL.current, R.cR.current, R.cOpen.current].filter(
+        const roots = [R.cL.current, R.cR.current, R.cOpen.current, R.cInteractive?.current].filter(
             Boolean
         ) as HTMLElement[]
         const list: MItem[] = []
@@ -78,7 +78,7 @@ export function useScreenMotion({
             return y
         }
         // images in the Screen feed the Glow / Orbit backgrounds automatically
-        const main = R.cOpen.current || R.cR.current || R.cL.current
+        const main = R.cInteractive?.current || R.cOpen.current || R.cR.current || R.cL.current
         if (main) {
             const found: { src: string; top: number }[] = []
             const have = new Set<string>()
@@ -196,8 +196,16 @@ export function useScreenMotion({
                     const el = c as HTMLElement
                     if (!el.offsetHeight) return
                     // Keep split-hero edge sampling; padded full-width sections still qualify.
+                    let contentWidth = surfaceWidth
+                    const parent = el.parentElement
+                    if (parent && parent !== slotRoot && parent.clientWidth >= surfaceWidth * 0.9) {
+                        const style = window.getComputedStyle(parent)
+                        contentWidth = surfaceWidth -
+                            (parseFloat(style.paddingLeft) || 0) -
+                            (parseFloat(style.paddingRight) || 0)
+                    }
                     if (el.hasAttribute("data-ff-surface") &&
-                        el.offsetWidth < surfaceWidth * 0.9) return
+                        el.offsetWidth < contentWidth * 0.9) return
                     const eL = edge(el, "left"),
                         eR = edge(el, "right")
                     secs.push({
@@ -217,7 +225,7 @@ export function useScreenMotion({
         // big type never spills out of the screen: a heading wider than its box wraps
         // (several words) or scales down (one long word), recomputed on every layout
         const fitText = () => {
-            const ref = R.cOpen.current || R.cR.current || R.cL.current
+            const ref = R.cInteractive?.current || R.cOpen.current || R.cR.current || R.cL.current
             if (!ref) return
             const RTC = '[data-framer-component-type="RichTextContainer"]'
             const lists = roots.map(

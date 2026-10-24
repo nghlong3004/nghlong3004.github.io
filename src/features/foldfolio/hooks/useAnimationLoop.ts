@@ -96,7 +96,7 @@ export function useAnimationLoop({
             if (fadeIn.current) {
                 const p = clamp((t - fadeIn.current) / 420, 0, 1)
                 const o = String(+easeOut(p).toFixed(3))
-                ;[R.cL.current, R.cR.current, R.cOpen.current].forEach((c) => {
+                ;[R.cL.current, R.cR.current, R.cOpen.current, R.cInteractive?.current].forEach((c) => {
                     if (c) c.style.opacity = o
                 })
                 if (p >= 1) fadeIn.current = 0
@@ -117,7 +117,7 @@ export function useAnimationLoop({
                 stepReveals(performance.now() + 1e9)
                 if (fadeIn.current) {
                     fadeIn.current = 0
-                    ;[R.cL.current, R.cR.current, R.cOpen.current].forEach(
+                    ;[R.cL.current, R.cR.current, R.cOpen.current, R.cInteractive?.current].forEach(
                         (c) => {
                             if (c) c.style.opacity = "1"
                         }

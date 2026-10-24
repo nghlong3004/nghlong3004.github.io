@@ -1,12 +1,13 @@
 import type { PortfolioViewProps } from '../../types'
 import { Portrait } from '../Portrait'
 import { Icon } from '../Icon'
+import { TechnologyLoop } from '../TechnologyLoop'
 import { Mark, MarkerText } from '../kokonut/MarkerText'
 import '../../styles/about.css'
 
 export function AboutView({ data, onNavigate }: PortfolioViewProps) {
   const vi = data.ui.language === 'Ngôn ngữ'
-  const technologies = [...new Set(data.experience.flatMap(job => job.tech))]
+  const technologies = [...new Set(data.projects.flatMap(project => project.techStack))]
 
   return <article className="pf-page about-view" data-ff-surface>
     <header className="about-view__hero" data-ff-section="intro" data-ff-surface>
@@ -15,7 +16,7 @@ export function AboutView({ data, onNavigate }: PortfolioViewProps) {
       </div></div>
       <div className="about-view__copy pf-page--dark" data-ff-surface>
         <div className="pf-header">
-          <div data-framer-component-type="RichTextContainer"><h1>{vi ? 'CHỌN BÀI TOÁN' : 'SOLVE THE'}<span>{vi ? 'KHÓ.' : 'HARD PARTS.'}</span></h1></div>
+          <div data-framer-component-type="RichTextContainer"><h1>{vi ? 'TỪ SỞ THÍCH' : 'FROM INTEREST'}<span>{vi ? 'ĐẾN DỰ ÁN.' : 'TO PROJECTS.'}</span></h1></div>
           <p>{data.profile.name}<br />{data.profile.role}</p>
         </div>
         <div className="about-view__introduction">
@@ -53,7 +54,7 @@ export function AboutView({ data, onNavigate }: PortfolioViewProps) {
           </div>)}
         </div>
         <h3 className="about-view__tools-heading pf-meta">{vi ? 'Công nghệ đã sử dụng' : 'Tools I work with'}</h3>
-        <ul className="about-view__tools">{technologies.map(technology => <li key={technology}>{technology}</li>)}</ul>
+        <TechnologyLoop technologies={technologies} syncKey="about-technologies" language={vi ? 'vi' : 'en'} />
       </section>
 
       <section className="pf-section" data-ff-section="about-honors">

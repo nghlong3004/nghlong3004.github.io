@@ -1,18 +1,19 @@
 import type { PortfolioViewProps } from '../../types'
 import { Icon } from '../Icon'
 import { Portrait } from '../Portrait'
+import { TechnologyLoop } from '../TechnologyLoop'
 import '../../styles/home.css'
 
 export function HomeView({ data, onNavigate, expandedProject, onToggle }: PortfolioViewProps) {
   const vi = data.ui.language === 'Ngôn ngữ'
   const copy = vi ? {
     selected: 'Dự án tiêu biểu', all: 'Tất cả dự án', details: 'Xem chi tiết',
-    capabilities: 'Cách mình làm việc', employment: 'Kinh nghiệm thực tế',
-    contact: 'Cùng giải bài toán tiếp theo',
+    capabilities: 'Cách mình làm việc', employment: 'Kinh nghiệm',
+    contact: 'Cùng trao đổi về dự án.',
   } : {
     selected: 'Selected work', all: 'All projects', details: 'View details',
-    capabilities: 'How I work', employment: 'Where I have worked',
-    contact: 'Let’s solve the next problem',
+    capabilities: 'How I work', employment: 'Experience',
+    contact: 'Let’s talk about a project.',
   }
 
   return <div className="pf-page home-page" data-ff-surface>
@@ -67,6 +68,11 @@ export function HomeView({ data, onNavigate, expandedProject, onToggle }: Portfo
           <h3 className="pf-card-title">{principle.title}</h3><p>{principle.body}</p>
         </article>)}
       </div>
+    </section>
+
+    <section className="pf-section home-tools" data-ff-section="tools">
+      <div data-framer-component-type="RichTextContainer"><h2>{vi ? 'Công nghệ trong dự án' : 'Project technologies'}</h2></div>
+      <TechnologyLoop technologies={[...new Set(data.projects.flatMap(project => project.techStack))]} syncKey="home-technologies" language={vi ? 'vi' : 'en'} />
     </section>
 
     <section className="pf-section home-employment" data-ff-section="employment">
