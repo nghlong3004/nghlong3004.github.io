@@ -1,13 +1,53 @@
 # Portfolio verification
 
-## Current release verification
+## Portrait consistency correction
+
+The earlier entry-only image-source exception is superseded. All three portrait consumers—
+entry cover, About/main and final/contact—now use the existing original JPEG at
+`/portrait/entry-wallpaper.jpg` through the localized shared profile data. Only entry uses
+wallpaper sizing; About's panel and final's small circular image keep their existing layouts.
+VI/EN alt text neutrally describes a user-supplied portrait photograph, not the owner's identity.
+The screenshot-only SVG crop/type and separate entry-image override were removed. Old screenshot
+assets and `public/tmp/` references are preserved, not rendered as current profile portraits.
+The compact VinFast notification correction below is preserved. Deployment status must be verified
+separately through the exact-head Actions/Pages result and live application checks.
+
+Implementation paths changed: `src/features/portfolio/data/portrait.ts` (shared source/localized
+alts), `data/profiles.ts` (VI/EN wiring), `components/Portrait.tsx` (plain image renderer),
+`components/PortfolioCover.tsx` and `src/app/App.tsx` (remove entry override), and portfolio
+`types.ts` (remove screenshot-crop field). AboutView and PortfolioContact already consumed the
+shared profile portrait and required no edits. Tests and current instructions were reconciled.
+
+Build and 52 tests pass; lint has 0 errors/40 warnings and the known 506 kB bundle warning remains.
+Eight actual Chromium cases at 320×740, 390×844, 768×1024 and 1440×900, VI/EN, verify every
+mounted portrait's loaded 1080×1073 source/alt and no old screenshot source, then visibly open
+About and the final screen. Entry edge coverage stays exact; About panels remain 380/660px high;
+final circles remain 74/130px. Language changes synchronize all alts while open; slider return,
+all views and compact VinFast navigation still work. Original JPEG bytes and prior compact CSS
+are unchanged; old reference assets are retained. Physical devices/non-Chromium/AT remain untested.
+
+## Compact-notification correction
+
+Compact entry now shows the existing localized VinFast employment card/logo instead of the
+VinQA card. Its existing handler opens Experience at the current VinFast job. Desktop retains
+both notifications and their destinations; the actual VinQA project remains unchanged.
+Only the compact notification visibility selector changes in application code.
+
+Verified locally in Chromium at 320×740, 390×844 and 768×1024 compact, plus 1440×900 desktop,
+each in VI/EN: card/text fit, company/project assets, no overflow, wallpaper retained, employment
+activation/focus at `job-current`, desktop VinQA activation/focus at `project-vinqa`, and VinQA
+content still present in Work. Build and 52 tests pass; lint remains 0 errors/40 warnings and
+the known 506 kB bundle warning remains. Source/test verification alone is not deployment proof.
+
+## Published 8ebca83 verification (historical)
 
 The initial Home/entry screen uses the supplied original 1080×1073 JPEG as a full-screen
 device wallpaper. The local asset is byte-identical to the attachment (SHA-256
 `0f51f12fbfdd28f6f0d091a0eb2fdf5f9b3440bdb6bf0246157c266fddb34df2`). Responsive cover cropping
 and focal positioning keep the face visible; a top scrim supports white clock/status text.
-This treatment is scoped to entry, not the outer browser/hardware or the About/final portraits.
-Those retain the previous screenshot sample. Neither picture is asserted to be the owner's portrait.
+At that release, both wallpaper layout and the new source were scoped to entry while About/final
+retained the screenshot sample. That source exception is now superseded by the local correction
+above; only the entry-specific wallpaper layout remains. No pictured identity is asserted.
 
 Distinct About/Work/Experience/Contact views replace concatenated navigation destinations.
 Only the active view is mounted; the existing device still unfolds and scrolls that view's
@@ -108,7 +148,7 @@ not invented copies of template routes.
 Chromium coverage is not a physical-device, cross-browser or assistive-technology audit.
 Dynamic OS motion-preference changes during the intro and the exhaustive hardware/scene/finish
 cross-product were not tested. Reference captures are not frame-complete or proof of identical
-upstream source/pre-JavaScript pixels. The About/final portrait remains a supplied screenshot sample;
-the entry photograph is also not asserted to depict the owner. Instagram's local recognizable gradient is not certified downloaded brand
+upstream source/pre-JavaScript pixels. The shared supplied photograph is not asserted to depict
+the owner; unused screenshot/reference assets remain preserved. Instagram's local recognizable gradient is not certified downloaded brand
 artwork and does not provide uniform text-contrast ratios; labels, focus styles and white link
 surfaces remain. Deployment status must be checked separately from local build verification.

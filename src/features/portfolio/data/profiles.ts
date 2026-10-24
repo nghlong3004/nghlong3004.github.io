@@ -1,5 +1,5 @@
 import type { Language, PortfolioProfile } from '../types'
-import { portrait } from './portrait.ts'
+import { portraits } from './portrait.ts'
 
 export const profiles: Record<Language, PortfolioProfile> = {
   "vi": {
@@ -10,7 +10,7 @@ export const profiles: Record<Language, PortfolioProfile> = {
     "intro": "Mình xây dựng backend và tự động hóa những bài toán khó. Hiện tại VinFast.",
     "location": "Hà Nội, Việt Nam",
     "email": "nghlong3004@gmail.com",
-    portrait
+    portrait: portraits.vi
   },
   "en": {
     "name": "Nguyen Hoang Long",
@@ -20,6 +20,6 @@ export const profiles: Record<Language, PortfolioProfile> = {
     "intro": "I build backend systems and automate the hard parts. Currently at VinFast.",
     "location": "Hanoi, Vietnam",
     "email": "nghlong3004@gmail.com",
-    portrait
+    portrait: portraits.en
   }
 }

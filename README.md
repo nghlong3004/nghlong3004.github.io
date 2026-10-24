@@ -12,12 +12,12 @@ Open the URL printed by Vite (normally `http://localhost:5173/`). Notifications 
 Glow is the default scene, with a restrained sage/blue/stone bloom. Existing scene preferences migrate to Glow once without changing the device finish; subsequent explicit selections remain persistent. The entry CTA reads “Cuộn để mở” / “Scroll to unfold” and keeps its existing unfolding action. Instagram and LinkedIn use local brand-colored SVG treatments; profile URLs and final GitHub/LinkedIn positions are unchanged.
 
 - **Content:** `src/features/portfolio/data/`, with `vi` and `en` variants for each section.
-- **Portraits:** `data/portrait.ts` keeps the About/final screenshot sample separate from `entryPortrait`. The entry uses the supplied original JPEG as an edge-to-edge device-screen wallpaper, with responsive cover cropping and a top contrast scrim. Neither image is asserted to depict the portfolio owner. Replace a local asset and its neutral alt/config deliberately; remove `referenceCrop` for ordinary photographs.
+- **Portraits:** `data/portrait.ts` supplies one shared image source with neutral VI/EN alt text to entry, About/main and final/contact. All use the original `public/portrait/entry-wallpaper.jpg` bytes. Only entry uses full-screen wallpaper sizing and a top contrast scrim; About retains its portrait panel and final its small circle. No pictured identity is assumed. Change the shared source once to synchronize every portrait.
 - **Device configuration:** `src/app/config/device.ts`. Idle Float remains OFF so the device and text stay still without scrolling.
 - **Screen composition:** `src/app/App.tsx`.
 - **Source map:** [TREE.md](TREE.md). **Agent instructions:** [AGENTS.md](AGENTS.md).
 
-The About/final portrait is a sample from a screenshot in `public/tmp/`; the entry wallpaper is a separate supplied photograph. Neither is claimed to portray the portfolio owner. Sofia Sans Extra Condensed, Geist and Geist Mono match the Foldfolio reference and are self-hosted with OFL licenses. The local app uses a Framer editor adapter; no Framer runtime or backend is required.
+The supplied photograph is used consistently without claiming it depicts the portfolio owner. The old `public/portrait/reference.jpg` and `public/tmp/` design references remain preserved but are not profile portraits in the UI. Sofia Sans Extra Condensed, Geist and Geist Mono match the Foldfolio reference and are self-hosted with OFL licenses. The local app uses a Framer editor adapter; no Framer runtime or backend is required.
 
 ```sh
 pnpm build

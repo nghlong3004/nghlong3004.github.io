@@ -8,7 +8,6 @@ export type ContentBlock =
 export interface PortfolioPortrait {
   src: string
   alt: string
-  referenceCrop?: boolean
 }
 
 export interface PortfolioProfile {

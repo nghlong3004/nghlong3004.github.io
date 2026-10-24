@@ -22,8 +22,8 @@ test('actual VI/EN view markup contains only the active destination and its appr
   try {
     const { PortfolioScreen } = await server.ssrLoadModule('/src/features/portfolio/components/PortfolioScreen.tsx')
     const { portfolio } = await server.ssrLoadModule('/src/features/portfolio/data/portfolio.ts')
-    const { entryPortrait } = await server.ssrLoadModule('/src/features/portfolio/data/portrait.ts')
     const { PortfolioCover } = await server.ssrLoadModule('/src/features/portfolio/components/PortfolioCover.tsx')
+    const { PortfolioContact } = await server.ssrLoadModule('/src/features/portfolio/components/PortfolioContact.tsx')
     const groups = { about: ['intro', 'story'], work: ['projects', 'impact'], experience: ['experience', 'honors'], contact: ['contact'] }
     for (const language of ['vi', 'en']) for (const [view, sections] of Object.entries(groups)) {
       const html = renderToStaticMarkup(createElement(PortfolioScreen, { data: portfolio[language], view, launch: true, expandedProject: 'vinqa', onToggle() {}, onNavigate() {} }))
@@ -34,13 +34,16 @@ test('actual VI/EN view markup contains only the active destination and its appr
       assert.equal(html.includes('data-ff-section="job-current"'), view === 'experience')
       if (view === 'work') assert.ok(html.includes('aria-expanded="true"'))
       if (view === 'about') assert.ok(html.includes('data-mark') && html.includes(portfolio[language].profile.intro))
-      if (view === 'about') assert.ok(html.includes('/portrait/reference.jpg') && !html.includes(entryPortrait.src))
+      if (view === 'about') assert.ok(html.includes(portfolio[language].profile.portrait.src) && html.includes(portfolio[language].profile.portrait.alt) && !html.includes('/portrait/reference.jpg'))
       assert.ok(html.includes('role="region"') && html.includes('tabindex="-1"'))
     }
-    for (const compact of [false, true]) {
-      const html = renderToStaticMarkup(createElement(PortfolioCover, { data: portfolio.en, portrait: entryPortrait, compact, time: '12:34', onNavigate() {} }))
-      assert.ok(html.includes(`src="${entryPortrait.src}"`) && html.includes(entryPortrait.alt))
-      assert.ok(html.includes('object-fit:cover') && !html.includes('viewBox="610'))
+    for (const language of ['vi', 'en']) for (const compact of [false, true]) {
+      const portrait = portfolio[language].profile.portrait
+      for (const [Component, extra] of [[PortfolioCover, { time: '12:34', onNavigate() {} }], [PortfolioContact, { onReturnToEntry() {} }]]) {
+        const html = renderToStaticMarkup(createElement(Component, { data: portfolio[language], compact, ...extra }))
+        assert.ok(html.includes(`src="${portrait.src}"`) && html.includes(portrait.alt))
+        assert.ok(!html.includes('/portrait/reference.jpg') && !html.includes('viewBox="610'))
+      }
     }
   } finally { await server.close() }
 })

@@ -1,11 +1,10 @@
 import type { CSSProperties } from 'react'
-import type { PortfolioData, PortfolioPortrait } from '../types'
+import type { PortfolioData } from '../types'
 import { Portrait } from './Portrait'
 import { Icon } from './Icon'
 
-export function PortfolioCover({ data, portrait, time, compact = false, onNavigate, style }: {
+export function PortfolioCover({ data, time, compact = false, onNavigate, style }: {
   data: PortfolioData
-  portrait: PortfolioPortrait
   time: string
   compact?: boolean
   onNavigate: (section: string) => void
@@ -17,7 +16,7 @@ export function PortfolioCover({ data, portrait, time, compact = false, onNaviga
   const instagram = data.links.find((link) => link.icon === 'instagram')
   return (
     <div data-ui="" aria-label={data.profile.name} className={`portfolio-cover${compact ? ' portfolio-cover--compact' : ''}`} style={style}>
-      <Portrait portrait={portrait} className="portfolio-cover__portrait" />
+      <Portrait portrait={data.profile.portrait} className="portfolio-cover__portrait" />
       <header className="portfolio-cover__identity">
         <p className="portfolio-cover__clock">{time}</p>
         <p className="portfolio-cover__role">{data.profile.role}</p>

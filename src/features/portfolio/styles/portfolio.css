@@ -125,7 +125,7 @@
 .portfolio-cover--compact .portfolio-cover__portrait { object-position: 52% 36%; }
 .portfolio-cover--compact::after { height: 190px; }
 .portfolio-cover--compact .portfolio-notifications { left: 16px; right: 16px; bottom: 68px; }
-.portfolio-cover--compact .portfolio-notification:first-child:not(:last-child) { display: none; }
+.portfolio-cover--compact .portfolio-notification:last-child:not(:first-child) { display: none; }
 .portfolio-cover--compact .portfolio-cover__bottom { left: 16px; right: 16px; bottom: 14px; }
 .portfolio-cover--compact .portfolio-cover__bottom button { padding-block: 8px; }
 .portfolio-cover--compact .portfolio-cover__shortcut { width: 40px; height: 40px; }

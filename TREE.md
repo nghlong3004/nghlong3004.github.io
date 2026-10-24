@@ -24,8 +24,8 @@
 │   ├── project/                       # Ảnh chính và gallery 4 dự án
 │   │   └── vinqa/header.webp           # Supplied VinQA logo, locally downloaded bytes
 │   ├── company/                       # Logo VinFast / Vinsmart Future
-│   ├── portrait/reference.jpg         # Shared About/final screenshot sample, unchanged
-│   ├── portrait/entry-wallpaper.jpg   # Original supplied JPEG; initial SCREEN wallpaper only
+│   ├── portrait/reference.jpg         # Retained old screenshot reference; not rendered as avatar
+│   ├── portrait/entry-wallpaper.jpg   # Original supplied JPEG; shared by ALL profile portraits
 │   ├── fonts/                         # Sofia Sans Extra Condensed 800/900 / Geist / Geist Mono + OFL
 │   ├── tmp/                           # 3 screenshot tham chiếu, giữ nguyên
 │   └── favicon.webp                   # Logo NL từ repo cũ
@@ -43,7 +43,7 @@
         │   ├── data/
         │   │   ├── portfolio.ts       # Ghép Record<Language, PortfolioData>
         │   │   ├── profiles.ts        # Tên, nghề, bio, địa điểm, email
-        │   │   ├── portrait.ts        # Shared portrait + separate entryPortrait wallpaper
+        │   │   ├── portrait.ts        # One shared image source + neutral VI/EN alt text
         │   │   ├── projects.ts        # 4 dự án, công nghệ, links, mô tả/gallery
         │   │   ├── stories.ts         # Câu chuyện và nguyên tắc
         │   │   ├── experiences.ts     # 2 nơi làm việc
@@ -61,7 +61,7 @@
         │       ├── PortfolioCover.tsx # Clock/portrait; job + VinQA, compact status; Instagram/LinkedIn
         │       ├── PortfolioContact.tsx
         │       ├── Icon.tsx                # SVG nét 1.5px, không dùng emoji cho nút
-        │       ├── Portrait.tsx       # Crop tham chiếu bằng viewBox hoặc ảnh thật
+        │       ├── Portrait.tsx       # Shared img renderer; layout comes from each consumer
         │       ├── ContentBlocks.tsx  # Paragraph/list, không inject HTML
         │       └── sections/
         │           ├── ProjectsSection.tsx
@@ -113,7 +113,7 @@ Các tiền tố `portfolio` / `foldfolio` nằm dưới `src/features/`; `app` 
 ```sh
 cat AGENTS.md TREE.md
 cat src/app/config/device.ts
-rg -n 'portrait|referenceCrop' src/features/portfolio
+rg -n 'portrait|entry-wallpaper' src/features/portfolio
 rg -n 'scrollToSection|data-ff-section' src
 rg -n 'float|needsTime|renderFrame' src/features/foldfolio src/app/config
 pnpm test

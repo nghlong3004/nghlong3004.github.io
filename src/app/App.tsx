@@ -5,7 +5,6 @@ import { PortfolioScreen } from '../features/portfolio/components/PortfolioScree
 import { PortfolioCover } from '../features/portfolio/components/PortfolioCover'
 import { PortfolioContact } from '../features/portfolio/components/PortfolioContact'
 import { portfolio } from '../features/portfolio/data/portfolio'
-import { entryPortrait } from '../features/portfolio/data/portrait'
 import { usePortfolioLanguage } from '../features/portfolio/hooks/usePortfolioLanguage'
 import { useVietnamClock } from '../features/portfolio/hooks/useVietnamClock'
 import '../features/portfolio/styles/portfolio.css'
@@ -67,8 +66,8 @@ export default function App() {
         nameRight={<span className="portfolio-scene-name">{nameRight}</span>}
         screen={<PortfolioScreen key={navigation.revision} view={navigation.view} launch={navigation.open} data={data} expandedProject={expandedProject} onToggle={toggleProject} onNavigate={navigate} />}
         screenPortrait={<PortfolioScreen key={navigation.revision} view={navigation.view} launch={navigation.open} data={data} compact expandedProject={expandedProject} onToggle={toggleProject} onNavigate={navigate} />}
-        cover={<PortfolioCover time={time} data={data} portrait={entryPortrait} onNavigate={navigate} />}
-        coverPortrait={<PortfolioCover time={time} data={data} portrait={entryPortrait} compact onNavigate={navigate} />}
+        cover={<PortfolioCover time={time} data={data} onNavigate={navigate} />}
+        coverPortrait={<PortfolioCover time={time} data={data} compact onNavigate={navigate} />}
         call={<PortfolioContact data={data} onReturnToEntry={returnToEntry} />}
         callPortrait={<PortfolioContact data={data} compact onReturnToEntry={returnToEntry} />}
         nav={<nav className="portfolio-nav" aria-label={language === 'vi' ? 'Điều hướng hồ sơ' : 'Portfolio views'}>

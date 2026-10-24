@@ -1,13 +1,8 @@
-import type { PortfolioPortrait } from '../types'
+import type { Language, PortfolioPortrait } from '../types'
 
-// About and the final screen keep the original screenshot sample.
-export const portrait: PortfolioPortrait = {
-  src: '/portrait/reference.jpg',
-  alt: 'Chân dung mẫu — thay bằng ảnh Nguyễn Hoàng Long',
-  referenceCrop: true,
-}
+const src = '/portrait/entry-wallpaper.jpg'
 
-export const entryPortrait: PortfolioPortrait = {
-  src: '/portrait/entry-wallpaper.jpg',
-  alt: 'User-supplied portrait for the entry wallpaper',
+export const portraits: Record<Language, PortfolioPortrait> = {
+  vi: { src, alt: 'Ảnh chân dung do người dùng cung cấp' },
+  en: { src, alt: 'User-supplied portrait photograph' },
 }
