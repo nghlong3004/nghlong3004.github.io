@@ -1,5 +1,42 @@
 # Portfolio verification
 
+## Reload-jitter repair
+
+Warm reloads could paint the placeholder 1200×820 geometry before measuring the actual
+viewport. On mobile this also briefly chose landscape layout. The animation loop then aligned
+retained scroll in a passive effect, after a closed/zero-offset frame could already be visible.
+StrictMode's page snapshot could preserve the earlier geometry until its normal fade completed.
+
+The local repair initializes viewport state from the browser dimensions (retaining SSR/editor
+fallbacks) and establishes the existing animation loop in an isomorphic layout effect, before
+paint. Timings, dependency arrays, smoothing, intro, preloads, reveals, storage and idle-float
+policy are unchanged; no animation or reduced-motion shortcut was introduced.
+
+Production build and 53 tests pass. The new loop regression was red before the lifecycle fix
+and green afterward; it verifies retained-scroll alignment, StrictMode setup/cleanup/replay,
+one active frame loop, later user-scroll smoothing, hidden-tab behavior and final cleanup.
+Lint: 0 errors, 39 warnings; the existing bundle-size warning remains.
+
+Actual Chromium traces compare desktop 1440×900 and mobile 390×844 in development StrictMode
+and production. Before: seen reloads had two or three distinct physical device positions.
+After: the 24 repeated-reload traces each retain one device position and correct first-frame
+viewport; six cold traces retain the intended moving intro, including reduced-motion emulation.
+Four additional native reloads restore scrollY=650 and keep the device stable from its first
+render. Some quick reload attempts returned to zero on both baseline and candidate without an
+app scroll command; these were not counted as successful retained-scroll restoration.
+Local storage preferences and the session intro policy remain unchanged in the captured runs.
+Four VI/EN actual-app cases also pass across desktop/mobile: shared original portraits and alt
+text/layout, localized card logos/text, VinFast job destination/focus, final keyboard slider return;
+mobile cases cover all four views and language changes. Direct desktop VinQA focus passes on this
+path, but does not close the separate longer-sequence limitation below. Open-mode long-Work
+fixtures smoke-check Basic/Glow/Orbit rendering, reload and resize; their reloads return to zero,
+so retained-scroll preservation is not claimed for those reusable-mode fixtures.
+
+Publication must be verified separately through the exact-commit Pages result and live checks.
+The separately documented inconsistent desktop VinQA focus remains unresolved; stable reload
+geometry does not establish its repair. Physical devices, other browser engines, SSR hydration
+and the embedded Framer editor remain untested.
+
 ## Portrait consistency correction
 
 The earlier entry-only image-source exception is superseded. All three portrait consumers—

@@ -1,9 +1,10 @@
-import { useEffect, useRef } from "react"
+import { useRef } from "react"
 import type { RefObject } from "react"
 import type { DeviceRefs } from "./useDeviceRefs"
 import { clamp, easeOut } from "../lib/math"
 import type { FoldfolioProps } from "../types"
 import type { GeometryState, LiveState, Reveal } from "../engine/types"
+import { useIsoLayoutEffect } from "./useIsoLayoutEffect"
 
 // Parent layout effects can call the public ref before this hook's passive setup/replay.
 const scrollImmediately = (top: number) => window.scrollTo({ top, behavior: "instant" })
@@ -28,7 +29,8 @@ export function useAnimationLoop({
     const jump = useRef<(top: number) => void>(scrollImmediately)
     // scroll → target, smoothed with a frame-rate independent lerp. The loop sleeps when
     // nothing moves, reads window.scrollY (no forced layout) and wakes up on scroll.
-    useEffect(() => {
+    // Align a reload's retained scroll before painting a closed device at the old offset.
+    useIsoLayoutEffect(() => {
         if (typeof window === "undefined") return
         let raf = 0
         let running = false

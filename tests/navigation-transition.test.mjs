@@ -7,7 +7,7 @@ import { registerHooks } from 'node:module'
 
 // Match Vite's extensionless TS import when exercising the real hook in Node.
 const resolver = registerHooks({ resolve(specifier, context, next) {
-  return next(specifier === '../lib/math' && context.parentURL?.endsWith('/hooks/useAnimationLoop.ts')
+  return next(['../lib/math', './useIsoLayoutEffect'].includes(specifier) && context.parentURL?.endsWith('/hooks/useAnimationLoop.ts')
     ? specifier + '.ts' : specifier, context)
 } })
 const { useAnimationLoop } = await import('../src/features/foldfolio/hooks/useAnimationLoop.ts')
@@ -171,4 +171,66 @@ check('the real animation hook jump works before any passive effect has run', f 
   renderToString(createElement(Probe, { capture: jump => captured.push(jump) }))
   captured[0].current(640)
   assert.deepEqual(calls, [{ top: 640, behavior: 'instant' }])
+})
+
+// Run the real loop at React's effect boundary without a browser dependency.
+const moduleSource = source => 'data:text/javascript,' + encodeURIComponent(source)
+const loopBridges = {
+  react: moduleSource('export const useRef=v=>({current:v});export const useEffect=f=>globalThis.__loopEffects.passive.push(f)'),
+  './useIsoLayoutEffect': moduleSource('export const useIsoLayoutEffect=f=>globalThis.__loopEffects.layout.push(f)'),
+}
+const loopResolver = registerHooks({ resolve(specifier, context, next) {
+  if (context.parentURL?.includes('/hooks/useAnimationLoop.ts?lifecycle')) {
+    return next(loopBridges[specifier] || (specifier === '../lib/math' ? specifier + '.ts' : specifier), context)
+  }
+  return next(specifier, context)
+} })
+const { useAnimationLoop: runLoop } = await import('../src/features/foldfolio/hooks/useAnimationLoop.ts?lifecycle')
+loopResolver.deregister()
+
+test('reload draws retained scroll before paint; StrictMode replay has one loop and ordinary smoothing', () => {
+  const original = { window: globalThis.window, document: globalThis.document, __loopEffects: globalThis.__loopEffects }
+  const frames = new Map(), timers = new Map(), renders = [], listeners = new Set()
+  let next = 0
+  class Target extends EventTarget {
+    addEventListener(type, fn, options) { listeners.add(fn); super.addEventListener(type, fn, options) }
+    removeEventListener(type, fn, options) { listeners.delete(fn); super.removeEventListener(type, fn, options) }
+  }
+  const window = new Target(), document = new Target()
+  Object.assign(window, { scrollY: 650,
+    scrollTo: ({ top }) => { window.scrollY = top },
+    requestAnimationFrame: fn => { const id = ++next; frames.set(id, fn); return id },
+    cancelAnimationFrame: id => frames.delete(id),
+    setTimeout: fn => { const id = ++next; timers.set(id, fn); return id },
+    clearTimeout: id => timers.delete(id),
+  })
+  document.visibilityState = 'visible'
+  const effects = { layout: [], passive: [] }, live = { current: { cur: 0, k: 0 } }, kick = { current: () => {} }
+  Object.assign(globalThis, { window, document, __loopEffects: effects })
+  try {
+    runLoop({ rootRef: { current: { getBoundingClientRect: () => ({ top: -window.scrollY, left: 0, width: 1440 }) } }, topRef: { current: 0 },
+      R: { rig: { current: { style: {} } } }, isCanvas: false, geo: { current: { scene: 'glow', mode: 'fold' } }, preview: 0,
+      reveals: { current: [] }, fadeIn: { current: 0 }, motion: { smoothing: .12, float: false }, live, kick,
+      renderFrame: { current: cur => renders.push(cur) }, stepReveals: () => false })
+    assert.equal(effects.layout.length, 1, 'initial scroll alignment must precede the first paint')
+    assert.equal(effects.passive.length, 0)
+    const setup = effects.layout[0]
+    let cleanup = setup()
+    assert.equal(renders.at(-1), 650)
+    cleanup()
+    assert.equal(frames.size, 0); assert.equal(timers.size, 0); assert.equal(listeners.size, 0)
+    cleanup = setup() // StrictMode setup → cleanup → setup
+    assert.equal(renders.at(-1), 650); assert.equal(frames.size, 1)
+    window.scrollY = 850
+    window.dispatchEvent(new Event('scroll'))
+    const callbacks = [...frames.values()]; frames.clear(); callbacks.forEach(fn => fn(performance.now() + 16))
+    assert.ok(live.current.cur > 650 && live.current.cur < 850, 'real scrolling must still smooth')
+    document.visibilityState = 'hidden'; document.dispatchEvent(new Event('visibilitychange'))
+    assert.equal(live.current.cur, 850)
+    cleanup()
+    assert.equal(frames.size, 0); assert.equal(timers.size, 0); assert.equal(listeners.size, 0)
+    const stopped = renders.length
+    window.dispatchEvent(new Event('scroll')); document.dispatchEvent(new Event('visibilitychange'))
+    assert.equal(renders.length, stopped)
+  } finally { Object.assign(globalThis, original) }
 })

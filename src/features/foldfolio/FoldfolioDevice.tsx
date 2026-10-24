@@ -76,7 +76,11 @@ export default function FoldfolioDevice(props: FoldfolioProps) {
 
     // ---------- viewport + orientation
     const rootRef = useRef<HTMLDivElement>(null)
-    const [vp, setVp] = useState({ w: 1200, h: 820 })
+    // Seen visits have no curtain to hide a later correction from placeholder geometry.
+    const [vp, setVp] = useState(() => ({
+        w: typeof window === "undefined" ? 1200 : window.innerWidth,
+        h: isCanvas || typeof window === "undefined" ? 820 : window.innerHeight,
+    }))
     useIsoLayoutEffect(() => {
         if (typeof window === "undefined") return
         const measure = () => {
