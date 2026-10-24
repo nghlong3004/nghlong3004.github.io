@@ -2,7 +2,6 @@ import { useId, useLayoutEffect, useRef } from 'react'
 import type { PortfolioContactDraft, PortfolioViewProps } from '../../types'
 import { validateContactDraft, visibleContactErrors } from '../../lib/contactValidation'
 import { Icon } from '../Icon'
-import { Portrait } from '../Portrait'
 import '../../styles/contact.css'
 
 export function contactDraftMailto(email: string, draft: PortfolioContactDraft, vietnamese: boolean) {
@@ -78,9 +77,6 @@ export function ContactView({ data, contactDraft, onContactDraftChange, contactV
           </div>
         </div>
       </div>
-      <div style={{ overflow: 'hidden' }} data-ff-surface><div data-framer-background-image-wrapper="true">
-        <Portrait portrait={data.profile.portrait} className="contact-view__portrait" />
-      </div></div>
     </section>
     <section className="pf-page contact-view__brief" aria-labelledby={`${id}-brief`} data-ff-surface>
       <div data-framer-component-type="RichTextContainer"><h2 id={`${id}-brief`}>{copy.brief}</h2></div>

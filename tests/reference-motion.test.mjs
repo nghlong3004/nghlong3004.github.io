@@ -11,7 +11,7 @@ const tag = node => node.openingElement.name.name
 const children = node => node.children.filter(child => child.type === 'JSXElement')
 
 test('all five views expose deterministic image and heading markers to the existing scanner', () => {
-  const expected = { Home: [2, 7], Work: [1, 3], Projects: [1, 2], About: [1, 6], Contact: [1, 2] }
+  const expected = { Home: [2, 7], Work: [0, 1], Projects: [1, 2], About: [1, 6], Contact: [0, 2] }
   for (const view of views) {
     let images = 0, headings = 0
     traverse(trees[view], { JSXElement(path) {
@@ -42,7 +42,7 @@ test('image markers contain real images and animate only local media or project 
   } })
 })
 
-test('only actual Home, Work and About metric values opt into count-up', () => {
+test('only actual Home and About metric values opt into count-up', () => {
   for (const view of views) {
     let count = 0
     traverse(trees[view], { JSXElement(path) {
@@ -54,7 +54,7 @@ test('only actual Home, Work and About metric values opt into count-up', () => {
       assert.match(sources[view], /data\.impact\.map\(/)
       count++
     } })
-    assert.equal(count, ['Home', 'Work', 'About'].includes(view) ? 1 : 0, view)
+    assert.equal(count, ['Home', 'About'].includes(view) ? 1 : 0, view)
   }
 })
 

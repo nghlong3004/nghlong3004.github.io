@@ -1,5 +1,114 @@
 # Portfolio verification
 
+## Employment/Home/navigation and open ending — 2026-10-25
+
+This revision includes the accepted mobile-polish work below. Work now contains only
+employment history: fact-only current VinFast and safe past internship details. It
+does not render projects, project filters, outcome metrics or honors. Legacy Experience
+and VinFast destinations resolve to Work; the unused separate Experience wrapper is
+retired, not its data. Independent projects remain on Projects; honors remain on Home/About.
+
+After the retained identity header, Home orders Experience → Technologies used →
+Working approach → Featured projects → Awards and achievements. All existing truthful
+honors and metrics are retained in the last section. Bottom navigation is Home → About
+→ Projects → Work → Contact, with corresponding VI labels and initial/return Home.
+English project actions explicitly name projects rather than the employment Work view.
+
+This portfolio now stays OPEN at the end of each active view. The smallest existing
+configuration sets app closing/ending-hold lengths to zero; opening length, smoothing,
+initial cover/unfold and generic reusable engine closing/call support remain unchanged.
+The retained final component is not part of this portfolio's scrolling path. The
+superseded alternative of centering its identity and swapping Instagram is not applied.
+
+Production build and all123 serialized tests pass; lint has0 errors and41 existing
+warnings. The known bundle-size warning remains. Source and built-client privacy
+comparison finds no removed current-employment payloads. An initial suite run had
+three stale expectations (six views and the old Home order); corrected fixtures pass,
+with the failed run retained separately rather than counted as success.
+
+Six production Chromium cases cover1440/768/390px, VI/EN. All30 active-view end states
+remain open, visible and interactive at the real document bottom, with the terminal
+ending hidden. Initial entry remains folded and its CTA unfolds to Home. Each case
+verifies the exact nav/section order, two employment entries with fact-only current
+VinFast, four projects, three honor groups and four metrics nested under honors.
+Home/About employment actions and the VinFast notification resolve Work; notification
+focus reaches job-current. Project dialog focus/Escape/restoration and Contact's
+portrait removal, outside-click stability and native selection survive integration.
+The same field and backward selection survive viewport shrink/restore. Six additional
+settled-counter checks reach exactly4/200ms/3/6 at the open Home end; an earlier189ms
+screenshot captured the intentional count-up in progress, not a changed data value.
+Source review confirms generic closing support and all accepted mobile-polish engine
+repairs remain intact. No product source change was needed after these checks.
+
+Physical mobile keyboards, Safari/other engines and assistive technology remain
+untested; native reload restoration is still variable. Existing rights/history and
+reduced-motion limitations below remain. Exact publication evidence is separate:
+local build and browser results do not establish push or deployment success.
+The following sections retain earlier results and their historical scope; references
+to a reachable separate final ending and project-based Work are superseded here.
+
+## Local mobile/content/status follow-up — 2026-10-25
+
+Based on published `694d403`; the results below describe the earlier local candidate,
+now included in the combined revision above.
+Vietnamese technology headings read `Công nghệ sử dụng` on one line, retaining the
+distinct Home display and About metadata roles and their English counterparts.
+OAuth2/JWT, WebSocket and A* Pathfinding are excluded from project technology arrays
+and their derived loops/drawer lists, not removed from unrelated narrative/history.
+Contact VIEW has no portrait; entry, About and separate final folded portraits retain
+the original image. The brief form, shared draft and mailto-only behavior remain.
+
+A production Chromium baseline reproduced the reported outside-tap jump: after typing,
+the full-page `tabIndex=-1` view root acquired focus, and automatic focus reveal scrolled
+from1813 to971. Content height and visual viewport height were unchanged. This proves
+an application focus-reveal defect in that reproduction, not a physical keyboard defect.
+The repair excludes nontabbable containers from automatic reveal and restricts viewport
+re-reveal to a still-focused editable. Explicit validation focus, canonical native DOM,
+navigation remapping, genuine fold fallback and existing timing remain intact.
+
+Status treatment uses existing VinFast assets, logo-only beside simulated signal/5G
+and age inside a battery-like outline. Age is not charge: no percentage, charge fill,
+charging state or real network/battery API is used. Apple's official announcement verifies
+[iPhone 18 Pro/Pro Max](https://www.apple.com/newsroom/2026/09/apple-debuts-iphone-18-pro-and-iphone-18-pro-max/),
+not a plain “iPhone 18” model. The [current status-icon guide](https://support.apple.com/guide/iphone/learn-the-meaning-of-iphone-status-icons-iphef7bb57dc/ios)
+and [battery-percentage guide](https://support.apple.com/en-euro/guide/iphone/iph4747a74a9/ios)
+provide the visual reference, not device-specific pixel measurements. The result is an
+iPhone 18 Pro/iOS-inspired adaptation; the required five-bar random2–5 simulation
+intentionally differs from Apple's four bars. The small employer wordmark is not
+guaranteed readable; its accessible label retains only the current-employer fact.
+
+Build and118 serialized tests pass; lint reports0 errors/41 existing warnings, with
+the known main-bundle-size warning. Six Chromium1440/390/320px VI/EN cases measure
+single-line technology headings within their available width, exclude the three stack
+labels from loops, retain About's original portrait and omit Contact's portrait.
+After typing and an actual outside click, the repaired preview remains at1365→1365.
+All six cases retain the same focused textarea and3–15 backward selection through
+viewport shrink/restore; blurred viewport events and subsequent user scrolling do
+not reset scroll. Six cases also retain a single project dialog and focus restoration.
+Sixteen actual rendered status cases cover Home/About/Contact/Projects, both languages
+and desktop/mobile, including two split-tint cases. The normal/dark original logo
+switches with right-side ink; age is an outline/terminal with no charge fill. Original
+portrait/font/logo bytes and dependencies are unchanged; built privacy comparison
+still finds no removed current-employment payloads.
+
+Four broader VI/EN1440/390 integrated cases pass native typing/selection, inline errors,
+first-invalid focus, draft retention/mailto preparation, loop synchronization/cleanup/
+motion under reduce, gallery and dialog behavior. Two dedicated compact VI/EN pointer
+drags through the center seam select19–55 in the same name input, with zero clipping
+scroll. Four behavior cases pass notifications, filters, Marker parity, shared signal,
+genuine fold-away focus/inert handling, final portrait/slider return and warm visibility.
+Ten reload traces pass: both cold intros animate and eight warm visits retain stable
+device geometry with no application scroll reset. Native reload restoration remains
+variable (one desktop retained-scroll attempt returned to zero without an app scroll call).
+Six private dev-fixture open-mode cases use the actual App across Basic/Glow/Orbit,
+desktop EN/mobile VI, three finishes and header/bottom configurations. Native Contact
+typing/outside blur, current-employer status, no Contact avatar and no decorative
+crease pass there too; this is a smoke matrix, not the full configuration cross-product.
+Desktop Chromium viewport/keyboard
+emulation cannot certify physical mobile keyboards, IME, Safari or assistive technology.
+Historical focus failures and earlier exposure/rights caveats below remain historical
+evidence, not erased or converted to passes by this follow-up.
+
 ## Local content and interaction follow-up — 2026-10-25
 
 This follow-up is local-only, based on published `c3e993d`. The Alumni visual result

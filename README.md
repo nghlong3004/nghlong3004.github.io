@@ -25,16 +25,30 @@ pnpm lint
 pnpm test
 ```
 
-Navigation selects distinct Home, Work, Projects, About and Contact views; only the selected
-view is mounted and scrolled. Home has real metrics/selected work/principles/employers;
-Work a filtered grid/index; Projects a light overview with one tile per project; About introduction/achievements.
-Experience retains safe public history/honors and the simple current-employer fact. Project details use one adapted
+Bottom navigation selects distinct Home, About, Projects, Work and Contact views in that
+order; only the selected view is mounted and scrolled. After its identity header, Home
+orders Experience, Technologies used, Working approach, Featured projects, then Awards
+and achievements (with existing truthful metrics). Work is employment history only;
+legacy Experience/VinFast actions lead there. Projects is a light overview with one tile
+per project; About retains introduction/achievements. Current employment remains fact-only.
+Project details use one adapted
 Kokonut drawer inside the screen, with keyboard/focus containment. Contact's shared brief form
-uses typed bilingual inline validation and prepares an email draft in your mail app, without server sending/storage. The final folded
-GitHub/LinkedIn screen remains separate; no separate URL routes are required.
-About uses Kokonut's Marker Text on the introduction. The light final folded screen adds
-Kokonut's Slide to Confirm: slide or press Enter/Space to return to the entry/Home state.
-It does not initiate a call, recording or external action. See [component attribution](THIRD_PARTY_NOTICES.md).
+uses typed bilingual inline validation and prepares an email draft in your mail app, without server sending/storage.
+This portfolio keeps its initial cover/unfold but stays open at the end of content;
+the terminal closing/final-screen phase is not part of its scrolling path. The reusable
+engine and final component retain their closing/return capabilities for other callers.
+No separate URL routes are required.
+The Contact view has no avatar; entry, About and the separate final folded screen retain
+the original portrait. Vietnamese technology headings read `Công nghệ sử dụng` on one
+line. Project technology lists and their loops exclude OAuth2/JWT, WebSocket and
+A* Pathfinding; unrelated project narratives and past experience remain intact.
+The top status group adds logo-only current-employer branding, simulated signal/5G,
+and completed age inside a battery-like outline—not a live charge reading. It is an
+iPhone 18 Pro/iOS-inspired adaptation, not an exact Apple interface.
+About uses Kokonut's Marker Text on the introduction. The retained reusable final component
+uses Kokonut's Slide to Confirm to return to entry/Home; this portfolio does not expose
+that terminal screen. It never initiates a call, recording or external action.
+See [component attribution](THIRD_PARTY_NOTICES.md).
 
 Motion policy: animations intentionally run even with an OS/browser reduced-motion preference.
 There is no reduced-motion bypass, which is an accessibility limitation for motion-sensitive

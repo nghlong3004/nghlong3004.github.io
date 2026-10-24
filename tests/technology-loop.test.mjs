@@ -140,8 +140,8 @@ test('bilingual wrapper and view wiring use real unique project technologies, no
         const viewHtml = renderToStaticMarkup(createElement(TechnologyLoopProvider, null, tree))
         assert.equal((viewHtml.match(/data-technology-loop=/g) ?? []).length, 1)
         if (key === 'home') {
-          assert.ok(viewHtml.indexOf('data-ff-section="capabilities"') < viewHtml.indexOf('data-ff-section="tools"'))
-          assert.ok(viewHtml.indexOf('data-ff-section="tools"') < viewHtml.indexOf('data-ff-section="employment"'))
+          assert.ok(viewHtml.indexOf('data-ff-section="employment"') < viewHtml.indexOf('data-ff-section="tools"'))
+          assert.ok(viewHtml.indexOf('data-ff-section="tools"') < viewHtml.indexOf('data-ff-section="capabilities"'))
         }
       }
     }

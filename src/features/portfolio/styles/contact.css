@@ -1,6 +1,6 @@
 .portfolio-screen .contact-view { background: var(--pf-ground); color: var(--pf-ink); }
-.portfolio-screen .contact-view__hero.pf-page { display: grid; grid-template-columns: 1fr 1fr; min-height: 660px; padding: 0; }
-.contact-view__statement { display: flex; flex-direction: column; justify-content: space-between; gap: 48px; min-width: 0; padding: var(--pf-top) var(--pf-padding) var(--pf-bottom); }
+.portfolio-screen .contact-view__hero.pf-page { display: block; min-height: 660px; padding: 0; }
+.contact-view__statement { display: flex; flex-direction: column; justify-content: space-between; gap: 48px; min-height: 660px; padding: var(--pf-top) var(--pf-padding) var(--pf-bottom); }
 .portfolio-screen[data-portfolio-view="contact"] .contact-view__hero h1 { margin: 0; font: var(--pf-title); letter-spacing: -.025em; text-transform: uppercase; }
 .contact-view__hero h1 span { display: block; color: var(--pf-accent); }
 .contact-view__statement .pf-header { gap: 26px; }
@@ -16,7 +16,6 @@
 .portfolio-screen .contact-view__social--facebook { color: #0866ff; }
 .contact-view__connections a:hover { text-decoration: underline; text-underline-offset: 4px; }
 .portfolio-screen .contact-view__connections a:focus-visible { outline-color: var(--pf-accent); }
-.contact-view__portrait { min-width: 0; min-height: 660px; object-position: 50% 44%; }
 .portfolio-screen .contact-view__brief h2 { font: var(--pf-heading); text-transform: uppercase; margin: 0 0 24px; }
 .contact-view__brief > p { max-width: 72ch; }
 .contact-view__brief form { display: grid; margin-top: 30px; }
@@ -28,7 +27,5 @@
 .contact-view__brief .contact-view__error { margin: 0 0 18px; color: var(--pf-ink); font: 500 13px/1.5 var(--pf-body); }
 .portfolio-screen .contact-view__brief button { min-height: 48px; border-radius: 10px; }
 .contact-view__brief button:hover { opacity: .85; }
-.portfolio-screen--compact .contact-view__hero.pf-page { grid-template-columns: 1fr; }
 .portfolio-screen--compact .contact-view__statement { min-height: 718px; gap: 64px; }
-.portfolio-screen--compact .contact-view__portrait { height: 480px; min-height: 0; }
 .portfolio-screen--compact .contact-view__email { font-size: 20px; }

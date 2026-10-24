@@ -92,6 +92,43 @@ test('first-invalid helper reveals by untransformed layout offset and focuses wi
   }
 })
 
+test('outside click focusing the view root cannot auto-reveal it, while controls and explicit focus still reveal', () => {
+  const original = { window: globalThis.window, document: globalThis.document,
+    handle: globalThis.__interactionHandle }
+  const jumps = []
+  const screen = { inert: false, contains: element => element.offsetParent === screen }
+  const viewRoot = { tagName: 'DIV', tabIndex: -1, isConnected: true,
+    offsetTop: 0, offsetHeight: 2000, offsetParent: screen,
+    focus(options) { assert.deepEqual(options, { preventScroll: true }); document.activeElement = this } }
+  const button = { tagName: 'BUTTON', tabIndex: 0, isConnected: true,
+    offsetTop: 1500, offsetHeight: 40, offsetParent: screen }
+  const window = { scrollY: 1813 }
+  const document = { activeElement: viewRoot }
+  Object.assign(globalThis, { window, document })
+  try {
+    const root = { current: { getBoundingClientRect: () => ({ top: -813 }) } }
+    const refs = { cInteractive: { current: screen } }
+    const geometry = { current: { mode: 'fold', U1: 300, s: .5, Hs: 600, innerMax: 1400 } }
+    const live = { current: { inner: 900 } }
+    const jump = { current: y => jumps.push(y) }
+    const { reveal } = useSectionNavigation(null, root, refs, geometry, live, jump)
+    assert.equal(reveal.current(viewRoot, true), false, 'automatic view-root focus must not pull the page upward')
+    assert.deepEqual(jumps, [])
+    assert.equal(reveal.current(button, true), true, 'real focusable controls keep automatic reveal')
+    assert.equal(jumps.length, 1)
+    jumps.length = 0
+    assert.equal(globalThis.__interactionHandle.focusScreenElement(viewRoot), true,
+      'the explicit API remains able to focus a valid canonical target')
+    assert.equal(jumps.length, 1)
+    const source = readFileSync(new URL('../src/features/foldfolio/FoldfolioDevice.tsx', import.meta.url), 'utf8')
+    assert.match(source, /revealScreenElement\.current\(event\.target, true\)/,
+      'the captured DOM focus must use automatic reveal rules')
+  } finally {
+    Object.assign(globalThis, { window: original.window, document: original.document,
+      __interactionHandle: original.handle })
+  }
+})
+
 test('visual-viewport keyboard emulation narrows focus reveal and removes resize/scroll listeners', () => {
   const original = { window: globalThis.window, document: globalThis.document,
     HTMLElement: globalThis.HTMLElement, effects: globalThis.__interactionEffects,
@@ -105,7 +142,10 @@ test('visual-viewport keyboard emulation narrows focus reveal and removes resize
     requestAnimationFrame(handler) { const id = ++nextFrame; frames.set(id, handler); return id },
     cancelAnimationFrame(id) { frames.delete(id) } }
   const screen = { inert: false, contains: element => element.offsetParent === screen }
-  const field = { isConnected: true, offsetTop: 800, offsetHeight: 40, offsetParent: screen }
+  const field = { tagName: 'INPUT', type: 'text', tabIndex: 0,
+    isConnected: true, offsetTop: 800, offsetHeight: 40, offsetParent: screen }
+  const viewRoot = { tagName: 'DIV', tabIndex: -1,
+    isConnected: true, offsetTop: 0, offsetHeight: 1800, offsetParent: screen }
   const document = { activeElement: field }
   Object.assign(globalThis, { window, document, HTMLElement: Object, __interactionEffects: [] })
   let cleanup
@@ -120,6 +160,11 @@ test('visual-viewport keyboard emulation narrows focus reveal and removes resize
     assert.deepEqual(Object.values(listeners).map(set => set.size), [1, 1])
     assert.equal(reveal.current(field), true)
     assert.deepEqual(jumps, [630], 'layout offset remains unscaled; viewport bottom maps through scale')
+    document.activeElement = viewRoot
+    for (const handler of listeners.scroll) handler()
+    for (const handler of frames.values()) handler()
+    assert.deepEqual(jumps, [630], 'viewport scroll must not re-reveal a non-editable view root')
+    document.activeElement = field
     viewport.height = 250
     for (const handler of listeners.resize) handler()
     assert.equal(frames.size, 1)

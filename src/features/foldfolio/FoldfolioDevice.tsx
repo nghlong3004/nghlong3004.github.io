@@ -516,7 +516,7 @@ export default function FoldfolioDevice(props: FoldfolioProps) {
         cAll, Ro, Hs, navNode, screenOverlayNode, screenInteractiveNode,
         onInteractiveFocus: (event) => {
             if (event.target instanceof HTMLElement)
-                revealScreenElement.current(event.target)
+                revealScreenElement.current(event.target, true)
         }, signalLevel,
     })
 

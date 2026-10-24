@@ -1,5 +1,5 @@
 export type Language = 'vi' | 'en'
-export type PortfolioView = 'home' | 'work' | 'projects' | 'about' | 'experience' | 'contact'
+export type PortfolioView = 'home' | 'about' | 'projects' | 'work' | 'contact'
 
 export interface PortfolioContactDraft {
   name: string
@@ -18,8 +18,6 @@ export interface PortfolioViewProps {
   onNavigate: (destination: string) => void
   expandedProject: string | null
   onToggle: (id: string) => void
-  workFilter: string
-  onWorkFilterChange: (category: string) => void
   contactDraft: PortfolioContactDraft
   onContactDraftChange: (field: keyof PortfolioContactDraft, value: string) => void
   contactValidation: PortfolioContactValidation

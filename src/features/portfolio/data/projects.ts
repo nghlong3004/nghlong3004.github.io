@@ -169,8 +169,7 @@ export const projects: Record<Language, PortfolioProject[]> = {
         "Redis",
         "Flyway",
         "Docker",
-        "Nginx",
-        "OAuth2/JWT"
+        "Nginx"
       ],
       "liveUrl": "https://olympic.humg.edu.vn",
       "sourceCode": "https://github.com/nghlong3004/humg-olympic-documentation",
@@ -231,11 +230,9 @@ export const projects: Record<Language, PortfolioProject[]> = {
       ],
       "techStack": [
         "Spring Boot",
-        "WebSocket",
         "Java Swing",
         "PostgreSQL",
-        "Flyway",
-        "A* Pathfinding"
+        "Flyway"
       ],
       "sourceCode": "https://github.com/nghlong3004/boom-online",
       "details": [
@@ -444,8 +441,7 @@ export const projects: Record<Language, PortfolioProject[]> = {
         "Redis",
         "Flyway",
         "Docker",
-        "Nginx",
-        "OAuth2/JWT"
+        "Nginx"
       ],
       "liveUrl": "https://olympic.humg.edu.vn",
       "sourceCode": "https://github.com/nghlong3004/humg-olympic-documentation",
@@ -506,11 +502,9 @@ export const projects: Record<Language, PortfolioProject[]> = {
       ],
       "techStack": [
         "Spring Boot",
-        "WebSocket",
         "Java Swing",
         "PostgreSQL",
-        "Flyway",
-        "A* Pathfinding"
+        "Flyway"
       ],
       "sourceCode": "https://github.com/nghlong3004/boom-online",
       "details": [

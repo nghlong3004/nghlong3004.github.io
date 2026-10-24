@@ -10,7 +10,7 @@ export const deviceConfig = {
   switcher: { show: true, scenesAt: 'header', top: 15, right: 28, bottom: 18 },
   status: { show: true, time: formatVietnamTime(), live: false, tone: 'auto' },
   layout: { orientation: 'auto', portraitBelow: 700, top: 72, bottom: 32, maxScale: 1.3 },
-  motion: { openLength: 1.15, closeLength: 1.1, holdLength: 0.4, smoothing: 0.12, float: false, glass: false },
+  motion: { openLength: 1.15, closeLength: 0, holdLength: 0, smoothing: 0.12, float: false, glass: false },
   screenMotion: { on: true, headlines: true, images: true, counters: true, hover: true, duration: 1, distance: 26, stagger: 0.06 },
   preview: 30,
 } satisfies FoldfolioProps

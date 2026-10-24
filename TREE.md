@@ -25,6 +25,9 @@
 │   ├── project-overlay.test.mjs        # Controlled device-local drawer
 │   ├── reference-motion.test.mjs       # Shared engine markers across screen content
 │   ├── status-surface.test.mjs         # Nested full-width background boundaries for status tint
+│   ├── status-employer.test.mjs        # Logo contrast, outlined age and generic status API
+│   ├── open-ending.test.mjs            # App stays open at content end; generic closing retained
+│   ├── technology-presentation.test.mjs # One-line bilingual headings, project stack exclusions
 │   ├── screen-motion-cleanup.test.mjs  # Counter/reveal timeout and rAF disposal/StrictMode
 │   ├── typography.test.mjs             # Bilingual display family and actual Vietnamese font coverage
 │   ├── privacy-copy.test.mjs          # Fact-only current employer and grounded bilingual copy
@@ -72,7 +75,7 @@
         │   ├── styles/{logo-loop,technology-loop}.css # Official line-loop styles + portfolio treatment
         │   └── components/
         │       ├── PortfolioScreen.tsx
-        │       ├── views/              # Home, Work, Projects, About, Experience, Contact; active only
+        │       ├── views/              # Home, About, Projects, employment-only Work, Contact
         │       ├── kokonut/            # Marker Text / Slide to Confirm / ProjectOverlay adaptations
         │       ├── reactbits/          # Line-only LogoLoop adaptation + complete MIT/Commons Clause notice
         │       ├── TechnologyLoop.tsx # Public technology wrapper + one provider for all screen copies
@@ -137,4 +140,4 @@ rg -n 'float|needsTime|renderFrame' src/features/foldfolio src/app/config
 pnpm test
 ```
 
-Hai nửa phần cứng vẫn có bản render hình ảnh cùng dữ liệu khi gập. Khi phẳng, slot screenInteractive là một DOM tương tác liên tục; bản sao phần cứng inert/aria-hidden. App giữ draft/validation/filter/project state và một TechnologyLoopProvider. Đích điều hướng dùng data-ff-section trong ref nội dung hiện hành, không dùng document ID/hash.
+Hai nửa phần cứng vẫn có bản render hình ảnh cùng dữ liệu khi gập. Khi phẳng, slot screenInteractive là một DOM tương tác liên tục; bản sao phần cứng inert/aria-hidden. App giữ draft/validation/project state và một TechnologyLoopProvider; Work không còn bộ lọc dự án. Đích điều hướng dùng data-ff-section trong ref nội dung hiện hành, không dùng document ID/hash.

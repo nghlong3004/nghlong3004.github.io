@@ -350,12 +350,17 @@ export function createFrameRenderer({
                     const ink = el.dataset.ffsb === "right" ? colR : colL
                     el.style.color = ink
                     el.style.setProperty("--ffsb-contrast", ink === "#111" ? "#fff" : "#111")
-                    // one bar across an open landscape screen: its right group (5G, battery) follows the right side
-                    if (el.dataset.ffsb === "all" && !P) {
+                    el.style.setProperty("--ffsb-logo-normal", ink === "#111" ? "block" : "none")
+                    el.style.setProperty("--ffsb-logo-on-dark", ink === "#111" ? "none" : "block")
+                    // Landscape samples the right surface; portrait also resets any previous split tint.
+                    if (el.dataset.ffsb === "all") {
                         const r = el.lastElementChild as HTMLElement | null
                         if (r) {
-                            r.style.color = colR
-                            r.style.setProperty("--ffsb-contrast", colR === "#111" ? "#fff" : "#111")
+                            const rightInk = P ? colL : colR
+                            r.style.color = rightInk
+                            r.style.setProperty("--ffsb-contrast", rightInk === "#111" ? "#fff" : "#111")
+                            r.style.setProperty("--ffsb-logo-normal", rightInk === "#111" ? "block" : "none")
+                            r.style.setProperty("--ffsb-logo-on-dark", rightInk === "#111" ? "none" : "block")
                         }
                     }
                 })

@@ -50,6 +50,7 @@ export interface FoldfolioProps {
         tone: "auto" | "light" | "dark"
         batteryText?: string
         batteryLabel?: string
+        employerLogo?: { src: string; srcOnDark?: string; label: string }
     }
     layout: {
         orientation: Orientation

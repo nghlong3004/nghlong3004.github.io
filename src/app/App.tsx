@@ -22,7 +22,6 @@ export default function App() {
   const { time, age } = useVietnamClock()
   const { language, setLanguage } = usePortfolioLanguage()
   const [expandedProject, setExpandedProject] = useState<string | null>(null)
-  const [workFilter, setWorkFilter] = useState('all')
   const [contactDraft, setContactDraft] = useState<PortfolioContactDraft>({ name: '', email: '', location: '', message: '' })
   const [contactValidation, setContactValidation] = useState<PortfolioContactValidation>({ touched: {}, submitted: false })
   const changeContactDraft = (field: keyof PortfolioContactDraft, value: string) => setContactDraft(current => ({ ...current, [field]: value }))
@@ -31,6 +30,7 @@ export default function App() {
   const deviceRef = useRef<FoldfolioHandle>(null)
   useEffect(() => () => window.cancelAnimationFrame(entryFrame.current), [])
   const data = portfolio[language]
+  const currentEmployer = data.experience.find(job => job.current)
   const [nameLeft, nameRight] = data.profile.displayName.split(' ')
   const navigate = (destination: string) => {
     window.cancelAnimationFrame(entryFrame.current)
@@ -58,13 +58,13 @@ export default function App() {
   }
   const toggleProject = (id: string) => setExpandedProject((current) => current === id ? null : id)
   const focusContactField = (element: HTMLElement) => { deviceRef.current?.focusScreenElement(element) }
-  const screen = <PortfolioScreen key={navigation.revision} view={navigation.view} launch={navigation.open} data={data} expandedProject={expandedProject} onToggle={toggleProject} onNavigate={navigate} workFilter={workFilter} onWorkFilterChange={setWorkFilter} contactDraft={contactDraft} onContactDraftChange={changeContactDraft} contactValidation={contactValidation} onContactValidationChange={setContactValidation} onContactFocusField={focusContactField} />
-  const screenPortrait = <PortfolioScreen key={navigation.revision} view={navigation.view} launch={navigation.open} data={data} compact expandedProject={expandedProject} onToggle={toggleProject} onNavigate={navigate} workFilter={workFilter} onWorkFilterChange={setWorkFilter} contactDraft={contactDraft} onContactDraftChange={changeContactDraft} contactValidation={contactValidation} onContactValidationChange={setContactValidation} onContactFocusField={focusContactField} />
+  const screen = <PortfolioScreen key={navigation.revision} view={navigation.view} launch={navigation.open} data={data} expandedProject={expandedProject} onToggle={toggleProject} onNavigate={navigate} contactDraft={contactDraft} onContactDraftChange={changeContactDraft} contactValidation={contactValidation} onContactValidationChange={setContactValidation} onContactFocusField={focusContactField} />
+  const screenPortrait = <PortfolioScreen key={navigation.revision} view={navigation.view} launch={navigation.open} data={data} compact expandedProject={expandedProject} onToggle={toggleProject} onNavigate={navigate} contactDraft={contactDraft} onContactDraftChange={changeContactDraft} contactValidation={contactValidation} onContactValidationChange={setContactValidation} onContactFocusField={focusContactField} />
 
   return (
     <TechnologyLoopProvider>
       <button type="button" className="portfolio-brand" aria-label={`NGHLONG3004 — ${data.profile.name}`} onClick={returnToEntry}>NGHLONG3004</button>
-      <div role="status" aria-live="polite" aria-atomic="true" className="portfolio-view-announcement">{navigation.open && `${data.ui.current}: ${{ home: data.ui.home, work: data.ui.work, projects: data.ui.archive, about: data.ui.intro, experience: data.ui.experience, contact: data.ui.contact }[navigation.view]}`}</div>
+      <div role="status" aria-live="polite" aria-atomic="true" className="portfolio-view-announcement">{navigation.open && `${data.ui.current}: ${{ home: data.ui.home, work: data.ui.work, projects: data.ui.archive, about: data.ui.intro, contact: data.ui.contact }[navigation.view]}`}</div>
       <div className="portfolio-language" role="group" aria-label={data.ui.language} hidden>
         <button type="button" lang="vi" aria-label="Tiếng Việt" aria-pressed={language === 'vi'} onClick={() => setLanguage('vi')}>VI</button>
         <button type="button" lang="en" aria-label="English" aria-pressed={language === 'en'} onClick={() => setLanguage('en')}>EN</button>
@@ -73,7 +73,9 @@ export default function App() {
         ref={deviceRef}
         {...deviceConfig}
         screenNavigation={navigation.open ? { key: `${navigation.view}:${navigation.revision}`, target: navigation.target || 'view-root' } : undefined}
-        status={{ ...deviceConfig.status, time, batteryText: String(age), batteryLabel: language === 'vi'
+        status={{ ...deviceConfig.status, time, employerLogo: currentEmployer?.logo ? {
+          src: currentEmployer.logo, srcOnDark: currentEmployer.logoDark, label: currentEmployer.role,
+        } : undefined, batteryText: String(age), batteryLabel: language === 'vi'
           ? `${age} tuổi — không phải mức pin thiết bị`
           : `Age ${age} — not device battery level` }}
         nameLeft={<span className="portfolio-scene-name">{nameLeft}</span>}
@@ -90,9 +92,9 @@ export default function App() {
         nav={<nav className="portfolio-nav" aria-label={language === 'vi' ? 'Điều hướng hồ sơ' : 'Portfolio views'}>
           {[
             ['home', data.ui.home],
-            ['work', data.ui.work],
-            ['projects', data.ui.archive],
             ['about', data.ui.intro],
+            ['projects', data.ui.archive],
+            ['work', data.ui.work],
             ['contact', data.ui.contact],
           ].map(([view, label]) => <button key={view} type="button" data-portfolio-destination={view} aria-current={navigation.view === view ? 'page' : undefined} onClick={() => navigate(view)}>{label}</button>)}
         </nav>}

@@ -161,11 +161,11 @@ test('90% content-width cutoff rejects narrow/hidden markers but preserves legac
 
 test('five actual views mark surface boundaries, not arbitrary cards or controls', () => {
   const expected = {
-    Home: ['pf-page home-page', 'home-hero', '', 'home-impact', 'pf-section home-work', 'pf-section home-contact'],
-    Work: ['pf-page pf-work', 'pf-metrics pf-work__metrics', 'pf-section pf-work__contact'],
+    Home: ['pf-page home-page', 'home-hero', '', 'pf-section home-work', 'pf-section home-honors', 'home-impact'],
+    Work: ['pf-page pf-work'],
     Projects: ['pf-page pf-projects'],
     About: ['pf-page about-view', 'about-view__hero', '', 'about-view__copy pf-page--dark', 'about-view__numbers', 'about-view__body', 'pf-section about-view__contact'],
-    Contact: ['contact-view', 'pf-page pf-page--dark contact-view__hero', '', 'pf-page contact-view__brief'],
+    Contact: ['contact-view', 'pf-page pf-page--dark contact-view__hero', 'pf-page contact-view__brief'],
   }
   for (const [view, classes] of Object.entries(expected)) {
     const source = readFileSync(new URL(`../src/features/portfolio/components/views/${view}View.tsx`, import.meta.url), 'utf8')

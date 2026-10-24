@@ -97,6 +97,18 @@ export function renderDevice({
                             fontSize: 12,
                         }}
                     >
+                        {status.employerLogo && (
+                            <span data-ff-employer="" role="img" aria-label={status.employerLogo.label}
+                                style={{ position: "relative", width: 22, height: 22, flexShrink: 0 }}>
+                                <img src={status.employerLogo.src} alt="" aria-hidden="true" width="22" height="22"
+                                    style={{ ...fill, objectFit: "contain", display: status.employerLogo.srcOnDark
+                                        ? autoTint ? "var(--ffsb-logo-normal, none)" : tint === "#111" ? "block" : "none" : "block" }} />
+                                {status.employerLogo.srcOnDark && (
+                                    <img src={status.employerLogo.srcOnDark} alt="" aria-hidden="true" width="22" height="22"
+                                        style={{ ...fill, objectFit: "contain", display: autoTint ? "var(--ffsb-logo-on-dark, block)" : tint === "#111" ? "none" : "block" }} />
+                                )}
+                            </span>
+                        )}
                         <svg data-ff-signal="" aria-hidden="true" width="21" height="13" viewBox="0 0 21 13" style={{ display: "block" }}>
                             {[4, 6, 8, 10, 12].map((height, index) => (
                                 <rect key={index} x={index * 4.2} y={13 - height} width="2.8" height={height} rx=".7"
@@ -105,14 +117,15 @@ export function renderDevice({
                         </svg>
                         <span>5G</span>
                         {status.batteryText !== undefined ? (
-                            <svg data-ff-battery="" width="32" height="18" viewBox="0 0 32 18"
+                            <svg data-ff-battery="" width="30" height="14" viewBox="0 0 30 14"
                                 role="img" aria-label={status.batteryLabel || status.batteryText}
                                 style={{ display: "block" }}>
-                                <rect width="32" height="18" rx="9" fill="currentColor" opacity="0.8" />
-                                <path d="M9 0a9 9 0 0 0 0 18Z" fill="currentColor" />
-                                <text x="19" y="9" textAnchor="middle" dominantBaseline="central"
+                                <rect x=".75" y=".75" width="25.5" height="12.5" rx="3.25"
+                                    fill="none" stroke="currentColor" strokeWidth="1.5" />
+                                <rect x="28" y="4.5" width="2" height="5" rx="1" fill="currentColor" opacity="0.55" />
+                                <text x="13.5" y="7" textAnchor="middle" dominantBaseline="central"
                                     fontSize="11" fontWeight="600" style={{ fontVariantNumeric: "tabular-nums" }}
-                                    fill={autoTint ? "var(--ffsb-contrast, #111)" : status.tone === "dark" ? "#fff" : "#111"}>
+                                    fill="currentColor">
                                     {status.batteryText}
                                 </text>
                             </svg>

@@ -5,28 +5,74 @@ import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { createServer } from 'vite'
 
-test('Home renders real bilingual content in reference order without inline project details', async () => {
+function elements(node) {
+  if (Array.isArray(node)) return node.flatMap(elements)
+  if (!node?.props) return []
+  return [node, ...elements(node.props.children)]
+}
+
+function textMarkup(value) {
+  return renderToStaticMarkup(createElement('span', null, value)).slice(6, -7)
+}
+
+test('Home SSR preserves real VI/EN content in exactly five ordered sections after its header', async () => {
   const server = await createServer({ configFile: false, optimizeDeps: { noDiscovery: true, include: [] }, server: { middlewareMode: true, hmr: false, ws: false }, appType: 'custom' })
   try {
     const { HomeView } = await server.ssrLoadModule('/src/features/portfolio/components/views/HomeView.tsx')
     const { portfolio } = await server.ssrLoadModule('/src/features/portfolio/data/portfolio.ts')
     for (const language of ['vi', 'en']) {
       const data = portfolio[language]
-      const html = renderToStaticMarkup(createElement(HomeView, { data, expandedProject: 'vinqa', onNavigate() {}, onToggle() {} }))
-      const sections = ['intro', 'impact', 'projects', 'capabilities', 'tools', 'employment', 'contact'].map(key => html.indexOf(`data-ff-section="${key}"`))
-      assert.ok(sections.every((position, i) => position >= 0 && (i === 0 || position > sections[i - 1])))
+      const props = { data, expandedProject: 'vinqa', onNavigate() {}, onToggle() {} }
+      const tree = HomeView(props)
+      const direct = tree.props.children.filter(Boolean)
+      const keys = ['employment', 'tools', 'capabilities', 'projects', 'honors']
+      assert.deepEqual(direct.map(node => node.type), ['header', ...keys.map(() => 'section')])
+      assert.deepEqual(direct.slice(1).map(node => node.props['data-ff-section']), keys)
+      const html = renderToStaticMarkup(createElement(HomeView, props))
+      assert.deepEqual([...html.matchAll(/<section\b[^>]*data-ff-section="([^"]+)"/g)].map(match => match[1]), keys)
+      assert.ok(html.indexOf('<header') < html.indexOf('<section'))
+      assert.equal((html.match(/<h1\b/g) || []).length, 1)
+      assert.ok(html.includes(`aria-label="${textMarkup(data.profile.name)}"`))
+      assert.ok(html.includes(textMarkup(data.profile.displayName)))
       assert.ok(html.includes(data.profile.portrait.src) && html.includes(data.profile.portrait.alt))
-      for (const item of data.impact) assert.ok(html.includes(item.value))
+      assert.ok(!html.includes('data-ff-section="contact"'))
+      assert.equal((html.match(/data-framer-component-type="RichTextContainer"/g) || []).length, 6 + data.projects.length)
+      assert.equal((html.match(/data-framer-background-image-wrapper="true"/g) || []).length, 1 + data.projects.length)
+
+      const honors = renderToStaticMarkup(direct.at(-1))
+      assert.ok(honors.includes(`<h2>${textMarkup(data.ui.honors)}</h2>`))
+      assert.equal((honors.match(/<li>/g) || []).length, data.honors.length)
+      for (const honor of data.honors) {
+        for (const value of [honor.name, honor.period, honor.description]) assert.ok(honors.includes(textMarkup(value)))
+      }
+      assert.equal((honors.match(/data-framer-name="Count impact"/g) || []).length, data.impact.length)
+      for (const item of data.impact) {
+        assert.ok(honors.includes(`>${textMarkup(item.value)}</dt><dd>${textMarkup(item.label)}</dd>`))
+      }
+      assert.ok(honors.indexOf('data-ff-section="impact"') > honors.indexOf('</ul>'))
+      assert.ok(!renderToStaticMarkup(direct.slice(0, -1)).includes('data-framer-name="Count impact"'))
+      assert.ok(honors.includes('data-ff-surface="true"') || honors.includes('data-ff-surface=""'))
       for (const project of data.projects) {
         assert.ok(html.includes(`data-ff-section="project-${project.id}" tabindex="-1"`))
         assert.ok(html.includes(project.image.src))
-        assert.ok(html.includes(project.title))
+        for (const value of [project.title, project.summary, project.category, project.year, project.image.alt]) assert.ok(html.includes(textMarkup(value)))
       }
       assert.equal((html.match(/aria-haspopup="dialog"/g) || []).length, data.projects.length)
       assert.equal((html.match(/aria-expanded="true"/g) || []).length, 1)
       assert.ok(!html.includes('aria-controls=') && !html.includes('role="dialog"'))
-      for (const principle of data.story.principles) assert.ok(html.includes(principle.title))
-      for (const job of data.experience) assert.ok(html.includes(job.company) && html.includes(job.logo))
+      for (const principle of data.story.principles) {
+        assert.ok(html.includes(textMarkup(principle.title)) && html.includes(textMarkup(principle.body)))
+      }
+      for (const job of data.experience) {
+        for (const value of [job.company, job.role, job.period, job.logo]) assert.ok(html.includes(textMarkup(value)))
+      }
+      const loop = elements(tree).find(node => node.props.syncKey === 'home-technologies')
+      const technologies = [...new Set(data.projects.flatMap(project => project.techStack))]
+      assert.deepEqual(loop.props.technologies, technologies)
+      assert.equal(loop.props.language, language)
+      for (const excluded of ['OAuth2/JWT', 'WebSocket', 'A* Pathfinding']) assert.ok(!technologies.includes(excluded))
+      assert.ok(html.includes(language === 'vi' ? 'Công nghệ sử dụng' : 'Project technologies'))
+      assert.ok(html.includes(language === 'vi' ? 'Công nghệ trong các dự án' : 'Technologies used in projects'))
       assert.ok(html.includes(language === 'vi' ? 'Tất cả dự án' : 'All projects'))
       assert.ok(!html.includes(language === 'vi' ? 'All projects' : 'Tất cả dự án'))
     }
@@ -36,12 +82,16 @@ test('Home renders real bilingual content in reference order without inline proj
 test('Home uses controlled shared callbacks and isolated responsive styling', () => {
   const source = readFileSync(new URL('../src/features/portfolio/components/views/HomeView.tsx', import.meta.url), 'utf8')
   const css = readFileSync(new URL('../src/features/portfolio/styles/home.css', import.meta.url), 'utf8')
-  for (const destination of ['work', 'projects', 'experience', 'contact']) assert.ok(source.includes(`onNavigate('${destination}')`))
+  for (const destination of ['work', 'projects', 'contact']) assert.ok(source.includes(`onNavigate('${destination}')`))
+  assert.ok(!source.includes("onNavigate('experience')"))
   assert.ok(source.includes('onToggle(project.id)'))
   assert.ok(source.includes('expandedProject === project.id'))
   assert.ok(source.includes("import '../../styles/home.css'"))
   assert.ok(css.includes('.portfolio-screen--compact .home-hero'))
-  assert.ok(!/useState|scrollIntoView|dangerouslySetInnerHTML|from ['"].*data\//.test(source))
+  assert.ok(css.includes('.portfolio-screen--compact .home-honors__list li'))
+  assert.ok(css.includes('.home-tools__heading { white-space: nowrap; }'))
+  assert.ok(!css.includes('.home-contact'))
+  assert.ok(!/useState|useEffect|TechnologyLoopProvider|ProjectOverlay|scrollIntoView|dangerouslySetInnerHTML|from ['"].*data\//.test(source))
 })
 
 test('Home buttons invoke the shared navigation and selection handlers', async () => {
@@ -49,19 +99,51 @@ test('Home buttons invoke the shared navigation and selection handlers', async (
   try {
     const { HomeView } = await server.ssrLoadModule('/src/features/portfolio/components/views/HomeView.tsx')
     const { portfolio } = await server.ssrLoadModule('/src/features/portfolio/data/portfolio.ts')
-    const calls = []
-    const tree = HomeView({ data: portfolio.en, expandedProject: 'vinqa', onNavigate: destination => calls.push(['navigate', destination]), onToggle: id => calls.push(['project', id]) })
-    function clickButtons(node) {
-      if (Array.isArray(node)) return node.forEach(clickButtons)
-      if (!node?.props) return
-      if (node.type === 'button') node.props.onClick()
-      clickButtons(node.props.children)
+    for (const language of ['vi', 'en']) {
+      const data = portfolio[language]
+      const calls = []
+      const props = { data, expandedProject: 'vinqa', onNavigate: destination => calls.push(['navigate', destination]), onToggle: id => calls.push(['project', id]) }
+      const tree = HomeView(props)
+      const buttons = elements(tree).filter(node => node.type === 'button')
+      buttons.forEach(button => button.props.onClick())
+      assert.deepEqual(calls, [
+        ['navigate', 'projects'], ['navigate', 'contact'], ['navigate', 'work'], ['navigate', 'projects'],
+        ...data.projects.map(project => ['project', project.id]),
+      ])
+      for (const expandedProject of [null, ...data.projects.map(project => project.id)]) {
+        const triggers = elements(HomeView({ ...props, expandedProject })).filter(node => node.props['aria-haspopup'] === 'dialog')
+        assert.deepEqual(triggers.map(node => node.props['aria-expanded']), data.projects.map(project => project.id === expandedProject))
+      }
     }
-    clickButtons(tree)
-    assert.deepEqual(calls, [
-      ['navigate', 'work'], ['navigate', 'contact'], ['navigate', 'projects'],
-      ...portfolio.en.projects.map(project => ['project', project.id]),
-      ['navigate', 'experience'], ['navigate', 'contact'],
-    ])
+  } finally { await server.close() }
+})
+
+test('Home employer summaries expose only company, role, period and logo, never job details', async () => {
+  const server = await createServer({ configFile: false, optimizeDeps: { noDiscovery: true, include: [] }, server: { middlewareMode: true, hmr: false, ws: false }, appType: 'custom' })
+  try {
+    const { HomeView } = await server.ssrLoadModule('/src/features/portfolio/components/views/HomeView.tsx')
+    const { portfolio } = await server.ssrLoadModule('/src/features/portfolio/data/portfolio.ts')
+    for (const language of ['vi', 'en']) {
+      const data = portfolio[language]
+      const current = data.experience.find(job => job.current)
+      assert.equal(current.company, 'VinFast')
+      assert.equal(current.role, language === 'vi' ? 'Đang làm việc tại VinFast' : 'Currently working at VinFast')
+      assert.deepEqual(current.tech, [])
+      assert.deepEqual(current.highlights, [])
+      const props = { data, expandedProject: null, onNavigate() {}, onToggle() {} }
+      const safe = renderToStaticMarkup(createElement(HomeView, props))
+      const extraDetails = {
+        ...data,
+        experience: data.experience.map(job => ({ ...job, tech: ['PRIVATE_TECH_SENTINEL'], highlights: ['PRIVATE_DETAIL_SENTINEL'] })),
+      }
+      assert.equal(renderToStaticMarkup(createElement(HomeView, { ...props, data: extraDetails })), safe)
+      const employers = elements(HomeView(props)).filter(node => node.props.className === 'home-employer')
+      assert.equal(employers.length, data.experience.length)
+      employers.forEach((employer, index) => {
+        const job = data.experience[index]
+        const text = elements(employer).filter(node => ['h3', 'p'].includes(node.type)).map(node => node.props.children)
+        assert.deepEqual(text, [job.company, job.role, job.period])
+      })
+    }
   } finally { await server.close() }
 })

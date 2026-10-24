@@ -4,8 +4,9 @@ export function resolvePortfolioDestination(destination: string): { view: Portfo
   if (destination.startsWith('project-') && destination.length > 8) {
     return { view: 'projects', target: destination, project: destination.slice(8) }
   }
-  if (destination === 'job-current') return { view: 'experience', target: destination }
+  if (destination === 'job-current') return { view: 'work', target: destination }
+  if (destination === 'experience') return { view: 'work' }
   if (destination === 'intro') return { view: 'home' }
-  if (destination === 'home' || destination === 'work' || destination === 'projects' || destination === 'about' || destination === 'experience' || destination === 'contact') return { view: destination }
+  if (destination === 'home' || destination === 'work' || destination === 'projects' || destination === 'about' || destination === 'contact') return { view: destination }
   return { view: 'home' }
 }

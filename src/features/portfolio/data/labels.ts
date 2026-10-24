@@ -19,7 +19,7 @@ export const labels: Record<Language, PortfolioLabels> = {
     home: 'Home', work: 'Work', archive: 'Projects',
     intro: 'About', story: 'From an interest to a project.', experience: 'Experience',
     projects: 'Projects I have built', impact: 'Projects & honors', honors: 'Honors', contact: 'Contact',
-    open: 'Scroll to unfold', explore: 'Explore the work', more: 'View details', less: 'Close details',
+    open: 'Scroll to unfold', explore: 'Explore projects', more: 'View details', less: 'Close details',
     live: 'Visit website', code: 'Source code', role: 'My contribution', current: 'Now',
     projectNotification: 'VinQA · Explore the project',
     contactNotification: 'Connect with Long', coverHint: 'Tap a notification to explore',

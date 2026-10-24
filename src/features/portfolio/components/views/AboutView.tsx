@@ -53,7 +53,7 @@ export function AboutView({ data, onNavigate }: PortfolioViewProps) {
             <p>{principle.body}</p>
           </div>)}
         </div>
-        <h3 className="about-view__tools-heading pf-meta">{vi ? 'Công nghệ đã sử dụng' : 'Tools I work with'}</h3>
+        <h3 className="about-view__tools-heading pf-meta">{vi ? 'Công nghệ sử dụng' : 'Tools I work with'}</h3>
         <TechnologyLoop technologies={technologies} syncKey="about-technologies" language={vi ? 'vi' : 'en'} />
       </section>
 

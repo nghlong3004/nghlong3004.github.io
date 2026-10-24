@@ -23,6 +23,11 @@ function findSection(screen: HTMLElement, key: string) {
     .find(element => element.dataset.ffSection === key)
 }
 
+function isEditable(element: HTMLElement) {
+  return element.isContentEditable || element.tagName === 'TEXTAREA' ||
+    (element.tagName === 'INPUT' && !/^(button|checkbox|color|file|hidden|image|radio|range|reset|submit)$/i.test((element as HTMLInputElement).type))
+}
+
 export function useSectionNavigation(
   ref: Ref<FoldfolioHandle> | undefined,
   rootRef: RefObject<HTMLDivElement | null>,
@@ -35,11 +40,12 @@ export function useSectionNavigation(
   const frame = useRef(0)
   const fallback = useRef(0)
   const cancel = useRef<() => void>(() => {})
-  const reveal = useRef<(element: HTMLElement) => boolean>(() => false)
-  reveal.current = (element) => {
+  const reveal = useRef<(element: HTMLElement, automatic?: boolean) => boolean>(() => false)
+  reveal.current = (element, automatic = false) => {
     const root = rootRef.current
     const screen = refs.cInteractive?.current
     if (!root || !screen || screen.inert || !element.isConnected || !screen.contains(element)) return false
+    if (automatic && element.tabIndex < 0 && !element.isContentEditable) return false
     const top = sectionTop(screen, element)
     if (top === null) return false
     const g = geometry.current
@@ -85,8 +91,9 @@ export function useSectionNavigation(
     const update = () => {
       window.cancelAnimationFrame(frame)
       frame = window.requestAnimationFrame(() => {
-        if (document.activeElement instanceof HTMLElement)
-          reveal.current(document.activeElement)
+        const active = document.activeElement
+        if (active instanceof HTMLElement && isEditable(active))
+          reveal.current(active, true)
       })
     }
     viewport.addEventListener('resize', update)
@@ -100,7 +107,7 @@ export function useSectionNavigation(
   useIsoLayoutEffect(() => {
     const frame = window.requestAnimationFrame(() => {
       if (document.activeElement instanceof HTMLElement)
-        reveal.current(document.activeElement)
+        reveal.current(document.activeElement, true)
     })
     return () => window.cancelAnimationFrame(frame)
   }, [geometry.current.s, geometry.current.Hs, geometry.current.port, geometry.current.innerMax])

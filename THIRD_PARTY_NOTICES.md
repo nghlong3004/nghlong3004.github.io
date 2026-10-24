@@ -71,8 +71,8 @@ endorsement, certification or ownership of the trademarks.
   The full upstream MIT license is retained in `public/technology/`.
 
 `public/technology/NOTICE.txt` records pins, source URLs and attribution. OAuth2/JWT,
-WebSocket and A* Pathfinding remain text because they describe combined standards,
-a protocol and an algorithm, not a single product whose logo can honestly stand for them.
+WebSocket and A* Pathfinding are excluded from project technology lists and derived
+loops. Unrelated narrative references remain; no unrelated logo represents these concepts.
 
 Marker Text and Slide to Confirm are adapted from the official Kokonut UI registry:
 
