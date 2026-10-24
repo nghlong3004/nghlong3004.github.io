@@ -1,6 +1,150 @@
 # Portfolio verification
 
-## Reload-jitter repair
+## Bilingual Alumni display trial — 2026-10-25
+
+Alumni Sans is used for the display role in BOTH Vietnamese and English, while Geist
+body/UI and Geist Mono metadata remain. The self-hosted, unmodified variable font and
+full OFL license are included; see THIRD_PARTY_NOTICES.md for pinned provenance/hash.
+Original Sofia files, portrait and all existing project assets are preserved. This
+trial accompanies the accepted reference reconstruction described below. Technical
+verification and publication make it reviewable; they do not establish aesthetic approval.
+
+### Before / after findings
+
+- The original Sofia800/900 files cover only50/146 tested Vietnamese letters and5/8
+  combining marks. Linux Chromium mixed DejaVu Sans Bold into52 of408 sampled VI
+  text elements across six views at desktop/mobile sizes; English had no such fallback.
+  In Work/About/Contact this visibly enlarged accented letters and disrupted spacing.
+- Alumni covers146/146 letters, all8 marks and printable ASCII. The24 final-source
+  VI/EN view/size cases contain816 sampled text elements with no system-font fallback.
+  Actual font queries confirm Alumni for display and Geist/Mono for body/metadata.
+  A variable font may report the default internal name “Alumni Sans Thin”; explicit
+  800/900 shaping widths match the real instances, not the default100 weight.
+- The new headings visibly have consistent glyph/diacritic proportions. The settled
+  sampled heading has no blur filter or local text transform/zoom; the existing device
+  viewport-fit scale remains. This confirms a mixed-glyph problem, not a general GPU,
+  browser-antialiasing or universal “pixelation” diagnosis. No rasterization/engine hack
+  was added. Pixel edges can still vary with OS, browser and device pixel ratio.
+- Existing sizes, leading and tracking remain. Alumni is narrower, so one scoped
+  compact Home max-width rule preserves the intended HOANG / LONG break at its space,
+  without splitting words or resizing the font. Names/clock/headings remain a visual trial,
+  not metric-identical replacements. Sampled body/form accents are intact.
+- The separate existing Geist500 file declared as500–600 remains unchanged: it supplies
+  Medium, not genuine SemiBold. It was not necessary to change body/status typography to
+  remove display-font fallback; no claim that this trial fixes that declaration is made.
+
+### Trial verification
+
+Clean staged checkout: frozen install, production build,88 tests and lint pass; lint has
+0 errors/40 existing warnings, and the main-bundle size warning remains. New regressions
+inspect actual SFNT family, variable axis/instances, Vietnamese cmap mappings, complete
+license text and all display CSS routes. Browser shaping checks match NFC/NFD advances
+for a stacked-accent specimen in Alumni, Geist and Geist Mono.
+
+Desktop1440×900 and portrait390×844 VI/EN checks cover distinct views, entry, scrolled
+About honors/story, Contact form, expanded in-device drawer and final folded screen.
+Navigation/form/signal/slider and project-dialog keyboard/scroll checks supplement font
+inspection. Ten native-reload traces retain one physical cover position on all eight warm
+reloads and observable motion on both cold visits; no app scroll reset is recorded.
+Desktop restored650 in this run, while mobile returned0; reliable scroll persistence
+and frame-rate quality are not claimed. Earlier failed checks remain separate: an
+obsolete literal max-width assertion was updated for the intended compact word break;
+license whitespace and release-helper staging issues were not application failures.
+
+Physical/non-Chromium/assistive-technology testing, broad DPR/zoom/slow-font-network
+testing and every possible accent combination remain outside this trial's evidence.
+The previous reference-refactor limitations below remain; no dependencies, content,
+portrait bytes, motion policy or hardware behavior were changed by the font trial.
+
+## Accepted reference reconstruction baseline — 2026-10-24
+
+This baseline was accepted locally before the bilingual trial and its publication. The deployed
+reload-alignment repair is retained. Reference inspection used REA desktop/mobile navigation scenarios and screenshots
+of Home, Work, Archive, About and Contact before screen implementation. Shared typography,
+spacing, surfaces and interaction conventions were agreed before independent screen work.
+
+### What is usable
+
+- Home has a full portrait-led introduction, four real metrics, four selected projects,
+  principles, employers and closing action; no artificial scroll-length or fold-timing change.
+- Work is a light filtered project grid/index/results view. Projects is a separate dark
+  Archive-style gallery using ten existing images. About includes introduction, story and all
+  achievements. Contact has the reference split/stacked treatment, real links and a brief form.
+- Experience remains reachable from Home/About and the compact VinFast notification. Exactly
+  one active view is rendered; final folded social/slider content remains separate.
+- Project details use the official Kokonut Smooth Drawer v2 adaptation inside one continuous
+  device-screen overlay, not a body portal. Selection, filters and form drafts are shared
+  between hardware copies. Close/Escape/backdrop, focus containment/restoration and inner
+  scrolling are supported. Adaptation/provenance is in THIRD_PARTY_NOTICES.md; drag-to-snap
+  and the original checkout/payment behavior are intentionally not included.
+- Notification logo backing is transparent while its notification surface remains. Fully
+  open screen content is continuous: decorative crease disappears and a one-CSS-pixel
+  screen-only overlap fixes the compositor edge; outer hardware and folding shade remain.
+- Old Glow was found in the initial engine history as softened, image-derived canvas content.
+  Removing the later app palette override restores that path; optional reusable palette props
+  remain. No dependencies or public assets changed; the original supplied JPEG is unchanged.
+- The reference-style status bar retains Vietnam time and age-in-battery semantics, adding a
+  decorative simulated cellular level2–5 every~2s with smooth opacity transitions. No actual
+  network/battery APIs are used. Nested surface markers keep status text readable over light
+  and dark sections. Idle device float remains off.
+
+### Verified results
+
+Environment: Linux, Node24.22, pnpm12.14, Vite8.3.5, Chromium156. Desktop1440×900 and
+portrait390×844; both Vietnamese and English. These are local browser checks, not device-lab
+or frame-exact reference-motion certification.
+
+- Production build passes. All85 tests pass using
+  `node --experimental-strip-types --test --test-concurrency=1 tests/*.test.mjs`.
+  Serial execution avoids the constrained host's concurrent Vite-cache/resource contention.
+  Lint exits0: no errors,40 warnings (existing engine warnings plus the Contact helper-export
+  warning). The approximately544kB main-bundle warning remains.
+- Four final-build VI/EN screen cases pass all five primary destinations, original portrait
+  decoding, navigation fit, synchronized filters and single in-device dialog bounds/keyboard
+  checks. Settled compact peek screenshots visibly retain close/expand controls.
+- Four behavior cases pass VinFast job focus, Contact draft synchronization/unique IDs/native
+  invalid-field semantics, readable dark status text over the light form, signal range/copy
+  synchronization, age labels and final keyboard-slider return to Home. No email was sent.
+- Four scrolled-content cases expose real metrics, employers, all honors, project index and
+  gallery. Original software logos/screenshots are contained rather than fabricated/cropped
+  into the template's photography. Letterboxing is an intentional content adaptation.
+- Four normal/reduced-motion cases each pass in final production and development StrictMode:
+  cold intro, project-image reveal and real count-up values actually change and settle.
+  Cleanup regressions cover owned timer/rAF cancellation, detached targets, counter restoration,
+  stale callbacks and StrictMode rearming without changing nominal durations/easing.
+- Ten final-build reload traces pass physical cover-geometry checks: eight warm reloads have
+  one position from their first render; both cold visits retain intro motion. Preferences stay
+  unchanged and no app scroll reset is recorded. Desktop retained650 in the final two attempts;
+  mobile returned0. Reliable native scroll persistence is not claimed.
+- Chromium pixel probes on the final dark Projects screen are uniform across the hinge
+  (RGB11,11,11), not the former grey54,54,54 line. Dark/light fold/open fixtures, partial fold
+  shading and resize checks supplement actual integrated screen evidence.
+
+Earlier failures remain recorded separately: resource/optimizer/IPC failures during concurrent
+fixtures, a DOM-valued browser wait, assumptions about transient animation classes/heading
+wrappers, restored-scroll entry state and the visible compact-name/status/seam defects. The
+final passes follow specific harness or application corrections; failed attempts are not passes.
+
+### Limits and history
+
+The original longer-sequence VinQA inline-expansion focus failure remains historical evidence.
+That interaction was replaced: VinFast→return→VinQA now focuses one Projects dialog in both
+desktop languages and restores non-body focus on close. This validates the new path, not a
+retrospective repair claim about the old release.
+
+The brief form prepares a mailto draft for the visitor's mail client; there is no sending backend,
+server draft storage or delivery promise. Mail-client launch and long-URI support are untested.
+No temporary achievements/identity imagery or invented business metrics were needed. Physical
+devices, non-Chromium engines, assistive-technology audit, SSR hydration and Framer editor runtime
+remain untested. Reduced-motion preferences intentionally do not disable animation, as required
+by the existing explicit policy. Full scene/finish/language cross-product and pixel-identical
+photography/original route architecture are not claimed. This baseline's original local-only
+verification did not include publication; the current trial is released through the existing Pages workflow.
+
+The obsolete inline ProjectsSection component and its unused styles were removed after all
+callers were replaced; they remain recoverable from Git. Real portfolio information was retained.
+
+## Earlier deployed reload-jitter repair
 
 Warm reloads could paint the placeholder 1200×820 geometry before measuring the actual
 viewport. On mobile this also briefly chose landscape layout. The animation loop then aligned

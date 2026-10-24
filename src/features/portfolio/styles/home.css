@@ -1,0 +1,73 @@
+.portfolio-screen .home-page { padding-top: 0; }
+.home-page { overflow-wrap: anywhere; }
+.home-hero {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-inline: calc(-1 * var(--pf-padding));
+  min-height: 660px;
+}
+.home-hero__copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
+  padding: var(--pf-top) var(--pf-padding) var(--pf-bottom);
+}
+.home-hero__role { line-height: 1.6; }
+.portfolio-screen:not(.portfolio-screen--compact) .home-hero__summary .pf-name { font-size: 100px; white-space: nowrap; }
+.home-hero__summary > p { margin-top: 28px; max-width: 38ch; }
+.home-hero__portrait { height: 660px; object-position: 50% 40%; }
+.home-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+.portfolio-screen .home-action--quiet { background: var(--pf-surface); color: var(--pf-ink); }
+.home-page .pf-action { min-height: 40px; transition: opacity .18s ease; }
+.home-page .pf-action:hover { opacity: .75; }
+.home-impact {
+  background: var(--pf-dark);
+  color: var(--pf-on-dark);
+  margin-inline: calc(-1 * var(--pf-padding));
+  padding-top: 28px;
+}
+.portfolio-screen .home-impact h2 { font: 500 11px/1.2 var(--pf-mono); margin: 0 var(--pf-padding); }
+.home-section-heading { display: flex; align-items: baseline; justify-content: space-between; gap: var(--pf-grid-gap); }
+.home-section-heading > :first-child { min-width: 0; }
+.home-section-heading > button { flex-shrink: 0; }
+.home-projects { display: grid; gap: 34px; }
+.home-project { display: grid; grid-template-columns: 1.15fr 1fr; gap: 34px; align-items: center; min-width: 0; }
+.home-project__image { display: block; width: 100%; height: 290px; object-fit: contain; background: var(--pf-surface); border-radius: 12px; }
+.home-project__copy { min-width: 0; }
+.portfolio-screen .home-project__copy h3 { margin: 14px 0; }
+.home-project__copy .pf-action { margin-top: 22px; }
+.home-principles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 34px; }
+.portfolio-screen .home-principles h3 { max-width: 24ch; }
+.home-employers { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 34px; }
+.home-employer { display: flex; align-items: center; gap: 20px; min-width: 0; }
+.home-employer img { width: 84px; height: 74px; object-fit: contain; flex-shrink: 0; }
+.portfolio-screen .home-employer h3 { margin-bottom: 10px; }
+.portfolio-screen .home-employer .pf-meta { margin-top: 10px; }
+.home-contact {
+  margin-inline: calc(-1 * var(--pf-padding));
+  margin-bottom: calc(-1 * var(--pf-bottom));
+  padding: 48px var(--pf-padding) var(--pf-bottom);
+  background: var(--pf-dark);
+  color: var(--pf-on-dark);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 34px;
+}
+.home-contact h2 { max-width: 17ch; }
+.home-contact .pf-action { flex-shrink: 0; }
+.portfolio-screen--compact .home-hero { grid-template-columns: minmax(0, 1fr); min-height: auto; }
+.portfolio-screen--compact .home-hero__copy { padding-bottom: 32px; gap: 40px; }
+.portfolio-screen--compact .home-hero__summary .pf-name { max-width: min-content; overflow-wrap: normal; }
+.portfolio-screen--compact .home-hero__summary > p { margin-top: 22px; }
+.portfolio-screen--compact .home-hero__portrait { height: 320px; object-position: 50% 35%; }
+.portfolio-screen--compact .home-section-heading { display: block; margin-bottom: 28px; }
+.portfolio-screen--compact .home-section-heading h2 { margin-bottom: 22px; }
+.portfolio-screen--compact .home-project { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+.portfolio-screen--compact .home-project__image { height: 220px; }
+.portfolio-screen--compact .home-projects { gap: 40px; }
+.portfolio-screen--compact .home-principles,
+.portfolio-screen--compact .home-employers { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+.portfolio-screen--compact .home-employer img { width: 64px; height: 64px; }
+.portfolio-screen--compact .home-contact { display: block; padding-top: 34px; }

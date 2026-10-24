@@ -1,11 +1,15 @@
 @font-face { font-family: 'Geist'; src: url('/fonts/geist-regular.ttf') format('truetype'); font-weight: 400; font-display: swap; }
 @font-face { font-family: 'Geist'; src: url('/fonts/geist-medium.ttf') format('truetype'); font-weight: 500 600; font-display: swap; }
 @font-face { font-family: 'Geist Mono'; src: url('/fonts/geist-mono-medium.ttf') format('truetype'); font-weight: 500; font-display: swap; }
-@font-face { font-family: 'Sofia Sans Extra Condensed'; src: url('/fonts/sofia-extra-condensed-extrabold.ttf') format('truetype'); font-weight: 800; font-display: swap; }
-@font-face { font-family: 'Sofia Sans Extra Condensed'; src: url('/fonts/sofia-extra-condensed-black.ttf') format('truetype'); font-weight: 900; font-display: swap; }
+@font-face { font-family: 'Alumni Sans'; src: url('/fonts/alumni-sans-variable.ttf') format('truetype'); font-weight: 100 900; font-display: swap; }
 
 .portfolio-screen, .portfolio-cover, .portfolio-call {
-  --pf-ground: #f7f8f5; --pf-surface: #eceeea; --pf-ink: #151613; --pf-secondary: #50564c; --pf-accent: #245d47;
+  --pf-ground: #f4f3f0; --pf-surface: rgba(17,17,17,.06); --pf-ink: #111111; --pf-secondary: #50564c; --pf-accent: #f3cc16;
+  --pf-dark: #0b0b0b; --pf-on-dark: #f4f3f0;
+  --pf-display: 'Alumni Sans', sans-serif; --pf-body: 'Geist', sans-serif; --pf-mono: 'Geist Mono', monospace;
+  --pf-title: 900 86px/.84 var(--pf-display); --pf-name: 900 118px/.84 var(--pf-display);
+  --pf-heading: 900 72px/.9 var(--pf-display); --pf-card-title: 900 30px/.9 var(--pf-display);
+  --pf-padding: 29px; --pf-section-gap: 64px; --pf-grid-gap: 18px; --pf-top: 80px; --pf-bottom: 124px;
   box-sizing: border-box; background: var(--pf-ground); color: var(--pf-ink);
   font: 400 16px/1.6 'Geist', sans-serif; text-align: left;
 }
@@ -16,8 +20,8 @@
 .portfolio-screen a, .portfolio-cover a, .portfolio-call a { color: inherit; text-decoration: none; }
 .portfolio-screen :is(button,a):focus-visible, .portfolio-cover :is(button,a):focus-visible, .portfolio-call a:focus-visible,
 .portfolio-language button:focus-visible, .portfolio-nav button:focus-visible, .portfolio-brand:focus-visible { outline: 2px solid #245d47; outline-offset: 4px; }
-.portfolio-brand { position: fixed; top: 20px; left: 28px; z-index: 60; border: 0; background: transparent; color: #151613; font: 900 25px/.9 'Sofia Sans Extra Condensed', sans-serif; letter-spacing: -.04em; cursor: pointer; }
-.portfolio-scene-name { display: block; font: 900 300px/.8 'Sofia Sans Extra Condensed', sans-serif; letter-spacing: -.01em; text-transform: uppercase; white-space: nowrap; }
+.portfolio-brand { position: fixed; top: 20px; left: 28px; z-index: 60; border: 0; background: transparent; color: #151613; font: 900 25px/.9 'Alumni Sans', sans-serif; letter-spacing: -.04em; cursor: pointer; }
+.portfolio-scene-name { display: block; font: 900 300px/.8 'Alumni Sans', sans-serif; letter-spacing: -.01em; text-transform: uppercase; white-space: nowrap; }
 .portfolio-language { position: fixed; top: 19px; left: 172px; z-index: 60; display: flex; gap: 9px; font: 400 13px/1 'Geist', sans-serif; color: #777; }
 .portfolio-language button { border: 0; background: transparent; padding: 5px 0; }
 .portfolio-language button[aria-pressed="true"] { color: #111; text-decoration: underline; text-underline-offset: 4px; }
@@ -38,8 +42,8 @@
 .portfolio-screen[data-portfolio-view="contact"] .portfolio-footer { margin: 0; padding-top: 66px; min-height: 660px; }
 .portfolio-screen[data-portfolio-view="contact"] h1 { font-size: 84px; line-height: 1; max-width: 18ch; margin-bottom: 28px; }
 .portfolio-screen[data-portfolio-view="contact"] .portfolio-meta { margin-bottom: 22px; color: #ced1c7; }
-.portfolio-screen h1 { font: 900 100px/.84 'Sofia Sans Extra Condensed', sans-serif; letter-spacing: -.005em; text-transform: uppercase; }
-.portfolio-screen h2 { font: 900 72px/1.02 'Sofia Sans Extra Condensed', sans-serif; letter-spacing: -.025em; margin-bottom: 32px; text-wrap: balance; }
+.portfolio-screen h1 { font: 900 100px/.84 'Alumni Sans', sans-serif; letter-spacing: -.005em; text-transform: uppercase; }
+.portfolio-screen h2 { font: 900 72px/1.02 'Alumni Sans', sans-serif; letter-spacing: -.025em; margin-bottom: 32px; text-wrap: balance; }
 .portfolio-screen h3 { font: 500 26px/1.18 'Geist', sans-serif; letter-spacing: -.035em; margin-bottom: 15px; }
 .portfolio-screen h4 { font: 500 20px/1.25 'Geist', sans-serif; letter-spacing: -.025em; margin-bottom: 16px; }
 .portfolio-screen p + p { margin-top: 14px; }
@@ -66,24 +70,9 @@
 .portfolio-company { display: block; width: 116px; height: 42px; object-fit: contain; object-position: left center; margin-bottom: 20px; }
 .portfolio-current { color: var(--pf-accent); font-size: 13px; margin-top: 10px; }
 .portfolio-tech { color: var(--pf-secondary); font-size: 13px; line-height: 1.7; margin-top: 20px !important; }
-.portfolio-project { margin-top: 44px; position: relative; }
-.portfolio-project__overview { display: grid; grid-template-columns: 1.25fr 1fr; align-items: center; gap: 32px; }
-.portfolio-project__image { background: #e6e9e2; overflow: hidden; padding: 18px; }
-.portfolio-project__image img { display: block; width: 100%; height: auto; aspect-ratio: 8 / 5; object-fit: contain; transition: transform .55s ease; }
-.portfolio-project:hover .portfolio-project__image img { transform: scale(1.025); }
-.portfolio-project__info h3 { font: 900 39px/1.1 'Sofia Sans Extra Condensed', sans-serif; margin-top: 8px; }
-.portfolio-project__info p { font-size: 15px; }
-.portfolio-project__info .portfolio-actions { gap: 12px; }
-.portfolio-project__details { margin-top: 32px; padding: 36px; background: #eaece7; }
-.portfolio-project__details[hidden] { display: none; }
-.portfolio-project__details h4 { margin-top: 26px; }
-.portfolio-project__details h4:first-child { margin-top: 0; }
-.portfolio-project__details p + p { margin-top: 14px; }
-.portfolio-gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 28px; }
-.portfolio-gallery img { width: 100%; height: auto; object-fit: contain; }
 .portfolio-impact { display: flex; flex-direction: column; gap: 28px; margin: 0; max-width: 680px; }
 .portfolio-impact > div { display: grid; grid-template-columns: 144px 1fr; gap: 36px; align-items: center; }
-.portfolio-impact dt { font: 900 62px/1 'Sofia Sans Extra Condensed', sans-serif; letter-spacing: -.04em; }
+.portfolio-impact dt { font: 900 62px/1 'Alumni Sans', sans-serif; letter-spacing: -.04em; }
 .portfolio-impact dd { margin: 0; font-size: 17px; }
 .portfolio-honor { display: grid; grid-template-columns: 210px 1fr; gap: 42px; padding: 28px 0; }
 .portfolio-honor + .portfolio-honor { margin-top: 8px; }
@@ -91,26 +80,27 @@
 .portfolio-footer { margin: 92px -32px -64px; padding: 52px 32px 66px; background: #171914; color: #f5f6f1; }
 .portfolio-footer h2 { max-width: 20ch; }
 .portfolio-footer > p { max-width: 50ch; color: #ced1c7; }
-.portfolio-email { display: inline-block; font: 900 52px/1.2 'Sofia Sans Extra Condensed', sans-serif; letter-spacing: -.025em; margin: 36px 0; overflow-wrap: anywhere; }
+.portfolio-email { display: inline-block; font: 900 52px/1.2 'Alumni Sans', sans-serif; letter-spacing: -.025em; margin: 36px 0; overflow-wrap: anywhere; }
 .portfolio-socials { display: flex; flex-wrap: wrap; justify-content: inherit; gap: 20px; font-size: 13px; }
-.portfolio-signature { font: 900 84px/1 'Sofia Sans Extra Condensed', sans-serif; text-transform: uppercase; letter-spacing: -.04em; margin-top: 60px !important; }
+.portfolio-signature { font: 900 84px/1 'Alumni Sans', sans-serif; text-transform: uppercase; letter-spacing: -.04em; margin-top: 60px !important; }
 .portfolio-nav { display: flex; align-items: stretch; flex-wrap: nowrap; padding: 5px; gap: 2px; border-radius: 999px; background: rgba(42,44,39,.85); color: white; font: 500 13px/1.3 'Geist', sans-serif; }
 .portfolio-nav button { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; gap: 6px; height: 35px; border: 0; border-radius: 999px; padding: 0 15px; background: transparent; color: inherit; white-space: nowrap; }
 .portfolio-nav button[aria-current] { background: white; color: #1a1b18; }
 .portfolio-nav button:hover { background: #555d50; color: white; }
+.portfolio-nav button[aria-current]:hover { background: white; color: #1a1b18; }
 
 .portfolio-cover { padding: 0; position: relative; overflow: hidden; background: #f0f2f1; }
 .portfolio-cover__portrait { position: absolute; inset: 0; width: 100%; height: 100%; object-position: 52% 38%; background: transparent; }
 .portfolio-cover::after { content: ''; position: absolute; inset: 0 0 auto; height: 300px; background: linear-gradient(180deg, rgb(0 0 0 / .64), rgb(0 0 0 / .56) 72%, transparent); pointer-events: none; }
 .portfolio-cover__identity { position: absolute; top: 54px; left: 24px; right: 24px; text-align: center; z-index: 1; color: white; }
-.portfolio-cover__clock { font: 800 132px/.9 'Sofia Sans Extra Condensed', sans-serif; letter-spacing: -.015em; font-variant-numeric: tabular-nums; }
+.portfolio-cover__clock { font: 800 132px/.9 'Alumni Sans', sans-serif; letter-spacing: -.015em; font-variant-numeric: tabular-nums; }
 .portfolio-cover__role { font-size: 13px; font-weight: 500; line-height: 1.3; margin-top: 6px !important; }
 .portfolio-cover__identity .portfolio-cover__status { display: none; border: 0; padding: 0; background: none; color: inherit; font-size: 13px; font-weight: 500; line-height: 1.3; }
 .portfolio-notifications { position: absolute; bottom: 98px; left: 24px; right: 24px; display: flex; flex-direction: column; gap: 8px; z-index: 2; }
 .portfolio-notification { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 58px; padding: 9px 12px 9px 9px; border: 0; border-radius: 18px; background: rgba(255,255,255,.72); color: #121510; text-align: left; text-decoration: none; line-height: 1.3; transition: background .2s, transform .2s; }
 .portfolio-notification:hover { background: #fff; transform: translateY(-1px); }
 .portfolio-notification > img, .portfolio-notification__app { object-fit: contain; width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0; }
-.portfolio-notification__app { display: grid; place-items: center; background: #e1e9df; font-size: 22px; }
+.portfolio-notification__app { display: grid; place-items: center; background: transparent; font-size: 22px; }
 .portfolio-notification__app img { width: 26px; height: 26px; object-fit: contain; }
 .portfolio-notification > span:last-child { min-width: 0; }
 .portfolio-notification strong { display: block; font-size: 13px; font-weight: 500; }
@@ -131,7 +121,7 @@
 .portfolio-cover--compact .portfolio-cover__shortcut { width: 40px; height: 40px; }
 
 .portfolio-call { position: relative; display: flex; flex-direction: column; align-items: center; padding: 64px 26px 26px; gap: 16px; text-align: center; background: #f0f2f1; color: #151613; }
-.portfolio-call__name { font: 900 48px/1 'Sofia Sans Extra Condensed', sans-serif; text-transform: uppercase; letter-spacing: -.035em; }
+.portfolio-call__name { font: 900 48px/1 'Alumni Sans', sans-serif; text-transform: uppercase; letter-spacing: -.035em; }
 .portfolio-call__portrait { width: 130px; height: 130px; border-radius: 50%; margin-top: 32px; }
 .portfolio-call .portfolio-socials { width: 100%; justify-content: space-between; margin-top: auto; }
 .portfolio-call__completion { width: 100%; display: flex; justify-content: center; margin-top: auto; }
@@ -144,6 +134,11 @@
 .portfolio-call--compact .portfolio-call__portrait { width: 74px; height: 74px; margin-top: 4px; }
 
 .portfolio-screen--compact { padding: 0 24px 46px; }
+.portfolio-screen--compact {
+  --pf-title: 900 64px/.88 var(--pf-display); --pf-name: 900 78px/.84 var(--pf-display);
+  --pf-heading: 900 48px/.94 var(--pf-display);
+  --pf-padding: 26px; --pf-section-gap: 48px; --pf-bottom: 104px;
+}
 .portfolio-screen--compact[data-portfolio-view] { min-height: 718px; }
 .portfolio-screen--compact .portfolio-view-header { padding-top: 58px; }
 .portfolio-screen--compact .portfolio-view-header h1 { font-size: 62px; }
@@ -162,13 +157,10 @@
 .portfolio-screen--compact .portfolio-intro .portfolio-actions { margin-top: 20px; gap: 12px; }
 .portfolio-screen--compact .portfolio-actions button { font-size: 13px; padding: 11px 15px; }
 .portfolio-screen--compact .portfolio-principles, .portfolio-screen--compact .portfolio-experience,
-.portfolio-screen--compact .portfolio-project__overview, .portfolio-screen--compact .portfolio-honor,
-.portfolio-screen--compact .portfolio-gallery { grid-template-columns: 1fr; gap: 20px; }
+.portfolio-screen--compact .portfolio-honor { grid-template-columns: 1fr; gap: 20px; }
 .portfolio-screen--compact .portfolio-story-intro { font-size: 18px; }
 .portfolio-screen--compact .portfolio-principles { margin-top: 28px; gap: 26px; }
 .portfolio-screen--compact .portfolio-company { margin-bottom: 10px; }
-.portfolio-screen--compact .portfolio-project__image { padding: 14px; }
-.portfolio-screen--compact .portfolio-project__details { padding: 22px 18px; }
 .portfolio-screen--compact .portfolio-impact > div { grid-template-columns: 88px 1fr; gap: 20px; }
 .portfolio-screen--compact .portfolio-impact dt { font-size: 42px; }
 .portfolio-screen--compact .portfolio-impact dd { font-size: 15px; }
@@ -178,8 +170,8 @@
 @media (max-width: 560px) {
   .portfolio-brand { left: 22px; font-size: 20px; }
   .portfolio-language { left: 141px; font-size: 13px; gap: 7px; }
-  .portfolio-nav { font-size: 13px; }
-  .portfolio-nav button { padding-inline: 10px; }
+  .portfolio-nav { font-size: 12px; gap: 0; }
+  .portfolio-nav button { padding-inline: 8px; }
 }
 @media (max-width: 360px) {
   .portfolio-language { top: 50px; left: 22px; }
@@ -189,12 +181,31 @@
 .portfolio-email { flex-wrap: wrap; }
 .portfolio-cover__bottom button { display: inline-flex; align-items: center; gap: 10px; }
 .portfolio-cover__bottom button svg { flex-shrink: 0; }
-.portfolio-project__image img { transition: transform .9s cubic-bezier(.16,1,.3,1); }
 .portfolio-actions button { transition: translate .45s cubic-bezier(.16,1,.3,1), background .25s; }
 @media (hover: hover) and (pointer: fine) {
-  .portfolio-project:hover .portfolio-project__image img { transform: scale(1.06); }
   .portfolio-actions button:hover { translate: 0 -2px; }
 }
 @media (max-width: 360px) {
   .portfolio-screen--compact .portfolio-nav { font-size: 12px; }
 }
+
+/* Shared reference primitives: page frame, header, section, action and metric strip.
+   Screen styles own composition; use pf-page--dark / pf-action--accent for dark fields. */
+.portfolio-screen:has(> .pf-page) { padding: 0; }
+.portfolio-screen .pf-page { padding: var(--pf-top) var(--pf-padding) var(--pf-bottom); background: var(--pf-ground); color: var(--pf-ink); font: 400 15px/1.5 var(--pf-body); }
+.portfolio-screen .pf-page--dark { background: var(--pf-dark); color: var(--pf-on-dark); }
+.portfolio-screen .pf-header { display: grid; gap: 34px; }
+.portfolio-screen .pf-header h1 { font: var(--pf-title); letter-spacing: -.025em; text-transform: uppercase; }
+.portfolio-screen .pf-name { font: var(--pf-name); letter-spacing: -.025em; }
+.portfolio-screen .pf-section { margin-top: var(--pf-section-gap); }
+.portfolio-screen .pf-section h2 { font: var(--pf-heading); letter-spacing: -.025em; margin-bottom: 34px; }
+.portfolio-screen .pf-card-title { font: var(--pf-card-title); letter-spacing: -.025em; }
+.portfolio-screen .pf-meta { font: 500 11px/1.2 var(--pf-mono); }
+.portfolio-screen .pf-action { display: inline-flex; align-items: center; justify-content: center; gap: 10px; border: 0; border-radius: 999px; padding: 10px 16px; background: var(--pf-ink); color: var(--pf-on-dark); font: 500 13px/1.3 var(--pf-body); cursor: pointer; }
+.portfolio-screen .pf-page--dark .pf-action { background: var(--pf-ground); color: var(--pf-ink); }
+.portfolio-screen .pf-action.pf-action--accent { background: var(--pf-accent); color: var(--pf-ink); }
+.portfolio-screen .pf-action:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+.portfolio-screen .pf-metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--pf-grid-gap); margin: 0; padding: 34px var(--pf-padding); background: var(--pf-dark); color: var(--pf-on-dark); }
+.portfolio-screen .pf-metrics dt { font: var(--pf-heading); }
+.portfolio-screen .pf-metrics dd { margin: 10px 0 0; font: 400 15px/1.5 var(--pf-body); }
+.portfolio-screen--compact .pf-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }

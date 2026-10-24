@@ -14,6 +14,8 @@ export interface FoldfolioProps {
     mode: Mode
     screen?: React.ReactNode
     screenPortrait?: React.ReactNode
+    screenOverlay?: React.ReactNode
+    screenOverlayPortrait?: React.ReactNode
     screenNavigation?: { key: string; target?: string }
     cover?: React.ReactNode
     coverPortrait?: React.ReactNode

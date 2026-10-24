@@ -26,6 +26,9 @@ export function useDeviceRefs() {
     const shadowC = useRef<HTMLDivElement>(null)
     const call = useRef<HTMLDivElement>(null)
     const overlay = useRef<HTMLDivElement>(null)
+    const screenOverlay = useRef<HTMLDivElement>(null)
+    const creaseL = useRef<HTMLDivElement>(null)
+    const creaseR = useRef<HTMLDivElement>(null)
     const nmL = useRef<HTMLDivElement>(null)
     const nmR = useRef<HTMLDivElement>(null)
     const glow = useRef<HTMLDivElement>(null)
@@ -60,6 +63,9 @@ export function useDeviceRefs() {
         shadowC,
         call,
         overlay,
+        screenOverlay,
+        creaseL,
+        creaseR,
         nmL,
         nmR,
         glow,

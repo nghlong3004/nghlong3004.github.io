@@ -1,13 +1,14 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import '../features/portfolio/styles/portfolio.css'
 import FoldfolioDevice from '../features/foldfolio/FoldfolioDevice'
-import type { PortfolioView } from '../features/portfolio/types'
+import type { PortfolioContactDraft, PortfolioView } from '../features/portfolio/types'
 import { PortfolioScreen } from '../features/portfolio/components/PortfolioScreen'
 import { PortfolioCover } from '../features/portfolio/components/PortfolioCover'
 import { PortfolioContact } from '../features/portfolio/components/PortfolioContact'
+import { ProjectOverlay } from '../features/portfolio/components/kokonut/ProjectOverlay'
 import { portfolio } from '../features/portfolio/data/portfolio'
 import { usePortfolioLanguage } from '../features/portfolio/hooks/usePortfolioLanguage'
 import { useVietnamClock } from '../features/portfolio/hooks/useVietnamClock'
-import '../features/portfolio/styles/portfolio.css'
 import { deviceConfig } from './config/device'
 import { applyGlowDefault } from './config/scenePreference'
 import { resolvePortfolioDestination } from '../features/portfolio/lib/navigation'
@@ -19,7 +20,10 @@ export default function App() {
   const { time, age } = useVietnamClock()
   const { language, setLanguage } = usePortfolioLanguage()
   const [expandedProject, setExpandedProject] = useState<string | null>(null)
-  const [navigation, setNavigation] = useState<{ view: PortfolioView; target?: string; revision: number; open: boolean }>({ view: 'about', revision: 0, open: false })
+  const [workFilter, setWorkFilter] = useState('all')
+  const [contactDraft, setContactDraft] = useState<PortfolioContactDraft>({ name: '', email: '', location: '', message: '' })
+  const changeContactDraft = (field: keyof PortfolioContactDraft, value: string) => setContactDraft(current => ({ ...current, [field]: value }))
+  const [navigation, setNavigation] = useState<{ view: PortfolioView; target?: string; revision: number; open: boolean }>({ view: 'home', revision: 0, open: false })
   const entryFrame = useRef(0)
   useEffect(() => () => window.cancelAnimationFrame(entryFrame.current), [])
   const data = portfolio[language]
@@ -28,11 +32,13 @@ export default function App() {
     window.cancelAnimationFrame(entryFrame.current)
     const next = resolvePortfolioDestination(destination)
     if (next.project) setExpandedProject(next.project)
+    else if (next.view !== navigation.view) setExpandedProject(null)
     setNavigation(current => ({ view: next.view, target: next.target, revision: current.revision + 1, open: true }))
   }
   const returnToEntry = () => {
     window.cancelAnimationFrame(entryFrame.current)
-    setNavigation(current => ({ view: 'about', revision: current.revision, open: false }))
+    setExpandedProject(null)
+    setNavigation(current => ({ view: 'home', revision: current.revision, open: false }))
     window.scrollTo({ top: 0, behavior: 'smooth' })
     let attempts = 0
     const focusEntry = () => {
@@ -51,7 +57,7 @@ export default function App() {
   return (
     <>
       <button type="button" className="portfolio-brand" aria-label={`NGHLONG3004 — ${data.profile.name}`} onClick={returnToEntry}>NGHLONG3004</button>
-      <div role="status" aria-live="polite" aria-atomic="true" className="portfolio-view-announcement">{navigation.open && `${data.ui.current}: ${{ about: data.ui.intro, work: data.ui.projects, experience: data.ui.experience, contact: data.ui.contact }[navigation.view]}`}</div>
+      <div role="status" aria-live="polite" aria-atomic="true" className="portfolio-view-announcement">{navigation.open && `${data.ui.current}: ${{ home: data.ui.home, work: data.ui.work, projects: data.ui.archive, about: data.ui.intro, experience: data.ui.experience, contact: data.ui.contact }[navigation.view]}`}</div>
       <div className="portfolio-language" role="group" aria-label={data.ui.language} hidden>
         <button type="button" lang="vi" aria-label="Tiếng Việt" aria-pressed={language === 'vi'} onClick={() => setLanguage('vi')}>VI</button>
         <button type="button" lang="en" aria-label="English" aria-pressed={language === 'en'} onClick={() => setLanguage('en')}>EN</button>
@@ -64,17 +70,19 @@ export default function App() {
           : `Age ${age} — not device battery level` }}
         nameLeft={<span className="portfolio-scene-name">{nameLeft}</span>}
         nameRight={<span className="portfolio-scene-name">{nameRight}</span>}
-        screen={<PortfolioScreen key={navigation.revision} view={navigation.view} launch={navigation.open} data={data} expandedProject={expandedProject} onToggle={toggleProject} onNavigate={navigate} />}
-        screenPortrait={<PortfolioScreen key={navigation.revision} view={navigation.view} launch={navigation.open} data={data} compact expandedProject={expandedProject} onToggle={toggleProject} onNavigate={navigate} />}
+        screen={<PortfolioScreen key={navigation.revision} view={navigation.view} launch={navigation.open} data={data} expandedProject={expandedProject} onToggle={toggleProject} onNavigate={navigate} workFilter={workFilter} onWorkFilterChange={setWorkFilter} contactDraft={contactDraft} onContactDraftChange={changeContactDraft} />}
+        screenPortrait={<PortfolioScreen key={navigation.revision} view={navigation.view} launch={navigation.open} data={data} compact expandedProject={expandedProject} onToggle={toggleProject} onNavigate={navigate} workFilter={workFilter} onWorkFilterChange={setWorkFilter} contactDraft={contactDraft} onContactDraftChange={changeContactDraft} />}
+        screenOverlay={<ProjectOverlay data={data} projectId={expandedProject} onClose={() => setExpandedProject(null)} />}
         cover={<PortfolioCover time={time} data={data} onNavigate={navigate} />}
         coverPortrait={<PortfolioCover time={time} data={data} compact onNavigate={navigate} />}
         call={<PortfolioContact data={data} onReturnToEntry={returnToEntry} />}
         callPortrait={<PortfolioContact data={data} compact onReturnToEntry={returnToEntry} />}
         nav={<nav className="portfolio-nav" aria-label={language === 'vi' ? 'Điều hướng hồ sơ' : 'Portfolio views'}>
           {[
+            ['home', data.ui.home],
+            ['work', data.ui.work],
+            ['projects', data.ui.archive],
             ['about', data.ui.intro],
-            ['work', language === 'vi' ? 'Dự án' : 'Work'],
-            ['experience', data.ui.experience],
             ['contact', data.ui.contact],
           ].map(([view, label]) => <button key={view} type="button" data-portfolio-destination={view} aria-current={navigation.view === view ? 'page' : undefined} onClick={() => navigate(view)}>{label}</button>)}
         </nav>}

@@ -9,7 +9,7 @@ import { abs, fill } from "../styles/motion"
 export function renderDevice({
     G, b, F, status, port, clock, R, halfW, halfH, Ws, mode, measureRef, screenNode, land, inner,
     screenColor, coverNode, rootRef, live, geo, callNode, cRight, cLeaf, hingeBleed, cAll, Ro, Hs,
-    navNode,
+    navNode, screenOverlayNode, signalLevel,
 }: {
     G: Geometry
     b: number
@@ -39,6 +39,8 @@ export function renderDevice({
     Ro: number
     Hs: number
     navNode: React.ReactElement | null
+    screenOverlayNode: React.ReactElement | null
+    signalLevel: number
 }) {
     // ---------------------------------------------------------------- styles
     const Ri = G.R - b
@@ -90,6 +92,12 @@ export function renderDevice({
                             fontSize: 12,
                         }}
                     >
+                        <svg data-ff-signal="" aria-hidden="true" width="21" height="13" viewBox="0 0 21 13" style={{ display: "block" }}>
+                            {[4, 6, 8, 10, 12].map((height, index) => (
+                                <rect key={index} x={index * 4.2} y={13 - height} width="2.8" height={height} rx=".7"
+                                    fill="currentColor" style={{ opacity: index < signalLevel ? 1 : 0.22, transition: "opacity .45s ease" }} />
+                            ))}
+                        </svg>
                         <span>5G</span>
                         {status.batteryText !== undefined ? (
                             <svg data-ff-battery="" width="32" height="18" viewBox="0 0 32 18"
@@ -146,7 +154,7 @@ export function renderDevice({
         ) : null
 
     // Realistic crease: soft depression + highlight, blends with anything underneath.
-    const crease = (side: "left" | "right" | "top" | "bottom" | "center") => {
+    const crease = (side: "left" | "right" | "top" | "bottom", ref: React.Ref<HTMLDivElement>) => {
         // barely-there, like a real foldable in daylight: a soft dip with a faint sheen
         // a wide, very soft dip only (no line, no highlight): you sense the fold, you don't see a seam
         const w = 72
@@ -166,6 +174,7 @@ export function renderDevice({
                       : `calc(50% - ${w / 2}px)`
             return (
                 <div
+                    ref={ref}
                     data-crease="1"
                     style={{
                         ...base,
@@ -186,6 +195,8 @@ export function renderDevice({
                   : `calc(50% - ${w / 2}px)`
         return (
             <div
+                ref={ref}
+                data-crease="1"
                 style={{
                     ...base,
                     left: 0,
@@ -314,7 +325,7 @@ export function renderDevice({
                 ref={refs && refs[0]}
                 style={{
                     ...abs,
-                    ...insets(0, hinge, bleed),
+                    ...insets(0, hinge),
                     borderRadius: corners,
                     background: slabBg,
                     boxShadow: slabShadow,
@@ -325,7 +336,7 @@ export function renderDevice({
                 ref={refs && refs[1]}
                 style={{
                     ...abs,
-                    ...insets(G.f, hinge, bleed),
+                    ...insets(G.f, hinge),
                     borderRadius: inner(corners, G.f),
                     background: "#050505",
                     transition: refs ? cornerT : undefined,
@@ -337,7 +348,10 @@ export function renderDevice({
                     ...abs,
                     ...insets(b, hinge, bleed),
                     borderRadius: inner(corners, b),
-                    background: screenColor,
+                    // Let the stationary screen supply the backing under the overlapped edge.
+                    background: bleed
+                        ? `linear-gradient(${land ? "90deg" : "180deg"}, ${screenColor} calc(100% - ${bleed}px), transparent calc(100% - ${bleed}px))`
+                        : screenColor,
                     overflow: "hidden",
                     contain: "paint",
                     transition: refs ? cornerT : undefined,
@@ -498,7 +512,7 @@ export function renderDevice({
                             <>
                                 {contentCopy("R")}
                                 {land && statusBar("right")}
-                                {crease(land ? "right" : "bottom")}
+                                {crease(land ? "right" : "bottom", R.creaseR)}
                                 {sheen("R")}
                             </>,
                             [R.rBody, R.rGlass, R.rScreen],
@@ -527,7 +541,7 @@ export function renderDevice({
                             <>
                                 {contentCopy("L")}
                                 {statusBar(land ? "left" : "all")}
-                                {crease(land ? "left" : "top")}
+                                {crease(land ? "left" : "top", R.creaseL)}
                                 {sheen("L")}
                             </>,
                             undefined,
@@ -600,7 +614,6 @@ export function renderDevice({
                         "none",
                         <>
                             {contentCopy("open")}
-                            {crease("center")}
                             {sheen()}
                         </>,
                         undefined,
@@ -639,6 +652,17 @@ export function renderDevice({
                         }}
                     >
                         <Slot node={navNode} />
+                    </div>
+                )}
+                {screenOverlayNode && (
+                    <div
+                        ref={R.screenOverlay}
+                        data-ff-screen-overlay=""
+                        inert={foldMode}
+                        aria-hidden={foldMode ? "true" : undefined}
+                        style={{ ...fill, zIndex: 11, pointerEvents: "none", visibility: foldMode ? "hidden" : "visible" }}
+                    >
+                        {screenOverlayNode}
                     </div>
                 )}
             </div>

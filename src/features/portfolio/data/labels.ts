@@ -2,6 +2,7 @@ import type { Language, PortfolioLabels } from '../types'
 
 export const labels: Record<Language, PortfolioLabels> = {
   vi: {
+    home: 'Trang chủ', work: 'Công việc', archive: 'Dự án',
     intro: 'Giới thiệu', story: 'Chọn bài toán khó.', experience: 'Kinh nghiệm',
     projects: 'Dự án đã xây dựng', impact: 'Kết quả đo được', honors: 'Thành tích', contact: 'Liên hệ',
     open: 'Cuộn để mở', explore: 'Khám phá dự án', more: 'Xem thêm', less: 'Thu gọn',
@@ -15,6 +16,7 @@ export const labels: Record<Language, PortfolioLabels> = {
     confirmHint: 'Nhấn Enter hoặc phím cách để xác nhận.',
   },
   en: {
+    home: 'Home', work: 'Work', archive: 'Projects',
     intro: 'About', story: 'Pick the hard problem.', experience: 'Experience',
     projects: 'Work that shipped', impact: 'Results, measured', honors: 'Honors', contact: 'Contact',
     open: 'Scroll to unfold', explore: 'Explore the work', more: 'View details', less: 'Close details',

@@ -126,6 +126,15 @@ export function createFrameRenderer({
             const o = clamp((pe - 0.975) * 40, 0, 1)
             S(R.overlay.current, "opacity", String(+o.toFixed(3)))
             S(R.overlay.current, "visibility", o > 0.01 ? "visible" : "hidden")
+            S(R.creaseL.current, "opacity", flat ? "0" : "1")
+            S(R.creaseR.current, "opacity", flat ? "0" : "1")
+            const screenOverlay = R.screenOverlay.current
+            if (screenOverlay) {
+                S(screenOverlay, "visibility", flat ? "visible" : "hidden")
+                if (screenOverlay.inert === flat) screenOverlay.inert = !flat
+                if (screenOverlay.getAttribute("aria-hidden") !== String(!flat))
+                    screenOverlay.setAttribute("aria-hidden", String(!flat))
+            }
             // floor shadows (transform only)
             const vis = P ? 1 : 0.5 + 0.5 * pe
             const tx = P ? 0 : (Gd.W / 4) * k

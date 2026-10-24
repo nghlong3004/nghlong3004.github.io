@@ -1,0 +1,60 @@
+.project-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  overflow: hidden;
+  pointer-events: auto;
+  color: var(--pf-ink, #111);
+  font-family: Geist, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  overscroll-behavior: contain;
+  container-type: inline-size;
+}
+
+.project-overlay *, .project-overlay *::before, .project-overlay *::after { box-sizing: border-box; }
+.project-overlay__backdrop { position: absolute; inset: 0; background: rgb(0 0 0 / 42%); }
+.project-overlay__sheet {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-height: calc(100% - 64px);
+  display: flex;
+  flex-direction: column;
+  background: var(--pf-ground, #f4f3f0);
+  border-radius: 24px 24px 0 0;
+  overflow: hidden;
+  outline: none;
+}
+.project-overlay__handle { height: 24px; flex: 0 0 24px; display: grid; place-items: center; }
+.project-overlay__handle span { width: 36px; height: 4px; border-radius: 999px; background: #b6b5b2; }
+.project-overlay__scroll { min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 4px 29px 32px; scrollbar-width: thin; }
+.project-overlay__header { display: flex; align-items: start; justify-content: space-between; gap: 16px; }
+.project-overlay__header h2 { margin: 0; font: 900 48px/.94 'Alumni Sans', sans-serif; }
+.project-overlay__meta { margin: 6px 0 0; font-size: 13px; }
+.project-overlay__summary { margin: 12px 0; max-width: 70ch; }
+.project-overlay__sheet[data-expanded="false"] .project-overlay__summary { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+.project-overlay button, .project-overlay a { font: inherit; color: inherit; }
+.project-overlay button { cursor: pointer; border: 0; }
+.project-overlay__close { display: grid; place-items: center; flex: 0 0 44px; width: 44px; height: 44px; border-radius: 50%; background: #e5e4e1; }
+.project-overlay__expand { display: flex; justify-content: center; align-items: center; gap: 8px; width: 100%; min-height: 44px; padding: 10px 16px; border-radius: 999px; background: var(--pf-ink, #111); color: var(--pf-ground, #f4f3f0) !important; }
+.project-overlay__details { height: 0; overflow: hidden; opacity: 0; translate: 0 12px; visibility: hidden; transition: opacity .3s cubic-bezier(.32,.72,0,1), translate .3s cubic-bezier(.32,.72,0,1), visibility .3s; }
+.project-overlay__sheet[data-expanded="true"] .project-overlay__details { height: auto; overflow: visible; margin-top: 24px; opacity: 1; translate: 0 0; visibility: visible; }
+.project-overlay__details p { margin: 0 0 16px; max-width: 70ch; }
+.project-overlay__details ul { margin: 0 0 24px; padding-left: 22px; max-width: 70ch; }
+.project-overlay__details li + li { margin-top: 8px; }
+.project-overlay__details h3 { margin: 28px 0 16px; font: 900 30px/.94 'Alumni Sans', sans-serif; }
+.project-overlay__image, .project-overlay__gallery img { display: block; width: 100%; height: auto; border-radius: 12px; }
+.project-overlay__image { max-height: 300px; object-fit: contain; }
+.project-overlay__tech { margin-top: 18px !important; font-size: 13px; }
+.project-overlay__links { display: flex; flex-wrap: wrap; gap: 12px; margin: 24px 0; }
+.project-overlay__links a { display: inline-flex; align-items: center; gap: 8px; border-radius: 999px; padding: 10px 16px; background: #e5e4e1; text-decoration: none; font-size: 13px; }
+.project-overlay__gallery { display: grid; gap: 18px; }
+.project-overlay__gallery h3 { margin-bottom: 0; }
+.project-overlay :is(button, a):focus-visible { outline: 3px solid #8a6700; outline-offset: 3px; }
+.project-overlay :is(button, a):hover { filter: brightness(.9); }
+@container (max-width: 500px) {
+  .project-overlay__scroll { padding-inline: 26px; }
+  .project-overlay__header h2 { font-size: 40px; }
+}

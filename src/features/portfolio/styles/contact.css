@@ -1,0 +1,28 @@
+.portfolio-screen .contact-view { background: var(--pf-ground); color: var(--pf-ink); }
+.portfolio-screen .contact-view__hero.pf-page { display: grid; grid-template-columns: 1fr 1fr; min-height: 660px; padding: 0; }
+.contact-view__statement { display: flex; flex-direction: column; justify-content: space-between; gap: 48px; min-width: 0; padding: var(--pf-top) var(--pf-padding) var(--pf-bottom); }
+.portfolio-screen[data-portfolio-view="contact"] .contact-view__hero h1 { margin: 0; font: var(--pf-title); letter-spacing: -.025em; text-transform: uppercase; }
+.contact-view__hero h1 span { display: block; color: var(--pf-accent); }
+.contact-view__statement .pf-header { gap: 26px; }
+.contact-view__statement p { max-width: 36ch; }
+.contact-view__connections { display: grid; gap: 18px; }
+.contact-view__email-row { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+.contact-view__email { font: 500 22px/1.3 var(--pf-body); overflow-wrap: anywhere; }
+.contact-view__socials { display: flex; flex-wrap: wrap; gap: 8px; }
+.contact-view__socials a { display: inline-flex; align-items: center; gap: 5px; padding: 12px 16px; border-radius: 999px; background: #2d2d2d; font: 400 13px/1.3 var(--pf-body); }
+.contact-view__connections a:hover { text-decoration: underline; text-underline-offset: 4px; }
+.portfolio-screen .contact-view__connections a:focus-visible { outline-color: var(--pf-accent); }
+.contact-view__portrait { min-width: 0; min-height: 660px; object-position: 50% 44%; }
+.portfolio-screen .contact-view__brief h2 { font: var(--pf-heading); text-transform: uppercase; margin: 0 0 24px; }
+.contact-view__brief > p { max-width: 72ch; }
+.contact-view__brief form { display: grid; margin-top: 30px; }
+.contact-view__brief label { margin-bottom: 8px; font: 500 11px/1.2 var(--pf-mono); text-transform: uppercase; }
+.contact-view__brief :is(input, textarea) { width: 100%; min-width: 0; min-height: 44px; padding: 12px; margin-bottom: 18px; border: 1px solid transparent; border-radius: 10px; background: var(--pf-surface); color: var(--pf-ink); font: 400 15px/1.5 var(--pf-body); }
+.contact-view__brief textarea { resize: vertical; min-height: 100px; }
+.contact-view__brief :is(input, textarea):focus-visible { outline: 2px solid var(--pf-ink); outline-offset: 3px; }
+.portfolio-screen .contact-view__brief button { min-height: 48px; border-radius: 10px; }
+.contact-view__brief button:hover { opacity: .85; }
+.portfolio-screen--compact .contact-view__hero.pf-page { grid-template-columns: 1fr; }
+.portfolio-screen--compact .contact-view__statement { min-height: 718px; gap: 64px; }
+.portfolio-screen--compact .contact-view__portrait { height: 480px; min-height: 0; }
+.portfolio-screen--compact .contact-view__email { font-size: 20px; }

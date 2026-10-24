@@ -39,6 +39,7 @@ import { usePagePreload, useScreenFilters } from "./hooks/useScreenNavigation"
 import { useAnimationLoop } from "./hooks/useAnimationLoop"
 import { usePageTransitions } from "./hooks/usePageTransitions"
 import { useSwitcher } from "./hooks/useSwitcher"
+import { useSignalLevel } from "./hooks/useSignalLevel"
 import { createFrameRenderer } from "./engine/createFrameRenderer"
 import { renderDevice } from "./components/renderDevice"
 import { renderScenes } from "./components/renderScenes"
@@ -196,7 +197,7 @@ export default function FoldfolioDevice(props: FoldfolioProps) {
     // the hinge sits on whole screen pixels (no blurred seam between the two halves)
     const cy = Math.round(layout.top + availH / 2)
     const cx = Math.round(vp.w / 2)
-    const hingeBleed = 0 // the halves meet on a whole screen pixel (see cx / measureTop): no overlap needed
+    const hingeBleed = 1 // cover the clipped screen's compositor edge; hardware still meets at the hinge
 
     // ---------- slots
     const screenNode = first(
@@ -212,6 +213,11 @@ export default function FoldfolioDevice(props: FoldfolioProps) {
     )
     const navNode = first(
         port && first(props.navPortrait) ? props.navPortrait : props.nav
+    )
+    const screenOverlayNode = first(
+        port && first(props.screenOverlayPortrait)
+            ? props.screenOverlayPortrait
+            : props.screenOverlay
     )
     const nameL = first(props.nameLeft)
     const nameR = first(props.nameRight)
@@ -469,6 +475,7 @@ export default function FoldfolioDevice(props: FoldfolioProps) {
 
     // live clock for the status bar
     const [clock, setClock] = useState(status.time)
+    const signalLevel = useSignalLevel(status.show && !isCanvas)
     useEffect(() => {
         if (!status.live || typeof window === "undefined" || isCanvas) {
             setClock(status.time)
@@ -492,7 +499,7 @@ export default function FoldfolioDevice(props: FoldfolioProps) {
     const { device } = renderDevice({
         G, b, F, status, port, clock, R, halfW, halfH, Ws, mode, measureRef, screenNode, land,
         inner, screenColor, coverNode, rootRef, live, geo, callNode, cRight, cLeaf, hingeBleed,
-        cAll, Ro, Hs, navNode,
+        cAll, Ro, Hs, navNode, screenOverlayNode, signalLevel,
     })
 
     const { splitLayer, namesLayer, glowLayer, orbitLayer, curtainBg } = renderScenes({

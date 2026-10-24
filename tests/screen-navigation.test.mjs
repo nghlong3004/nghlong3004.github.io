@@ -73,6 +73,20 @@ test('undefined request does not auto-open; tall to short resets before height r
   } finally { f.restore() }
 })
 
+for (const mode of ['fold', 'open']) test(`${mode}: all six view keys reset the current content without remounting the device`, () => {
+  const f = fixture(mode)
+  try {
+    for (const [revision, view] of ['home', 'work', 'projects', 'about', 'experience', 'contact'].entries()) {
+      f.window.scrollY = 550; f.live.current.pe = 1; f.live.current.cur = 450
+      f.render({ key: `${view}:${revision}`, target: 'view-root' })
+      assert.equal(f.window.scrollY, mode === 'fold' ? 400 : 100)
+      f.frame()
+    }
+    assert.deepEqual(f.focus.map(item => item.key), Array(6).fill('view-root'))
+    assert.equal(f.frames.size, 0)
+  } finally { f.restore() }
+})
+
 test('folded request unfolds smoothly to a deep current-view target and focuses after arrival', () => {
   const f = fixture()
   try {

@@ -19,14 +19,21 @@
 │   ├── portfolio-views.test.mjs        # Real active-view markup and destination resolution
 │   ├── marker-text.test.mjs            # Official mark parity, scaled geometry and cleanup
 │   ├── kokonut-components.test.mjs     # Official slider markup and localized keyboard labels
-│   └── screen-navigation.test.mjs      # Active-content requests and open/fold reconciliation
+│   ├── screen-navigation.test.mjs      # Active-content requests and open/fold reconciliation
+│   ├── device-reference.test.mjs       # Flat surface, overlay slot and signal lifecycle
+│   ├── project-overlay.test.mjs        # Controlled device-local drawer
+│   ├── reference-motion.test.mjs       # Shared engine markers across screen content
+│   ├── status-surface.test.mjs         # Nested full-width background boundaries for status tint
+│   ├── screen-motion-cleanup.test.mjs  # Counter/reveal timeout and rAF disposal/StrictMode
+│   ├── typography.test.mjs             # Bilingual display family and actual Vietnamese font coverage
+│   └── *-view.test.mjs                 # Home/Work/Projects/About/Contact callbacks and content
 ├── public/
 │   ├── project/                       # Ảnh chính và gallery 4 dự án
 │   │   └── vinqa/header.webp           # Supplied VinQA logo, locally downloaded bytes
 │   ├── company/                       # Logo VinFast / Vinsmart Future
 │   ├── portrait/reference.jpg         # Retained old screenshot reference; not rendered as avatar
 │   ├── portrait/entry-wallpaper.jpg   # Original supplied JPEG; shared by ALL profile portraits
-│   ├── fonts/                         # Sofia Sans Extra Condensed 800/900 / Geist / Geist Mono + OFL
+│   ├── fonts/                         # Alumni variable / Geist / Geist Mono + OFL; original Sofia retained unused
 │   ├── tmp/                           # 3 screenshot tham chiếu, giữ nguyên
 │   └── favicon.webp                   # Logo NL từ repo cũ
 └── src/
@@ -53,18 +60,18 @@
         │   │   └── labels.ts          # Nhãn giao diện và thông báo vi/en
         │   ├── hooks/                     # usePortfolioLanguage, useVietnamClock
         │   ├── lib/                    # vietnamTime, language, navigation destinations, class helper
-        │   ├── styles/portfolio.css   # Font local + UI màn chính/lockscreen/contact
+        │   ├── styles/portfolio.css   # Fonts + shared pf-* tokens, cover/final/Experience
+        │   ├── styles/{home,work,projects,about,contact,project-overlay}.css # Scoped compositions
         │   └── components/
         │       ├── PortfolioScreen.tsx
-        │       ├── views/              # About, Work, Experience, Contact; only active view mounted
-        │       ├── kokonut/            # Official Marker Text / Slide to Confirm source adaptations
+        │       ├── views/              # Home, Work, Projects, About, Experience, Contact; active only
+        │       ├── kokonut/            # Marker Text / Slide to Confirm / ProjectOverlay adaptations
         │       ├── PortfolioCover.tsx # Clock/portrait; job + VinQA, compact status; Instagram/LinkedIn
         │       ├── PortfolioContact.tsx
         │       ├── Icon.tsx                # SVG nét 1.5px, không dùng emoji cho nút
         │       ├── Portrait.tsx       # Shared img renderer; layout comes from each consumer
         │       ├── ContentBlocks.tsx  # Paragraph/list, không inject HTML
         │       └── sections/
-        │           ├── ProjectsSection.tsx
         │           └── ExperienceSection.tsx
         └── foldfolio/
             ├── FoldfolioDevice.tsx    # Component điều phối
@@ -81,6 +88,7 @@
             │   ├── useIsoLayoutEffect.ts
             │   ├── useSectionNavigation.ts # React ref scrollToSection
             │   ├── useSceneImages.ts
+            │   ├── useSignalLevel.ts  # Shared simulated signal, hidden-tab pause/cleanup
             │   ├── useScreenMotion.ts
             │   ├── useScreenNavigation.ts  # Preload và filter Framer
             │   ├── useAnimationLoop.ts
@@ -100,7 +108,7 @@
 | Thay ảnh chân dung | `portfolio/data/portrait.ts`; ảnh mới đặt trong `public/portrait/` |
 | Đổi thông báo/lockscreen | `portfolio/components/PortfolioCover.tsx`, `data/labels.ts` |
 | Đổi bố cục/font/màu | `portfolio/styles/portfolio.css` |
-| Bung/đóng chi tiết dự án | `portfolio/components/sections/ProjectsSection.tsx`, state trong App |
+| Mở/đóng chi tiết dự án | `portfolio/components/kokonut/ProjectOverlay.tsx`, state trong App |
 | Điều hướng đúng mục trong thiết bị | `foldfolio/hooks/useSectionNavigation.ts`, `engine/navigation.ts` |
 | Chữ/máy nhấp nhô khi đứng yên | `app/config/device.ts`: motion.float phải false |
 | Pha gập, scroll, scale, breakpoint | `foldfolio/FoldfolioDevice.tsx`, `config/constants.ts`, `engine/createFrameRenderer.ts` |

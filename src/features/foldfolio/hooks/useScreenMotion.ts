@@ -3,6 +3,7 @@ import type { RefObject } from "react"
 import type { DeviceRefs } from "./useDeviceRefs"
 import { clamp, easeOut } from "../lib/math"
 import { toHex } from "../lib/colors"
+import { useIsoLayoutEffect } from "./useIsoLayoutEffect"
 import type { ScreenMotion } from "../types"
 import type { GeometryState, LiveState, MItem, Reveal, SceneImage, TintSection } from "../engine/types"
 
@@ -33,9 +34,36 @@ export function useScreenMotion({
     const primed = useRef<WeakSet<HTMLImageElement>>(
         typeof WeakSet !== "undefined" ? new WeakSet() : (null as any)
     )
+    const active = useRef(true)
+    const epoch = useRef(0)
+    const timers = useRef(new Set<number>())
+    const frames = useRef(new Set<number>())
+    const counters = useRef(new Map<Text, { el: HTMLElement; original: string }>())
+    const forgetCounter = (el: HTMLElement) => {
+        counters.current.forEach((counter, node) => {
+            if (counter.el === el) counters.current.delete(node)
+        })
+    }
+    const later = (el: HTMLElement, callback: () => void, delay: number) => {
+        const id = window.setTimeout(() => {
+            timers.current.delete(id)
+            if (active.current && el.isConnected) callback()
+            else if (!el.isConnected) forgetCounter(el)
+        }, delay)
+        timers.current.add(id)
+    }
+    const nextFrame = (el: HTMLElement, callback: (now: number) => void) => {
+        const id = window.requestAnimationFrame((now) => {
+            frames.current.delete(id)
+            if (active.current && el.isConnected) callback(now)
+            else if (!el.isConnected) forgetCounter(el)
+        })
+        frames.current.add(id)
+    }
     const scan = useRef<() => void>(() => {})
     scan.current = () => {
-        if (typeof document === "undefined" || isCanvas) return
+        if (!active.current || typeof document === "undefined" || isCanvas) return
+        const generation = epoch.current
         const roots = [R.cL.current, R.cR.current, R.cOpen.current].filter(
             Boolean
         ) as HTMLElement[]
@@ -156,9 +184,20 @@ export function useScreenMotion({
                     src: e0L.src,
                     srcR: e0R.src,
                 })
-                Array.from(slotRoot.children).forEach((c) => {
+                const slotStyle = window.getComputedStyle(slotRoot)
+                const surfaceWidth = slotRoot.clientWidth -
+                    (parseFloat(slotStyle.paddingLeft) || 0) -
+                    (parseFloat(slotStyle.paddingRight) || 0)
+                const surfaces = new Set([
+                    ...slotRoot.children,
+                    ...slotRoot.querySelectorAll("[data-ff-surface]"),
+                ])
+                surfaces.forEach((c) => {
                     const el = c as HTMLElement
                     if (!el.offsetHeight) return
+                    // Keep split-hero edge sampling; padded full-width sections still qualify.
+                    if (el.hasAttribute("data-ff-surface") &&
+                        el.offsetWidth < surfaceWidth * 0.9) return
                     const eL = edge(el, "left"),
                         eR = edge(el, "right")
                     secs.push({
@@ -310,7 +349,9 @@ export function useScreenMotion({
         }
         fitText()
         if (document.fonts && document.fonts.ready)
-            document.fonts.ready.then(() => fitText())
+            document.fonts.ready.then(() => {
+                if (active.current && epoch.current === generation && roots.every((root) => root.isConnected)) fitText()
+            })
         // load + decode every screen image up front: no loading/decoding hitches while scrolling
         roots.forEach((root) =>
             root.querySelectorAll("img").forEach((im) => {
@@ -431,17 +472,25 @@ export function useScreenMotion({
         const t0 = performance.now()
         const dur = 1400 + Math.min(1200, target * 4)
         const tn = node
+        counters.current.set(tn, { el, original: txt })
         const step = (now: number) => {
+            if (!el.contains(tn)) return
             const p = clamp((now - t0) / dur, 0, 1)
             tn.nodeValue = fmt(
                 target * (1 - Math.pow(2, -10 * p)) * (p === 1 ? 1 : 1.0009)
             )
-            if (p < 1) window.requestAnimationFrame(step)
-            else tn.nodeValue = txt
+            if (p < 1) nextFrame(el, step)
+            else {
+                tn.nodeValue = txt
+                counters.current.delete(tn)
+            }
         }
         tn.nodeValue = fmt(0)
-        window.requestAnimationFrame(step)
-        window.setTimeout(() => (tn.nodeValue = txt), dur + 400) // safety
+        nextFrame(el, step)
+        later(el, () => {
+            if (el.contains(tn)) tn.nodeValue = txt
+            counters.current.delete(tn)
+        }, dur + 400) // safety
     }
     const motionTick = useRef<(inner: number, pe: number) => void>(() => {})
     motionTick.current = (inner: number, pe: number) => {
@@ -452,7 +501,7 @@ export function useScreenMotion({
         const hi = inner + g.Hs * (g.port ? 1 : 0.94)
         let n = 0
         for (const m of mItems.current) {
-            if (m.done || m.top > hi || m.top + m.h < lo) continue
+            if (m.done || !m.el.isConnected || m.top > hi || m.top + m.h < lo) continue
             m.done = true
             const d = Math.min(n * mo.stagger, 0.6)
             n++
@@ -482,8 +531,7 @@ export function useScreenMotion({
                           ? 12
                           : mo.distance,
             })
-            if (m.kind === "c")
-                window.setTimeout(() => countUp(el), d * 1000 + 150)
+            if (m.kind === "c") later(el, () => countUp(el), d * 1000 + 150)
         }
         if (n) {
             mItems.current = mItems.current.filter((m) => !m.done)
@@ -494,29 +542,35 @@ export function useScreenMotion({
     // browser never has to create extra layers for them
     const reveals = useRef<Reveal[]>([])
     const stepReveals = (t: number) => {
+        if (!active.current) return false
         const list = reveals.current
         if (!list.length) return false
         let keep = false
         for (const r of list) {
+            if (!r.el.isConnected) {
+                r.dur = -1
+                continue
+            }
             const p = clamp((t - r.t0) / r.dur, 0, 1)
             const e = easeOut(p)
+            const img = r.img?.isConnected ? r.img : null
             r.el.style.opacity = String(+e.toFixed(3))
             if (r.kind !== "i")
                 r.el.style.translate = `0 ${((1 - e) * r.dist).toFixed(2)}px`
-            if (r.img) r.img.style.scale = String(+(1.08 - 0.08 * e).toFixed(4))
+            if (img) img.style.scale = String(+(1.08 - 0.08 * e).toFixed(4))
             if (p >= 1) {
                 // clean up so hover effects and layout are untouched afterwards
                 const el = r.el,
-                    im = r.img
+                    im = img
                 el.classList.remove("ffm-" + r.kind)
                 el.style.removeProperty("opacity")
                 el.style.removeProperty("translate")
                 if (im) im.style.removeProperty("scale")
                 // hover transitions come back a moment later (otherwise the reset itself
                 // would be animated)
-                window.setTimeout(() => {
+                later(el, () => {
                     el.style.removeProperty("transition")
-                    if (im) im.style.removeProperty("transition")
+                    if (im?.isConnected) im.style.removeProperty("transition")
                 }, 80)
                 r.dur = -1
             } else keep = true
@@ -524,6 +578,36 @@ export function useScreenMotion({
         reveals.current = list.filter((r) => r.dur > 0)
         return keep
     }
+
+    useIsoLayoutEffect(() => {
+        active.current = true
+        return () => {
+            active.current = false
+            epoch.current++
+            timers.current.forEach((id) => window.clearTimeout(id))
+            frames.current.forEach((id) => window.cancelAnimationFrame(id))
+            timers.current.clear()
+            frames.current.clear()
+            counters.current.forEach(({ el, original }, node) => {
+                if (el.isConnected && el.contains(node)) node.nodeValue = original
+            })
+            counters.current.clear()
+            reveals.current.forEach(({ el, img, kind }) => {
+                if (!el.isConnected) return
+                el.classList.remove("ffm-" + kind)
+                el.style.removeProperty("opacity")
+                el.style.removeProperty("translate")
+                el.style.removeProperty("transition")
+                if (img?.isConnected) {
+                    img.style.removeProperty("scale")
+                    img.style.removeProperty("transition")
+                }
+            })
+            reveals.current = []
+            mItems.current = []
+            seen.current = new WeakSet()
+        }
+    }, [])
 
     return { motionTick, scan, reveals, stepReveals }
 }

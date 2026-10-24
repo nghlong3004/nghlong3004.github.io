@@ -1,5 +1,23 @@
 export type Language = 'vi' | 'en'
-export type PortfolioView = 'about' | 'work' | 'experience' | 'contact'
+export type PortfolioView = 'home' | 'work' | 'projects' | 'about' | 'experience' | 'contact'
+
+export interface PortfolioContactDraft {
+  name: string
+  email: string
+  location: string
+  message: string
+}
+
+export interface PortfolioViewProps {
+  data: PortfolioData
+  onNavigate: (destination: string) => void
+  expandedProject: string | null
+  onToggle: (id: string) => void
+  workFilter: string
+  onWorkFilterChange: (category: string) => void
+  contactDraft: PortfolioContactDraft
+  onContactDraftChange: (field: keyof PortfolioContactDraft, value: string) => void
+}
 
 export type ContentBlock =
   | { type: 'paragraph'; text: string }
@@ -85,6 +103,9 @@ export interface PortfolioData {
 }
 
 export interface PortfolioLabels {
+  home: string
+  work: string
+  archive: string
   intro: string
   story: string
   experience: string
