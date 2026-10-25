@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import { readFileSync } from 'node:fs'
-import { createElement } from 'react'
+import { Children, createElement, isValidElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { createServer } from 'vite'
 import { resolvePortfolioDestination } from '../src/features/portfolio/lib/navigation.ts'
@@ -58,6 +58,32 @@ test('shared CSS primitives keep reference geometry and only notification image 
   assert.match(css, /--pf-padding: 26px/)
   assert.match(css, /\.portfolio-notification__app \{[^}]*background: transparent/)
   assert.match(css, /\.portfolio-notification \{[^}]*background: rgba\(255,255,255,\.72\)/)
+})
+
+test('cover has one employer fact/action per copy and retains VinQA navigation in VI/EN', async () => {
+  const server = await createServer({ configFile: false, optimizeDeps: { noDiscovery: true }, server: { middlewareMode: true, hmr: false, ws: false }, appType: 'custom' })
+  try {
+    const { PortfolioCover } = await server.ssrLoadModule('/src/features/portfolio/components/PortfolioCover.tsx')
+    const { portfolio } = await server.ssrLoadModule('/src/features/portfolio/data/portfolio.ts')
+    const buttons = node => !isValidElement(node) ? [] : [
+      ...(node.type === 'button' ? [node] : []),
+      ...Children.toArray(node.props.children).flatMap(buttons),
+    ]
+    for (const language of ['vi', 'en']) for (const compact of [false, true]) {
+      const data = portfolio[language], current = data.experience.find(job => job.current)
+      const destinations = []
+      const cover = PortfolioCover({ data, time: '12:34', compact, onNavigate: destination => destinations.push(destination) })
+      const html = renderToStaticMarkup(cover)
+      assert.equal(html.split(current.role).length - 1, 1, `${language}/${compact}: one employer disclosure per cover`)
+      assert.ok(html.includes(data.profile.role))
+      assert.ok(!html.includes('portfolio-cover__status'))
+      const cards = buttons(cover).filter(button => button.props.className === 'portfolio-notification')
+      cards[0].props.onClick()
+      cards[1].props.onClick()
+      assert.deepEqual(destinations, ['job-current', 'project-vinqa'])
+      assert.match(html, /<button type="button" class="portfolio-notification"/)
+    }
+  } finally { await server.close() }
 })
 
 test('actual VI/EN view markup contains only the active destination and its approved groups', async () => {

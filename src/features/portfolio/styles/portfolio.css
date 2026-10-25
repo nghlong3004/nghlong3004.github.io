@@ -95,7 +95,6 @@
 .portfolio-cover__identity { position: absolute; top: 54px; left: 24px; right: 24px; text-align: center; z-index: 1; color: white; }
 .portfolio-cover__clock { font: 800 132px/.9 'Alumni Sans', sans-serif; letter-spacing: -.015em; font-variant-numeric: tabular-nums; }
 .portfolio-cover__role { font-size: 13px; font-weight: 500; line-height: 1.3; margin-top: 6px !important; }
-.portfolio-cover__identity .portfolio-cover__status { display: none; border: 0; padding: 0; background: none; color: inherit; font-size: 13px; font-weight: 500; line-height: 1.3; }
 .portfolio-notifications { position: absolute; bottom: 98px; left: 24px; right: 24px; display: flex; flex-direction: column; gap: 8px; z-index: 2; }
 .portfolio-notification { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 58px; padding: 9px 12px 9px 9px; border: 0; border-radius: 18px; background: rgba(255,255,255,.72); color: #121510; text-align: left; text-decoration: none; line-height: 1.3; transition: background .2s, transform .2s; }
 .portfolio-notification:hover { background: #fff; transform: translateY(-1px); }
@@ -111,7 +110,6 @@
 .portfolio-cover--compact .portfolio-cover__identity { top: 24px; left: 16px; right: 16px; }
 .portfolio-cover--compact .portfolio-cover__clock { font-size: 76px; }
 .portfolio-cover--compact .portfolio-cover__role { display: none; }
-.portfolio-cover--compact .portfolio-cover__status { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 44px; margin-top: -9.5px; }
 .portfolio-cover--compact .portfolio-cover__portrait { object-position: 52% 36%; }
 .portfolio-cover--compact::after { height: 190px; }
 .portfolio-cover--compact .portfolio-notifications { left: 16px; right: 16px; bottom: 68px; }

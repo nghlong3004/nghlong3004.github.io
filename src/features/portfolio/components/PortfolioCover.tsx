@@ -20,12 +20,11 @@ export function PortfolioCover({ data, time, compact = false, onNavigate, style 
       <header className="portfolio-cover__identity">
         <p className="portfolio-cover__clock">{time}</p>
         <p className="portfolio-cover__role">{data.profile.role}</p>
-        {current && <button type="button" className="portfolio-cover__status" onClick={() => onNavigate('job-current')}>{current.role}</button>}
       </header>
       <div className="portfolio-notifications">
-        {current && <button type="button" className="portfolio-notification" onClick={() => onNavigate('job-current')}>
+        {current && <button type="button" className="portfolio-notification" aria-label={`${data.ui.employmentNotificationTitle}. ${current.role}. ${data.ui.employmentNotificationSubtitle}`} onClick={() => onNavigate('job-current')}>
           <span className="portfolio-notification__app"><img src={current.logo || `${import.meta.env.BASE_URL}LONG_Precision_L/favicon.svg`} alt="" width="28" height="28" /></span>
-          <span><strong>{current.role}</strong><span>{current.period}</span></span>
+          <span><strong>{data.ui.employmentNotificationTitle}</strong><span>{data.ui.employmentNotificationSubtitle}</span></span>
         </button>}
         {project && <button type="button" className="portfolio-notification" onClick={() => onNavigate(`project-${project.id}`)}>
           <img src={project.image.src} alt="" width="36" height="36" />

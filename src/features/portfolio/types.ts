@@ -127,6 +127,8 @@ export interface PortfolioLabels {
   code: string
   role: string
   current: string
+  employmentNotificationTitle: string
+  employmentNotificationSubtitle: string
   projectNotification: string
   contactNotification: string
   coverHint: string

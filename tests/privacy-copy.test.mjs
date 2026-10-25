@@ -69,7 +69,7 @@ test('shared narrative has no employment metrics, project implementations or tec
     const narrative = JSON.stringify({ bio: profiles[language].bio, story })
     assert.ok(!/[\d$€£%]|https?:|\b(?:ms|API|CI\/CD)\b/i.test(narrative), `${language}: narrative must stay nontechnical and nonquantified`)
     assert.ok(story.intro.includes('Boom Online') && story.intro.includes('Olympic HUMG'))
-    assert.ok(labels[language].projectNotification.startsWith('VinQA · '))
+    assert.equal(labels[language].projectNotification, language === 'vi' ? 'Khám phá dự án' : 'Explore the project')
   }
 })
 
