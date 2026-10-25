@@ -7,9 +7,49 @@ pnpm install
 pnpm dev
 ```
 
-Open the URL printed by Vite (normally `http://localhost:5173/`). Notifications open experience or VinQA; scroll to explore and expand projects. The clock updates in Vietnam time. The battery-shaped age pill shows completed years since 6 June 2005, not device battery charge. A valid saved language choice wins; otherwise the browser's first supported VI/EN preference is used, with Vietnamese as fallback. Language and scene selectors are temporarily hidden; their handlers, translations and stored preferences remain intact. Email and social links use the portfolio's real contact data.
+Open the URL printed by Vite (normally `http://localhost:5173/`). Notifications open experience or VinQA; scroll to explore and expand projects. The clock updates in Vietnam time. The battery-shaped age pill shows completed years since 6 June 2005, not device battery charge. A valid saved language choice wins; otherwise the browser's first supported VI/EN preference is used, with Vietnamese as fallback. The language selector remains temporarily hidden; obsolete app background options are removed. Email and social links use the portfolio's real contact data.
 
-Glow is restored to the original softened image-derived mode, not a fixed palette. Existing scene preferences migrate to Glow once without changing finish; later explicit choices persist. The entry CTA remains “Cuộn để mở” / “Scroll to unfold”. Instagram/LinkedIn and final GitHub/LinkedIn positions remain. A decorative cellular signal smoothly chooses a simulated2–5-bar level every~2s, without measuring the network.
+Rain Glass is this app's sole full-page background. The Basic/Glow/Orbit options,
+app scene-image/name wiring and Glow migration are removed. Stored scenes are ignored;
+finish choices and mixed preference fields are preserved. Reusable engine scenes remain
+available to other callers. Entry/portrait/content and device interactions are unchanged.
+
+## Rain Glass usage
+
+In `src/app/App.tsx`:
+
+```tsx
+import RainGlassBackground from './components/kokonut/RainGlassBackground'
+
+<RainGlassBackground
+  src="/portrait/entry-wallpaper.jpg"
+  rain={0.6}
+  interactive={false}
+  className="portfolio-rain"
+/>
+```
+
+`src` is required (same-origin or CORS-enabled); the app reuses the existing local JPEG
+behind fog without modifying portraits. `rain` accepts0–1 (default0.6). Optional
+`interactive` (defaulttrue) enables wiping; here false plus pointer-transparent CSS keeps
+scrolling, input and selection native. Optional `title`, `children` and `className` are
+supported; no default demo copy or remote Unsplash image remains. Pair the fixed layer
+with `scene: 'none'` to expose it through the transparent device stage.
+
+Requested installation:
+
+```sh
+npx shadcn@latest add https://kokonutui.com/r/rain-glass-background.json
+```
+
+The CLI rejected the existing registry-only `components.json`; an isolated attempt
+then timed out fetching shadcn's neutral colors. The actual official registry source
+was imported directly instead, retaining its MIT notice and unchanged shaders.
+No runtime package or lockfile changes were needed. [Attribution](THIRD_PARTY_NOTICES.md#rain-glass-background).
+WebGL2 is required for animated rain; unsupported contexts or failed image loads show
+a pale neutral background. Hidden/offscreen rendering pauses; unmount releases GPU
+resources and context restoration rebuilds the pane. Rain follows the app's existing
+always-animate policy, including reduced-motion media.
 
 - **Content:** `src/features/portfolio/data/`, with `vi` and `en` variants for each section.
 - **Portraits:** `data/portrait.ts` supplies one shared image source with neutral VI/EN alt text to entry, About/main and final/contact. All use the original `public/portrait/entry-wallpaper.jpg` bytes. Only entry uses full-screen wallpaper sizing and a top contrast scrim; About retains its portrait panel and final its small circle. No pictured identity is assumed. Change the shared source once to synchronize every portrait.
@@ -57,8 +97,8 @@ See [component attribution](THIRD_PARTY_NOTICES.md).
 
 Motion policy: animations intentionally run even with an OS/browser reduced-motion preference.
 There is no reduced-motion bypass, which is an accessibility limitation for motion-sensitive
-visitors. Idle Float stays OFF; the shared cellular signal and technology-logo loop are the only
-authorized idle animation. Technology displays use official React Bits LogoLoop adapted for the
+visitors. Idle Float stays OFF; rain, the shared cellular/Wi-Fi indicators and technology-logo
+loop are the authorized idle animations. Technology displays use official React Bits LogoLoop adapted for the
 phone's copied surfaces, with real public-project technology labels, shared pause/phase,
 hover/focus suspension and hidden/offscreen cleanup. There is no visible pause control or dot
 separator. Genuine official/credible local logos cover technologies missing from the installed

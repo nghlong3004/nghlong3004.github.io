@@ -93,7 +93,7 @@ test('every display declaration selects Alumni for both languages without changi
   assert.match(root, /--pf-display: 'Alumni Sans', sans-serif;/)
   assert.match(root, /--pf-body: 'Geist', sans-serif; --pf-mono: 'Geist Mono', monospace;/)
   const direct = new Map([
-    ['.portfolio-brand', '900 25px/.9'], ['.portfolio-scene-name', '900 300px/.8'],
+    ['.portfolio-brand', '900 25px/.9'],
     ['.portfolio-screen h1', '900 100px/.84'], ['.portfolio-screen h2', '900 72px/1.02'],
     ['.portfolio-impact dt', '900 62px/1'], ['.portfolio-email', '900 52px/1.2'],
     ['.portfolio-signature', '900 84px/1'], ['.portfolio-cover__clock', '800 132px/.9'],

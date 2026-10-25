@@ -30,6 +30,7 @@
 │   ├── technology-presentation.test.mjs # One-line bilingual headings, project stack exclusions
 │   ├── screen-motion-cleanup.test.mjs  # Counter/reveal timeout and rAF disposal/StrictMode
 │   ├── typography.test.mjs             # Bilingual display family and actual Vietnamese font coverage
+│   ├── rain-background.test.mjs        # Official shaders, sole rain scene, storage and cleanup
 │   ├── privacy-copy.test.mjs          # Fact-only current employer and grounded bilingual copy
 │   ├── brand-icons.test.mjs           # Locked library icons and honest technology aliases
 │   ├── contact-validation.test.mjs    # Typed localized errors, touched/submission state
@@ -51,8 +52,8 @@
     ├── app/
     │   ├── App.tsx                    # NGHLONG3004, VI/EN, state dự án, slot, nav
     │   ├── config/
-    │   │   ├── device.ts              # Image-derived Glow default; Idle Float OFF
-    │   │   └── scenePreference.ts     # One-time stale-scene migration; preserve finish
+    │   │   └── device.ts              # Sole rain background (scene none); Idle Float OFF
+    │   ├── components/kokonut/        # Official RainGlassBackground adaptation + full MIT license
     │   └── styles/globals.css
     └── features/
         ├── portfolio/
@@ -126,7 +127,8 @@
 | Chữ/máy nhấp nhô khi đứng yên | `app/config/device.ts`: motion.float phải false |
 | Pha gập, scroll, scale, breakpoint | `foldfolio/FoldfolioDevice.tsx`, `config/constants.ts`, `engine/createFrameRenderer.ts` |
 | Intro, chuyển trang, animation loop | `foldfolio/hooks/usePageTransitions.ts`, `useAnimationLoop.ts` |
-| Glow/Orbit và ảnh nền | `foldfolio/hooks/useSceneImages.ts`, `components/renderScenes.tsx` |
+| Nền mưa toàn trang | `app/components/kokonut/RainGlassBackground.tsx`, `app/styles/globals.css` |
+| Glow/Orbit tái sử dụng (không dùng trong app) | `foldfolio/hooks/useSceneImages.ts`, `components/renderScenes.tsx` |
 | Reveal, count-up, fit text | `foldfolio/hooks/useScreenMotion.ts` |
 
 Các tiền tố `portfolio` / `foldfolio` nằm dưới `src/features/`; `app` nằm dưới `src/`.

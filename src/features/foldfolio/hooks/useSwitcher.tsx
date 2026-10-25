@@ -73,7 +73,7 @@ export function useSwitcher({
     const hTop = switcher.top ?? 15
     const hRight = switcher.right ?? 28
     const headerSwitcher =
-        switcher.show && scenesInHeader ? (
+        switcher.show && scene !== "none" && scenesInHeader ? (
             isCanvas ? (
                 <div style={{ ...abs, top: hTop, right: hRight, zIndex: 30 }}>
                     {scenePill(true)}
@@ -114,7 +114,7 @@ export function useSwitcher({
                 color: "#111",
             }}
         >
-            {!scenesInHeader && scenePill(false)}
+            {scene !== "none" && !scenesInHeader && scenePill(false)}
             <div
                 role="radiogroup"
                 aria-label="Finish"

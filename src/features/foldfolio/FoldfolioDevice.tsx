@@ -158,7 +158,7 @@ export default function FoldfolioDevice(props: FoldfolioProps) {
             const s = readStore()
             startTransition(() =>
                 setPick({
-                    scene: s.scene || sceneProp,
+                    scene: sceneProp === "none" ? "none" : s.scene || sceneProp,
                     finish: s.finish || finishProp,
                 })
             )
@@ -175,11 +175,13 @@ export default function FoldfolioDevice(props: FoldfolioProps) {
         const next = { ...pick, ...p }
         setPick(next)
         try {
-            window.localStorage.setItem(STORE_KEY, JSON.stringify(next))
+            window.localStorage.setItem(STORE_KEY, JSON.stringify(sceneProp === "none"
+                ? { ...readStore(), finish: next.finish }
+                : next))
             window.dispatchEvent(new Event(STORE_EVENT))
         } catch {}
     }
-    const scene = pick.scene
+    const scene = sceneProp === "none" ? "none" : pick.scene
     const F = finishColors(pick.finish, customFinish)
 
     // ---------- scale to fit the stage
@@ -555,7 +557,7 @@ export default function FoldfolioDevice(props: FoldfolioProps) {
                     width: "100%",
                     height: stageH,
                     overflow: screenInteractiveNode ? "clip" : "hidden",
-                    background: pageBg || undefined,
+                    background: scene === "none" ? "transparent" : pageBg || undefined,
                 }}
             >
                 <div style={fill}>

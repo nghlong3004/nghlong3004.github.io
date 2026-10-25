@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import '../features/portfolio/styles/portfolio.css'
 import FoldfolioDevice from '../features/foldfolio/FoldfolioDevice'
 import type { FoldfolioHandle } from '../features/foldfolio/types'
@@ -12,13 +12,10 @@ import { portfolio } from '../features/portfolio/data/portfolio'
 import { usePortfolioLanguage } from '../features/portfolio/hooks/usePortfolioLanguage'
 import { useVietnamClock } from '../features/portfolio/hooks/useVietnamClock'
 import { deviceConfig } from './config/device'
-import { applyGlowDefault } from './config/scenePreference'
+import RainGlassBackground from './components/kokonut/RainGlassBackground'
 import { resolvePortfolioDestination } from '../features/portfolio/lib/navigation'
 
 export default function App() {
-  useLayoutEffect(() => {
-    try { applyGlowDefault(window.localStorage) } catch { /* Storage can be unavailable. */ }
-  }, [])
   const { time, age } = useVietnamClock()
   const { language, setLanguage } = usePortfolioLanguage()
   const [expandedProject, setExpandedProject] = useState<string | null>(null)
@@ -31,7 +28,6 @@ export default function App() {
   useEffect(() => () => window.cancelAnimationFrame(entryFrame.current), [])
   const data = portfolio[language]
   const currentEmployer = data.experience.find(job => job.current)
-  const [nameLeft, nameRight] = data.profile.displayName.split(' ')
   const navigate = (destination: string) => {
     window.cancelAnimationFrame(entryFrame.current)
     const next = resolvePortfolioDestination(destination)
@@ -63,6 +59,7 @@ export default function App() {
 
   return (
     <TechnologyLoopProvider>
+      <RainGlassBackground src={data.profile.portrait.src} rain={0.6} interactive={false} className="portfolio-rain" />
       <button type="button" className="portfolio-brand" aria-label={`NGHLONG3004 — ${data.profile.name}`} onClick={returnToEntry}>NGHLONG3004</button>
       <div role="status" aria-live="polite" aria-atomic="true" className="portfolio-view-announcement">{navigation.open && `${data.ui.current}: ${{ home: data.ui.home, work: data.ui.work, projects: data.ui.archive, about: data.ui.intro, contact: data.ui.contact }[navigation.view]}`}</div>
       <div className="portfolio-language" role="group" aria-label={data.ui.language} hidden>
@@ -78,8 +75,6 @@ export default function App() {
         } : undefined, batteryText: String(age), batteryLabel: language === 'vi'
           ? `${age} tuổi — không phải mức pin thiết bị`
           : `Age ${age} — not device battery level` }}
-        nameLeft={<span className="portfolio-scene-name">{nameLeft}</span>}
-        nameRight={<span className="portfolio-scene-name">{nameRight}</span>}
         screen={screen}
         screenPortrait={screenPortrait}
         screenInteractive={screen}
@@ -98,7 +93,6 @@ export default function App() {
             ['contact', data.ui.contact],
           ].map(([view, label]) => <button key={view} type="button" data-portfolio-destination={view} aria-current={navigation.view === view ? 'page' : undefined} onClick={() => navigate(view)}>{label}</button>)}
         </nav>}
-        sceneImages={data.projects.map((project) => project.image)}
       />
     </TechnologyLoopProvider>
   )

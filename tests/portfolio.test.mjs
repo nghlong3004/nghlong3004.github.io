@@ -82,7 +82,6 @@ test('social destinations preserve the shared username and recognizable icon ide
 
 import { formatVietnamTime, getCompletedAgeInVietnam } from '../src/features/portfolio/lib/vietnamTime.ts'
 import { resolvePortfolioLanguage } from '../src/features/portfolio/lib/language.ts'
-import { applyGlowDefault } from '../src/app/config/scenePreference.ts'
 
 test('the live clock always uses Vietnam time, including midnight across a UTC date boundary', () => {
   assert.equal(formatVietnamTime(new Date('2026-10-23T16:45:00Z')), '23:45')
@@ -108,17 +107,7 @@ test('explicit language wins; supported browser preferences are ordered; unknown
   assert.equal(resolvePortfolioLanguage(null, []), 'vi')
 })
 
-test('Glow migrates a stale scene once without discarding finish or later explicit choices', () => {
-  const saved = new Map([['foldfolio:style', JSON.stringify({ scene: 'orbit', finish: 'coral' })]])
-  const storage = { getItem: key => saved.get(key) ?? null, setItem: (key, value) => saved.set(key, value) }
-  applyGlowDefault(storage)
-  assert.deepEqual(JSON.parse(saved.get('foldfolio:style')), { scene: 'glow', finish: 'coral' })
-  saved.set('foldfolio:style', JSON.stringify({ scene: 'split', finish: 'sage' }))
-  applyGlowDefault(storage)
-  assert.deepEqual(JSON.parse(saved.get('foldfolio:style')), { scene: 'split', finish: 'sage' })
-  saved.clear(); saved.set('foldfolio:style', 'null'); applyGlowDefault(storage)
-  assert.deepEqual(JSON.parse(saved.get('foldfolio:style')), { scene: 'glow' })
-  assert.doesNotThrow(() => applyGlowDefault({ getItem() { throw Error('blocked') }, setItem() { throw Error('blocked') } }))
+test('entry CTA remains bilingual', () => {
   assert.equal(labels.vi.open, 'Cuộn để mở')
   assert.equal(labels.en.open, 'Scroll to unfold')
 })

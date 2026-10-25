@@ -21,12 +21,11 @@
 .portfolio-screen :is(button,a):focus-visible, .portfolio-cover :is(button,a):focus-visible, .portfolio-call a:focus-visible,
 .portfolio-language button:focus-visible, .portfolio-nav button:focus-visible, .portfolio-brand:focus-visible { outline: 2px solid #245d47; outline-offset: 4px; }
 .portfolio-brand { position: fixed; top: 20px; left: 28px; z-index: 60; border: 0; background: transparent; color: #151613; font: 900 25px/.9 'Alumni Sans', sans-serif; letter-spacing: -.04em; cursor: pointer; }
-.portfolio-scene-name { display: block; font: 900 300px/.8 'Alumni Sans', sans-serif; letter-spacing: -.01em; text-transform: uppercase; white-space: nowrap; }
 .portfolio-language { position: fixed; top: 19px; left: 172px; z-index: 60; display: flex; gap: 9px; font: 400 13px/1 'Geist', sans-serif; color: #777; }
 .portfolio-language button { border: 0; background: transparent; padding: 5px 0; }
 .portfolio-language button[aria-pressed="true"] { color: #111; text-decoration: underline; text-underline-offset: 4px; }
 /* Temporary UI pause; retain handlers, stored preferences and scene configuration. */
-.portfolio-language[hidden], [data-ff-switcher], [data-ff-dots] [role="radiogroup"][aria-label="Background"] { display: none !important; }
+.portfolio-language[hidden] { display: none !important; }
 .portfolio-portrait { display: block; width: 100%; height: 100%; object-fit: cover; overflow: hidden; background: #eef1f0; }
 
 .portfolio-screen { padding: 0 32px 64px; }

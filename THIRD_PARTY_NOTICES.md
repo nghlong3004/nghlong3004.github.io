@@ -1,5 +1,24 @@
 # Third-party notices
 
+## Rain Glass Background
+
+`src/app/components/kokonut/RainGlassBackground.tsx` adapts Dorian Baffier's official
+Rain Glass Background1.0.0 (2026-10-22), distributed under MIT:
+[registry](https://kokonutui.com/r/rain-glass-background.json),
+[documentation](https://kokonutui.com/docs/backgrounds/rain-glass-background),
+[upstream license](https://github.com/kokonut-labs/kokonutui/blob/main/LICENSE).
+Complete license: `src/app/components/kokonut/LICENSE.kokonut-ui.txt`.
+Retrieved registry SHA256: `db5c87dd6a069fea756042ef5be6c472ae31218b06e1fcf9807120f03a923fa1`;
+original component SHA256: `a8a300d25a3fa2b26b393b14ddabc774c4061836776c817e02d1ff77ba073fd0`.
+Official WebGL2 shaders, normal-map droplets, fog, refraction and wipe simulation remain.
+Adaptations: required caller-supplied image/no demo content or remote default, local class
+joining, bounded drop count, guarded async completion, fallback/context recovery, hidden
+tab cancellation and the portfolio's always-animate motion policy. This app uses its
+existing local JPEG and disables wiping so the decorative layer cannot intercept input.
+No new runtime dependency is installed. CLI attempts failed on registry-only config and
+the isolated installer's color-service timeout; source was imported from the official
+registry directly, without changing package/lock/config files.
+
 ## React Bits LogoLoop
 
 The line-loop treatment is adapted from David Haz's official React Bits TypeScript/CSS

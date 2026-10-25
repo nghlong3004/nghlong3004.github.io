@@ -1,5 +1,42 @@
 # Portfolio verification
 
+## Full-page Rain Glass — local integration 2026-10-25
+
+The actual Kokonut Rain Glass1.0.0 source is integrated with its unchanged WebGL2
+shaders and MIT notice. The app uses one fixed pointer-transparent rain pane and
+the existing local JPEG; no remote background image or runtime dependency is added.
+Rain replaces the app's Basic/Glow/Orbit experience. Scene selectors and app-only
+Glow migration/name/image wiring are removed; stored scene fields cannot restore
+an old mode. Finish and mixed stored preferences are preserved. Internal reusable
+engine scenes remain; none mode now exposes the transparent stage.
+
+Production build and129 tests pass; lint exits0 with existing engine warnings.
+The built/public-source privacy comparison passes. Package, lockfile, registry
+config and original public assets are unchanged. The build still warns about a
+chunk over500kB; this is not a claim of improved bundle performance.
+
+Chromium production renders cover1440/390/320px in VI/EN: one viewport-sized rain
+pane at entry and content end, no old scene UI/layers, no off-origin resources,
+working finish persistence, initial unfolding, five-view navigation, dialog keyboard
+focus/Escape, native text selection and outside-tap scroll stability. Shader draws
+stop under a synthetic hidden-tab event and resume; animation remains enabled
+under reduce media. Dark media retains the light fog behind the existing brand.
+Development StrictMode replay/remount leaves one live program/three textures;
+unmount releases all tracked shader/texture/buffer/program, observer, interval and
+component listener resources. Actual offscreen intersection stops draws. WebGL
+context loss/restoration rebuilds successfully; missing images and unavailable
+WebGL2 show the neutral fallback. Test-fixture setup failures were retained and
+resolved separately from passing application checks.
+
+Limits: software-rendered Chromium is not a physical mobile GPU/battery/performance,
+Safari or assistive-technology audit. Native mobile keyboards remain untested.
+The existing always-animate policy still disregards reduced-motion preferences.
+Existing device content/nav styling is retained, including navigation overlap at
+some intermediate scroll positions; this change is not a content-layout redesign.
+CLI installation attempts failed on registry-only configuration and an isolated
+color-service timeout; the source was retrieved from the official registry directly.
+No commit, push or deployment is part of this local verification.
+
 ## Work employment grouping — 2026-10-25
 
 Work-only CSS gives each employment entry the existing neutral `--pf-surface` tone,
