@@ -4,11 +4,13 @@
 
 ```text
 .
-├── AGENTS.md / TREE.md / README.md
+├── AGENTS.md / README.md
 ├── .gitattributes                    # Preserve exact upstream technology asset/license bytes
-├── THIRD_PARTY_NOTICES.md             # Kokonut, React Bits and icon provenance/licenses
 ├── .github/workflows/deploy.yml       # Build dist and publish main to GitHub Pages
-├── docs/VERIFICATION.md               # Public verification summary; no session metadata
+├── docs/
+│   ├── TREE.md                       # Bản đồ project
+│   ├── THIRD_PARTY_NOTICES.md         # Kokonut, React Bits and icon provenance/licenses
+│   └── VERIFICATION.md               # Public verification summary; no session metadata
 ├── package.json / pnpm-lock.yaml
 ├── components.json                   # Official React Bits/Kokonut MCP registry discovery only
 ├── index.html / vite.config.ts / tsconfig*.json / .oxlintrc.json
@@ -134,7 +136,7 @@
 Các tiền tố `portfolio` / `foldfolio` nằm dưới `src/features/`; `app` nằm dưới `src/`.
 
 ```sh
-cat AGENTS.md TREE.md
+cat AGENTS.md docs/TREE.md
 cat src/app/config/device.ts
 rg -n 'portrait|entry-wallpaper' src/features/portfolio
 rg -n 'scrollToSection|data-ff-section' src

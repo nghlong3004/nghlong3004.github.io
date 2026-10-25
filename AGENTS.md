@@ -2,7 +2,7 @@
 
 ## Khôi phục context
 
-1. Đọc [TREE.md](TREE.md) để chọn module theo việc cần làm.
+1. Đọc [TREE.md](docs/TREE.md) để chọn module theo việc cần làm.
 2. Thêm/sửa nội dung: đọc `src/features/portfolio/data/portfolio.ts` và `src/features/portfolio/types.ts`.
 3. Đổi cấu hình máy: đọc `src/app/config/device.ts`.
 4. Xem cách ghép trang/slot: đọc `src/app/App.tsx`.
@@ -55,7 +55,7 @@
 - Shared `pf-*` tokens/primitives in portfolio.css load BEFORE screen-specific styles. Work and Projects use the shared light theme; About retains its split hero. Contact VIEW has a full-width statement and no portrait; entry, About and separate final folded portraits remain unchanged. Contact keeps semantic input types but uses typed VI/EN inline validation with `noValidate`, shared touched/submitted state, field-error descriptions and safe first-invalid focus, not native validation popups. Submit only prepares an encoded mailto draft; no delivery claim, backend or server storage/transmission.
 - Contact's four social icons share one row, with email centered on its own row. Use the shared scoped brand-icon mapping rather than copied brand SVG paths. Entry Instagram/LinkedIn and final GitHub/LinkedIn placements stay separate and unchanged.
 - Mark nested full-width background boundaries with `data-ff-surface` for scan-time status tint. Narrow desktop panels are excluded from whole-screen surface selection. Screen-motion callbacks must remain owned/cancellable, detached-target guarded and StrictMode-rearmable; retain nominal reveal/counter timings.
-- About uses official Kokonut Marker Text in controlled mode for synchronized copies. Refresh ink after folding/focus/scroll; keep upstream strokes/timings. Final Slide to Confirm returns to entry/Home, keyboard-enabled, no call/audio/external action. Retain GitHub-left/LinkedIn-right and THIRD_PARTY_NOTICES.md.
+- About uses official Kokonut Marker Text in controlled mode for synchronized copies. Refresh ink after folding/focus/scroll; keep upstream strokes/timings. Final Slide to Confirm returns to entry/Home, keyboard-enabled, no call/audio/external action. Retain GitHub-left/LinkedIn-right and docs/THIRD_PARTY_NOTICES.md.
 - `screenOverlay`/`screenOverlayPortrait` render once in the existing clipped screen overlay above nav, only when flat/open. Official Kokonut Smooth Drawer adaptation retains peek/expanded/easing, with existing Motion/device-local focus and scroll instead of Vaul/body portals/drag-to-snap. Trap focus, close/Escape/backdrop and restore previous focus/inert/overflow on cleanup. Fold shading remains; decorative crease disappears when flat.
 - `screenNavigation?: { key: string; target?: string }` requests opening/resetting already-rendered content; undefined initially preserves the cover. New request keys reset to the active view's top or intra-view `data-ff-section` target, keeping an open device open. `FoldfolioHandle.scrollToSection(key)` remains a reusable intra-view API. Do not use native hashes/scrollIntoView for slots or remount the whole device.
 - `fold`: cuộn mở máy → cuộn nội dung → đóng máy → call screen. `open`: máy luôn mở, cuộn trang di chuyển nội dung.
@@ -85,4 +85,4 @@ Dev mặc định ở `http://localhost:5173/`. Build chạy TypeScript trước
 - Check idle stability, shared project expansion across both halves/view switches/language changes, genuine per-view DOM separation and scrolling, folded/open navigation, notifications and focus. Verify motion actually runs under both normal and reduce media preferences.
 - Đổi engine/render: kiểm tra `fold` đầu/giữa/cuối và `open`, Basic/Glow/Orbit, finish, header/bottom switcher, resize/reload.
 - Kiểm tra motion/filter bằng nội dung dài, heading/counter/ảnh/link lọc; màn hình trống không kiểm chứng được chúng.
-- Thêm/bớt/di chuyển file: cập nhật `TREE.md` và toàn bộ import. Xóa file hết caller thay vì giữ re-export dự phòng.
+- Thêm/bớt/di chuyển file: cập nhật `docs/TREE.md` và toàn bộ import. Xóa file hết caller thay vì giữ re-export dự phòng.

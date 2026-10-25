@@ -45,7 +45,7 @@ npx shadcn@latest add https://kokonutui.com/r/rain-glass-background.json
 The CLI rejected the existing registry-only `components.json`; an isolated attempt
 then timed out fetching shadcn's neutral colors. The actual official registry source
 was imported directly instead, retaining its MIT notice and unchanged shaders.
-No runtime package or lockfile changes were needed. [Attribution](THIRD_PARTY_NOTICES.md#rain-glass-background).
+No runtime package or lockfile changes were needed. [Attribution](docs/THIRD_PARTY_NOTICES.md#rain-glass-background).
 WebGL2 is required for animated rain; unsupported contexts or failed image loads show
 a pale neutral background. Hidden/offscreen rendering pauses; unmount releases GPU
 resources and context restoration rebuilds the pane. Rain follows the app's existing
@@ -55,9 +55,9 @@ always-animate policy, including reduced-motion media.
 - **Portraits:** `data/portrait.ts` supplies one shared image source with neutral VI/EN alt text to entry, About/main and final/contact. All use the original `public/portrait/entry-wallpaper.jpg` bytes. Only entry uses full-screen wallpaper sizing and a top contrast scrim; About retains its portrait panel and final its small circle. No pictured identity is assumed. Change the shared source once to synchronize every portrait.
 - **Device configuration:** `src/app/config/device.ts`. Idle Float remains OFF so the device and text stay still without scrolling.
 - **Screen composition:** `src/app/App.tsx`.
-- **Source map:** [TREE.md](TREE.md). **Agent instructions:** [AGENTS.md](AGENTS.md).
+- **Source map:** [TREE.md](docs/TREE.md). **Agent instructions:** [AGENTS.md](AGENTS.md).
 
-The supplied photograph is used consistently without claiming it depicts the portfolio owner. The old `public/portrait/reference.jpg` and `public/tmp/` design references remain preserved but are not profile portraits in the UI. The accepted bilingual display family is self-hosted Alumni Sans, retaining Geist body/UI and Geist Mono metadata. Original Sofia files remain preserved but unused. Fonts and their OFL licenses live in `public/fonts/`; see [font provenance](THIRD_PARTY_NOTICES.md#fonts). The app uses a Framer editor adapter; no Framer runtime or backend is required.
+The supplied photograph is used consistently without claiming it depicts the portfolio owner. The old `public/portrait/reference.jpg` and `public/tmp/` design references remain preserved but are not profile portraits in the UI. The accepted bilingual display family is self-hosted Alumni Sans, retaining Geist body/UI and Geist Mono metadata. Original Sofia files remain preserved but unused. Fonts and their OFL licenses live in `public/fonts/`; see [font provenance](docs/THIRD_PARTY_NOTICES.md#fonts). The app uses a Framer editor adapter; no Framer runtime or backend is required.
 
 ```sh
 pnpm build
@@ -93,7 +93,7 @@ adding a sixth Home content section or bringing back the terminal folding screen
 About uses Kokonut's Marker Text on the introduction. The retained reusable final component
 uses Kokonut's Slide to Confirm to return to entry/Home; this portfolio does not expose
 that terminal screen. It never initiates a call, recording or external action.
-See [component attribution](THIRD_PARTY_NOTICES.md).
+See [component attribution](docs/THIRD_PARTY_NOTICES.md).
 
 Motion policy: animations intentionally run even with an OS/browser reduced-motion preference.
 There is no reduced-motion bypass, which is an accessibility limitation for motion-sensitive
