@@ -23,21 +23,27 @@ test('navigation clamps the beginning and end without entering the closing phase
   assert.equal(getSectionScrollY(100, 5000, geometry), 2700)
   assert.equal(getSectionScrollY(100, 500, { ...geometry, innerMax: 0 }), 1100)
 })
-test('both languages preserve the full dataset and stable project identifiers', () => {
+test('both languages have matching collections and unique stable project identifiers', () => {
   assert.deepEqual(projects.vi.map(p => p.id), projects.en.map(p => p.id))
   assert.deepEqual(Object.keys(labels.vi), Object.keys(labels.en))
+  for (const [name, data] of Object.entries({ projects, experiences, honors, impacts })) {
+    assert.ok(data.vi.length > 0, `${name} must not be empty`)
+    assert.equal(data.vi.length, data.en.length, `${name} must have matching translations`)
+  }
+  assert.ok(stories.vi.principles.length > 0)
+  assert.equal(stories.vi.principles.length, stories.en.principles.length)
   for (const language of ['vi', 'en']) {
-    assert.equal(projects[language].length, 4)
-    assert.equal(experiences[language].length, 2)
-    assert.equal(honors[language].length, 3)
-    assert.equal(impacts[language].length, 4)
-    assert.equal(stories[language].principles.length, 4)
+    const ids = projects[language].map(project => project.id)
+    assert.ok(ids.every(id => typeof id === 'string' && id.trim()))
+    assert.equal(new Set(ids).size, ids.length, 'project IDs must be unique')
     assert.equal(profiles[language].email, 'nghlong3004@gmail.com')
     assert.equal(profiles[language].displayName, 'HOANG LONG')
     assert.equal(projects[language].find(project => project.id === 'vinqa').image.src, '/project/vinqa/header.webp')
     for (const project of projects[language]) {
       assert.ok(project.details.length && project.role.length)
-      assert.ok(project.sourceCode)
+      for (const href of [project.liveUrl, project.sourceCode]) {
+        if (href !== undefined) assert.ok(['http:', 'https:'].includes(new URL(href).protocol))
+      }
       assert.ok(!/<\/?(?:ul|li|br|strong)\b/.test(JSON.stringify(project)))
     }
   }

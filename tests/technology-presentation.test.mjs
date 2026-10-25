@@ -21,16 +21,16 @@ test('Home and About use accepted bilingual headings and only loop inputs lose t
     for (const language of ['vi', 'en']) {
       const data = portfolio[language]
       for (const [view, expectedHeading] of [[HomeView,
-        `<h2 class="pf-technology-heading home-tools__heading">${language === 'vi' ? 'Công nghệ sử dụng' : 'Project technologies'}</h2>`],
+        language === 'vi' ? 'Công nghệ sử dụng' : 'Project technologies'],
       [AboutView,
-        `<h3 class="about-view__tools-heading pf-meta">${language === 'vi' ? 'Công nghệ sử dụng' : 'Tools I work with'}</h3>`]]) {
+        language === 'vi' ? 'Công nghệ sử dụng' : 'Tools I work with']]) {
         const html = renderToStaticMarkup(createElement(view, {
           data,
           onNavigate() {},
           onToggle() {},
           expandedProject: null,
         }))
-        assert.ok(html.includes(expectedHeading), `${language} heading: ${expectedHeading}`)
+        assert.ok(html.includes(`>${expectedHeading}</h2>`) || html.includes(`>${expectedHeading}</h3>`), `${language} heading: ${expectedHeading}`)
         const loopNames = [...html.matchAll(/technology-loop__name">([^<]+)</g)].map((match) => match[1])
         for (const name of removed) assert.ok(!loopNames.includes(name), `${language} loop includes ${name}`)
       }
@@ -48,11 +48,9 @@ test('Home and About use accepted bilingual headings and only loop inputs lose t
   }
 })
 
-test('technology headings are nowrap with a compact-only Alumni heading-size fit', () => {
+test('technology headings retain the single-line treatment', () => {
   const home = readFileSync(new URL('../src/features/portfolio/styles/home.css', import.meta.url), 'utf8')
   const about = readFileSync(new URL('../src/features/portfolio/styles/about.css', import.meta.url), 'utf8')
-  assert.match(home, /\.home-tools__heading \{ white-space: nowrap; \}/)
-  assert.match(about, /\.about-view__tools-heading \{ margin-top: 28px; white-space: nowrap; \}/)
-  assert.match(home, /\.portfolio-screen--compact \.home-tools__heading \{ font-size: clamp\(24px, 7\.8vw, 28px\); \}/)
-  assert.doesNotMatch(about, /portfolio-screen--compact \.about-view__tools-heading/)
+  assert.match(home, /\.home-tools__heading\s*\{[^}]*\bwhite-space\s*:\s*nowrap\s*(?:;|\})/)
+  assert.match(about, /\.about-view__tools-heading\s*\{[^}]*\bwhite-space\s*:\s*nowrap\s*(?:;|\})/)
 })

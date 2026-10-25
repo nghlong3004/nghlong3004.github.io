@@ -1,5 +1,7 @@
 # Portfolio verification
 
+Historical evidence archive, not an onboarding guide, current pass report or mandatory checklist. Read a specific dated section only when investigating that revision; later entries may supersede earlier behavior. Use [AGENTS.md](../AGENTS.md#verification) and [focused tests](../tests/README.md) for current maintenance. Report new routine checks with the change rather than extending this archive.
+
 ## Full-page Rain Glass — local integration 2026-10-25
 
 The actual Kokonut Rain Glass1.0.0 source is integrated with its unchanged WebGL2
