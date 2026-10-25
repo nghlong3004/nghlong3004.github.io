@@ -1,8 +1,23 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
+import { readFileSync } from 'node:fs'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { createServer } from 'vite'
+
+test('Work employment tone is scoped and expands into the gutter without narrowing text', () => {
+  const css = readFileSync(new URL('../src/features/portfolio/styles/work.css', import.meta.url), 'utf8')
+  const surface = css.match(/\.pf-work \.portfolio-experience\s*\{([^}]+)\}/)?.[1]
+  assert.ok(surface, 'Work-only entry surface')
+  assert.match(surface, /background:\s*var\(--pf-surface\)/)
+  assert.match(surface, /margin-inline:\s*-16px/)
+  assert.match(surface, /padding:\s*20px 16px/)
+  assert.doesNotMatch(surface, /(?:border|box-shadow|border-radius|min-height|height|grid-template-columns|gap|cursor|display)\s*:/)
+  assert.match(css, /\.pf-work \.portfolio-experience \+ \.portfolio-experience\s*\{\s*margin-top:\s*24px;\s*\}/)
+  for (const [, selector] of css.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(/([^{}]+)\{/g)) {
+    if (selector.includes('portfolio-experience')) assert.ok(selector.trim().startsWith('.pf-work '))
+  }
+})
 
 test('Work renders only real bilingual employment history and preserves the current-job target', async () => {
   const server = await createServer({ configFile: false, server: { middlewareMode: true, hmr: false, ws: false }, appType: 'custom' })

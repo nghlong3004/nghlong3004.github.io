@@ -1,5 +1,21 @@
 # Portfolio verification
 
+## Work employment grouping — 2026-10-25
+
+Work-only CSS gives each employment entry the existing neutral `--pf-surface` tone,
+without a border, shadow, rounded-card affordance or fixed height. Matched16px inline
+padding and negative margins preserve the previous text edges/column widths;20px
+vertical padding and24px between entries provide separation. Shared employment markup,
+data, desktop two-column/compact stacking, Home, hero, footer, status and engine code
+remain unchanged. Current VinFast content remains fact-only.
+
+Production build and126 tests pass; lint has0 errors/41 existing warnings, and privacy
+comparison passes. Before/after production Chromium checks cover1440/768/390/320px,
+VI/EN, measuring unchanged text edges and widths, natural unequal entry heights, screen
+containment/no horizontal overflow, and the existing footer Contact action/open end.
+This is local rendering evidence, not a measured user scan-speed improvement or a
+physical-device/non-Chromium audit. Push and deployment results must be distinguished.
+
 ## Local Wi-Fi/status and Home/Work footer follow-up — 2026-10-25
 
 Based on released `4277c84`. Decorative Wi-Fi replaces the status row's5G text.
