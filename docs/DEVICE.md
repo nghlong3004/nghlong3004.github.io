@@ -16,7 +16,7 @@ Public API: `FoldfolioDevice.tsx`, `FoldfolioProps`/`FoldfolioHandle` in `types.
 ## Status
 
 - Clock left; logo-only employer branding, simulated cellular, decorative Wi-Fi, age right. App supplies existing light/dark VinFast assets + fact-only label via `status.employerLogo`; choose by resolved right-group tint. Groups: 22px tall; verify painted icon bounds. Five cellular bars intentionally adapt iOS rather than exactly copy Apple UI.
-- Cellular/Wi-Fi share random level 2–5 about every 2s; Wi-Fi: dot + 0–3 active arcs, replacing 5G. No network API/separate timer. Mark nested full-width backgrounds `data-ff-surface` for status tint; exclude narrow desktop panels from whole-screen selection.
+- Cellular/Wi-Fi use independent `useSignalLevel` instances with separate state/timers: cellular every 2–3s, Wi-Fi every 5–7.5s, with a newly randomized delay after each tick. Levels move one step within 2–5; Wi-Fi maps this to a dot + 0–3 active arcs. Both pause while the tab is hidden or status is disabled; no network API. Copies share each icon's level. Mark nested full-width backgrounds `data-ff-surface` for status tint; exclude narrow desktop panels from whole-screen selection.
 
 ## Animation and lifecycle
 

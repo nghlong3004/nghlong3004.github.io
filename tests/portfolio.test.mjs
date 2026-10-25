@@ -53,7 +53,8 @@ test('both languages have matching collections and unique stable project identif
 })
 test('all project screenshots and company logos resolve locally', () => {
   const assets = [
-    '/favicon.webp', profiles.vi.portrait.src,
+    '/LONG_Precision_L/favicon.svg', '/LONG_Precision_L/favicon.ico',
+    '/LONG_Precision_L/primary-logo-transparent-graphite.svg', profiles.vi.portrait.src,
     '/fonts/geist-regular.ttf', '/fonts/sofia-extra-condensed-black.ttf', '/fonts/sofia-extra-condensed-extrabold.ttf',
     ...projects.vi.flatMap(project => [project.image.src, ...project.images]),
     ...experiences.vi.flatMap(job => [job.logo, job.logoDark].filter(Boolean)),

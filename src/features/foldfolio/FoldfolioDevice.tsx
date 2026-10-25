@@ -491,7 +491,8 @@ export default function FoldfolioDevice(props: FoldfolioProps) {
 
     // live clock for the status bar
     const [clock, setClock] = useState(status.time)
-    const signalLevel = useSignalLevel(status.show && !isCanvas)
+    const signalLevel = useSignalLevel(status.show && !isCanvas, 2000)
+    const wifiLevel = useSignalLevel(status.show && !isCanvas, 5000)
     useEffect(() => {
         if (!status.live || typeof window === "undefined" || isCanvas) {
             setClock(status.time)
@@ -519,7 +520,7 @@ export default function FoldfolioDevice(props: FoldfolioProps) {
         onInteractiveFocus: (event) => {
             if (event.target instanceof HTMLElement)
                 revealScreenElement.current(event.target, true)
-        }, signalLevel,
+        }, signalLevel, wifiLevel,
     })
 
     const { splitLayer, namesLayer, glowLayer, orbitLayer, curtainBg } = renderScenes({

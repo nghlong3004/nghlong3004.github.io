@@ -17,6 +17,7 @@ src/features/foldfolio/   # Reusable device, public types, components, engine, h
 | --- | --- | --- |
 | Content/language | `P/types.ts`, `P/data/portfolio.ts`, relevant section file; `P/hooks/usePortfolioLanguage.ts` | [Data/language](PORTFOLIO.md#data-and-language) |
 | Portrait | `P/data/portrait.ts`, `P/components/Portrait.tsx` | [Portraits](PORTFOLIO.md#portraits) |
+| Personal brand/favicon | `public/LONG_Precision_L/README.md`, `index.html`, `src/app/App.tsx`, `P/styles/portfolio.css`; notification fallback in `P/components/PortfolioCover.tsx` | Use supplied SVGs unchanged; graphite transparent wordmark on the rain background, SVG favicon with ICO fallback. |
 | Fonts | `P/styles/portfolio.css`, `public/fonts/` | [Typography](PORTFOLIO.md#typography) |
 | View layout/navigation | `src/app/App.tsx`, `P/components/PortfolioScreen.tsx`, matching `views/*View.tsx` / `styles/<view>.css`, `P/lib/navigation.ts` | [Views](APP.md#views-and-navigation) |
 | Cover/notifications; reusable final | `P/components/PortfolioCover.tsx`, `P/data/labels.ts`; `P/components/PortfolioContact.tsx` | [Views](APP.md#views-and-navigation), [final](APP.md#about-and-reusable-final) |

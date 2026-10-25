@@ -30,7 +30,7 @@ resolver.deregister()
 const logo = { src: '/normal.png', srcOnDark: '/on-dark.png', label: 'Currently working at VinFast' }
 const age = { batteryText: '21', batteryLabel: 'Age 21 — not device battery level' }
 const refs = new Proxy({}, { get: () => ({ current: null }) })
-function render(status = {}, port = false, mode = 'open', interactive = true, signalLevel = 3) {
+function render(status = {}, port = false, mode = 'open', interactive = true, signalLevel = 3, wifiLevel = 3) {
   return renderDevice({
     G: { W: 976, H: 660, f: 5, bz: 4, R: 22 }, b: 9, F: ['#aaa', '#bbb', '#ccc', '#ddd'],
     status: { show: true, tone: 'auto', ...age, ...status }, port, clock: '12:34', R: refs,
@@ -38,7 +38,7 @@ function render(status = {}, port = false, mode = 'open', interactive = true, si
     screenInteractiveNode: interactive ? createElement('div', null, 'canonical') : null,
     land: !port, inner: () => '0', screenColor: '#fff', coverNode: null, rootRef: { current: null },
     live: { current: { k: 0 } }, geo: { current: {} }, callNode: null, cRight: '0', cLeaf: '0',
-    hingeBleed: 1, cAll: '0', Ro: 22, Hs: 642, navNode: null, screenOverlayNode: null, signalLevel,
+    hingeBleed: 1, cAll: '0', Ro: 22, Hs: 642, navNode: null, screenOverlayNode: null, signalLevel, wifiLevel,
   }).device
 }
 function elements(node, predicate) {
@@ -94,10 +94,10 @@ test('logo→signal→Wi-Fi→age stays in the last-child group across hardware 
   assert.equal(marked(render({ show: false, employerLogo: logo }), 'data-ff-employer').length, 0)
 })
 
-test('all status copies coordinate cellular and Wi-Fi opacity directly from the single shared level', () => {
+test('all status copies preserve independently supplied cellular and Wi-Fi levels', () => {
   for (const port of [false, true]) for (const mode of ['fold', 'open']) for (const interactive of [false, true]) {
-    for (const level of [2, 3, 4, 5]) {
-      const device = render({ employerLogo: logo }, port, mode, interactive, level)
+    for (const level of [2, 3, 4, 5]) for (const wifiLevel of [2, 3, 4, 5]) {
+      const device = render({ employerLogo: logo }, port, mode, interactive, level, wifiLevel)
       const signals = marked(device, 'data-ff-signal')
       const wifi = marked(device, 'data-ff-wifi')
       assert.ok(signals.length > 0)
@@ -110,7 +110,7 @@ test('all status copies coordinate cellular and Wi-Fi opacity directly from the 
       }
       for (const icon of wifi) {
         const arcs = elements(icon, el => el.type === 'path')
-        assert.deepEqual(arcs.map(arc => arc.props.style.opacity), [3, 4, 5].map(threshold => level >= threshold ? 1 : .22))
+        assert.deepEqual(arcs.map(arc => arc.props.style.opacity), [3, 4, 5].map(threshold => wifiLevel >= threshold ? 1 : .22))
         assert.ok(arcs.every(arc => arc.props.style.transition === 'opacity .45s ease' && arc.props.stroke === 'currentColor'))
         assert.equal(elements(icon, el => el.type === 'circle').length, 1)
         assert.equal(icon.props['aria-hidden'], 'true')
@@ -122,7 +122,7 @@ test('all status copies coordinate cellular and Wi-Fi opacity directly from the 
   const source = readFileSync(new URL('../src/features/foldfolio/components/renderDevice.tsx', import.meta.url), 'utf8')
   assert.doesNotMatch(source, /setTimeout|setInterval|Math\.random|useSignalLevel|navigator\./)
   const controller = readFileSync(new URL('../src/features/foldfolio/FoldfolioDevice.tsx', import.meta.url), 'utf8')
-  assert.equal((controller.match(/useSignalLevel\(status.show && !isCanvas\)/g) || []).length, 1)
+  assert.equal((controller.match(/useSignalLevel\(status.show && !isCanvas, (?:2000|5000)\)/g) || []).length, 2)
 })
 
 test('fixed common rows and centered painted geometry survive orientation, level and copy changes', () => {

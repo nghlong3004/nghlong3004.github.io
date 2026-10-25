@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="780" height="250" viewBox="0 0 780 250" role="img" aria-label="LONG primary logo on graphite"><title>LONG primary logo on graphite</title><rect width="780" height="250" fill="#161B22"/>
+<g transform="translate(60,29) scale(1.17)"><path d="M 20 57 L 64 17 L 64 109 L 20 149 Z" fill="#F4F1EB"/>
+<path d="M 64 125 L 126 125 L 160 163 L 20 163 Z" fill="#F4F1EB"/></g>
+<g transform="translate(288,91) scale(0.9)" fill="#F4F1EB">
+<path d="M 0 0 H 21 V 71 H 85 V 90 H 0 Z"/>
+<path fill-rule="evenodd" d="M 131 0 H 179 C 198 0 210 12 210 30 V 60 C 210 78 198 90 179 90 H 131 C 112 90 100 78 100 60 V 30 C 100 12 112 0 131 0 Z M 133 19 C 126 19 122 23 122 30 V 60 C 122 67 126 71 133 71 H 177 C 184 71 188 67 188 60 V 30 C 188 23 184 19 177 19 Z"/>
+<path d="M 227 90 V 0 H 247 L 319 65 V 0 H 340 V 90 H 320 L 248 25 V 90 Z"/>
+<path d="M 385 0 H 463 V 20 H 384 C 376 20 373 25 373 31 V 59 C 373 67 378 71 386 71 H 432 C 439 71 443 67 443 60 V 54 H 407 L 412 36 H 464 V 62 C 464 80 452 90 434 90 H 384 C 363 90 352 77 352 59 V 30 C 352 11 365 0 385 0 Z"/>
+</g></svg>

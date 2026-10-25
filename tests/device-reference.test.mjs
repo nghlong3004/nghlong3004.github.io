@@ -12,41 +12,65 @@ const resolver = registerHooks({ resolve(specifier, context, next) {
 const { useSignalLevel } = await import('../src/features/foldfolio/hooks/useSignalLevel.ts')
 resolver.deregister()
 
-test('one signal hook pauses hidden timers, resumes, and cleans up under remount', () => {
+test('independent signal hooks jitter their timers, move one step, pause and clean up', () => {
   const previous = { window: globalThis.window, document: globalThis.document, __signalFixture: globalThis.__signalFixture }
-  let next = 0, level = 4, cleanup
+  let next = 0, slot = 0
+  const levels = [], cleanups = []
   const timers = new Map(), listeners = new Set()
   const document = { visibilityState: 'visible', addEventListener: (_, fn) => listeners.add(fn), removeEventListener: (_, fn) => listeners.delete(fn) }
-  const window = { setTimeout(fn, delay) { assert.equal(delay, 2000); const id = ++next; timers.set(id, fn); return id }, clearTimeout(id) { timers.delete(id) } }
-  const f = { effects: [], state(initial) { return [level ?? initial, nextLevel => { level = nextLevel }] } }
+  const window = { setTimeout(fn, delay) { const id = ++next; timers.set(id, { fn, delay }); return id }, clearTimeout(id) { timers.delete(id) } }
+  const f = { effects: [], state(initial) {
+    const index = slot++
+    levels[index] ??= initial
+    return [levels[index], update => { levels[index] = update(levels[index]) }]
+  } }
   Object.assign(globalThis, { window, document, __signalFixture: f })
   const oldRandom = Math.random
-  Math.random = () => 0.99
+  Math.random = () => 0.25
+  const tick = id => { const timer = timers.get(id); timers.delete(id); timer.fn() }
   try {
-    assert.equal(useSignalLevel(true), 4)
-    cleanup = f.effects.pop()()
-    assert.equal(timers.size, 1)
-    assert.equal(listeners.size, 1)
-    const tick = [...timers.values()][0]; timers.clear(); tick()
-    assert.equal(level, 5)
-    assert.equal(timers.size, 1)
+    assert.equal(useSignalLevel(true, 2000), 4)
+    assert.equal(useSignalLevel(true, 5000), 4)
+    cleanups.push(...f.effects.map(effect => effect()))
+    assert.equal(timers.size, 2)
+    assert.equal(listeners.size, 2)
+    assert.deepEqual([...timers.values()].map(timer => timer.delay), [2250, 5625])
+    const [cellular, wifi] = [...timers.keys()]
+    Math.random = () => 0.99
+    tick(cellular)
+    assert.deepEqual(levels, [5, 4], 'cellular tick leaves Wi-Fi unchanged')
+    assert.equal(timers.get(wifi).delay, 5625)
+    assert.equal([...timers.values()].find(timer => timer.delay !== 5625).delay, 2990)
+    tick([...timers.keys()].find(id => id !== wifi))
+    assert.deepEqual(levels, [5, 4], 'cellular stays within its upper bound')
     Math.random = () => 0
-    const nextTick = [...timers.values()][0]; timers.clear(); nextTick()
-    assert.equal(level, 2)
-    document.visibilityState = 'hidden'; [...listeners][0]()
+    tick(wifi)
+    assert.deepEqual(levels, [5, 3], 'Wi-Fi tick leaves cellular unchanged')
+    for (let i = 0; i < 3; i++) tick([...timers.keys()].at(-1))
+    assert.deepEqual(levels, [5, 2], 'Wi-Fi stays within its lower bound')
+    document.visibilityState = 'hidden'; listeners.forEach(listener => listener())
     assert.equal(timers.size, 0)
-    document.visibilityState = 'visible'; [...listeners][0]()
-    assert.equal(timers.size, 1)
-    cleanup()
+    document.visibilityState = 'visible'; listeners.forEach(listener => listener())
+    assert.deepEqual([...timers.values()].map(timer => timer.delay), [2000, 5000])
+    cleanups.forEach(cleanup => cleanup())
     assert.equal(timers.size, 0)
     assert.equal(listeners.size, 0)
     f.effects = []
-    assert.equal(useSignalLevel(false), 2)
-    f.effects.pop()()
+    slot = 0
+    assert.equal(useSignalLevel(false, 2000), 5)
+    assert.equal(useSignalLevel(false, 5000), 2)
+    f.effects.forEach(effect => effect())
     assert.equal(timers.size, 0)
     assert.equal(listeners.size, 0)
+    f.effects = []
+    slot = 0
+    document.visibilityState = 'hidden'
+    useSignalLevel(true, 2000)
+    useSignalLevel(true, 5000)
+    cleanups.push(...f.effects.map(effect => effect()))
+    assert.equal(timers.size, 0, 'remounting in a hidden tab does not start timers')
   } finally {
-    cleanup?.(); Math.random = oldRandom
+    cleanups.forEach(cleanup => cleanup()); Math.random = oldRandom
     Object.assign(globalThis, previous)
   }
 })
@@ -64,7 +88,7 @@ test('overlay is one clipped screen child above nav, never duplicated across lea
       live: { current: { k: 0 } }, geo: { current: {} }, callNode: null,
       cRight: '0', cLeaf: '0', hingeBleed: 1, cAll: '0', Ro: 22, Hs: 642,
       navNode: React.createElement('nav', null, 'nav-marker'),
-      screenOverlayNode: React.createElement('div', { role: 'dialog' }, 'overlay-marker'), signalLevel: 3 }
+      screenOverlayNode: React.createElement('div', { role: 'dialog' }, 'overlay-marker'), signalLevel: 3, wifiLevel: 3 }
     for (const [mode, port] of [['fold', false], ['fold', true], ['open', false], ['open', true]]) {
       const markup = renderToStaticMarkup(renderDevice({ ...base, mode, port, land: !port }).device)
       assert.equal((markup.match(/data-ff-screen-overlay=""/g) || []).length, 1)

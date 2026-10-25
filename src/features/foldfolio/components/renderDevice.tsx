@@ -9,7 +9,7 @@ import { abs, fill } from "../styles/motion"
 export function renderDevice({
     G, b, F, status, port, clock, R, halfW, halfH, Ws, mode, measureRef, screenNode, land, inner,
     screenColor, coverNode, rootRef, live, geo, callNode, cRight, cLeaf, hingeBleed, cAll, Ro, Hs,
-    navNode, screenOverlayNode, screenInteractiveNode, onInteractiveFocus, signalLevel,
+    navNode, screenOverlayNode, screenInteractiveNode, onInteractiveFocus, signalLevel, wifiLevel,
 }: {
     G: Geometry
     b: number
@@ -43,6 +43,7 @@ export function renderDevice({
     screenInteractiveNode?: React.ReactElement | null
     onInteractiveFocus?: React.FocusEventHandler<HTMLDivElement>
     signalLevel: number
+    wifiLevel: number
 }) {
     // ---------------------------------------------------------------- styles
     const Ri = G.R - b
@@ -128,7 +129,7 @@ export function renderDevice({
                                 "M1.5 4.5 Q9 -1 16.5 4.5",
                             ].map((d, index) => (
                                 <path key={d} d={d} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
-                                    style={{ opacity: signalLevel >= index + 3 ? 1 : 0.22, transition: "opacity .45s ease" }} />
+                                    style={{ opacity: wifiLevel >= index + 3 ? 1 : 0.22, transition: "opacity .45s ease" }} />
                             ))}
                             <circle cx="9" cy="12" r="1.25" fill="currentColor" />
                         </svg>

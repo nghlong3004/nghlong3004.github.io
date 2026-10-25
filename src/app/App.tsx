@@ -60,7 +60,9 @@ export default function App() {
   return (
     <TechnologyLoopProvider>
       <RainGlassBackground src={data.profile.portrait.src} rain={0.6} interactive={false} className="portfolio-rain" />
-      <button type="button" className="portfolio-brand" aria-label={`NGHLONG3004 — ${data.profile.name}`} onClick={returnToEntry}>NGHLONG3004</button>
+      <button type="button" className="portfolio-brand" aria-label={`LONG — ${data.profile.name}`} onClick={returnToEntry}>
+        <img src={`${import.meta.env.BASE_URL}LONG_Precision_L/primary-logo-transparent-graphite.svg`} alt="" width="156" height="50" />
+      </button>
       <div role="status" aria-live="polite" aria-atomic="true" className="portfolio-view-announcement">{navigation.open && `${data.ui.current}: ${{ home: data.ui.home, work: data.ui.work, projects: data.ui.archive, about: data.ui.intro, contact: data.ui.contact }[navigation.view]}`}</div>
       <div className="portfolio-language" role="group" aria-label={data.ui.language} hidden>
         <button type="button" lang="vi" aria-label="Tiếng Việt" aria-pressed={language === 'vi'} onClick={() => setLanguage('vi')}>VI</button>

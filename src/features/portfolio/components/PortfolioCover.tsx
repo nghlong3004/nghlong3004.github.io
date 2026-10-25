@@ -24,7 +24,7 @@ export function PortfolioCover({ data, time, compact = false, onNavigate, style 
       </header>
       <div className="portfolio-notifications">
         {current && <button type="button" className="portfolio-notification" onClick={() => onNavigate('job-current')}>
-          <span className="portfolio-notification__app"><img src={current.logo || '/favicon.webp'} alt="" width="28" height="28" /></span>
+          <span className="portfolio-notification__app"><img src={current.logo || `${import.meta.env.BASE_URL}LONG_Precision_L/favicon.svg`} alt="" width="28" height="28" /></span>
           <span><strong>{current.role}</strong><span>{current.period}</span></span>
         </button>}
         {project && <button type="button" className="portfolio-notification" onClick={() => onNavigate(`project-${project.id}`)}>

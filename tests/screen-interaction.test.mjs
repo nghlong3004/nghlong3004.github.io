@@ -27,7 +27,7 @@ test('one continuous screen is interactive below nav and drawer; hardware copies
       rootRef: { current: null }, live: { current: { k: 0 } }, geo: { current: {} }, callNode: null,
       cRight: '0', cLeaf: '0', hingeBleed: 1, cAll: '0', Ro: 22, Hs: 642,
       navNode: React.createElement('nav', null, 'nav-marker'),
-      screenOverlayNode: React.createElement('div', null, 'drawer-marker'), signalLevel: 3 }
+      screenOverlayNode: React.createElement('div', null, 'drawer-marker'), signalLevel: 3, wifiLevel: 3 }
     for (const mode of ['fold', 'open']) {
       const markup = renderToStaticMarkup(renderDevice({ ...base, mode }).device)
       assert.equal((markup.match(/data-ff-screen-interactive=""/g) || []).length, 1)

@@ -20,7 +20,8 @@
 .portfolio-screen a, .portfolio-cover a, .portfolio-call a { color: inherit; text-decoration: none; }
 .portfolio-screen :is(button,a):focus-visible, .portfolio-cover :is(button,a):focus-visible, .portfolio-call a:focus-visible,
 .portfolio-language button:focus-visible, .portfolio-nav button:focus-visible, .portfolio-brand:focus-visible { outline: 2px solid #245d47; outline-offset: 4px; }
-.portfolio-brand { position: fixed; top: 20px; left: 28px; z-index: 60; border: 0; background: transparent; color: #151613; font: 900 25px/.9 'Alumni Sans', sans-serif; letter-spacing: -.04em; cursor: pointer; }
+.portfolio-brand { position: fixed; top: 12px; left: 12px; z-index: 60; min-height: 44px; padding: 0; border: 0; background: transparent; cursor: pointer; }
+.portfolio-brand img { display: block; width: 156px; height: auto; }
 .portfolio-language { position: fixed; top: 19px; left: 172px; z-index: 60; display: flex; gap: 9px; font: 400 13px/1 'Geist', sans-serif; color: #777; }
 .portfolio-language button { border: 0; background: transparent; padding: 5px 0; }
 .portfolio-language button[aria-pressed="true"] { color: #111; text-decoration: underline; text-underline-offset: 4px; }
@@ -167,7 +168,8 @@
 .portfolio-screen--compact .portfolio-email { font-size: 30px; }
 .portfolio-screen--compact .portfolio-signature { font-size: 48px; }
 @media (max-width: 560px) {
-  .portfolio-brand { left: 22px; font-size: 20px; }
+  .portfolio-brand { left: 8px; }
+  .portfolio-brand img { width: 132px; }
   .portfolio-language { left: 141px; font-size: 13px; gap: 7px; }
   .portfolio-nav { font-size: 12px; gap: 0; }
   .portfolio-nav button { padding-inline: 8px; }
