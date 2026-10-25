@@ -30,7 +30,7 @@ resolver.deregister()
 const logo = { src: '/normal.png', srcOnDark: '/on-dark.png', label: 'Currently working at VinFast' }
 const age = { batteryText: '21', batteryLabel: 'Age 21 — not device battery level' }
 const refs = new Proxy({}, { get: () => ({ current: null }) })
-function render(status = {}, port = false, mode = 'open', interactive = true) {
+function render(status = {}, port = false, mode = 'open', interactive = true, signalLevel = 3) {
   return renderDevice({
     G: { W: 976, H: 660, f: 5, bz: 4, R: 22 }, b: 9, F: ['#aaa', '#bbb', '#ccc', '#ddd'],
     status: { show: true, tone: 'auto', ...age, ...status }, port, clock: '12:34', R: refs,
@@ -38,7 +38,7 @@ function render(status = {}, port = false, mode = 'open', interactive = true) {
     screenInteractiveNode: interactive ? createElement('div', null, 'canonical') : null,
     land: !port, inner: () => '0', screenColor: '#fff', coverNode: null, rootRef: { current: null },
     live: { current: { k: 0 } }, geo: { current: {} }, callNode: null, cRight: '0', cLeaf: '0',
-    hingeBleed: 1, cAll: '0', Ro: 22, Hs: 642, navNode: null, screenOverlayNode: null, signalLevel: 3,
+    hingeBleed: 1, cAll: '0', Ro: 22, Hs: 642, navNode: null, screenOverlayNode: null, signalLevel,
   }).device
 }
 function elements(node, predicate) {
@@ -62,7 +62,7 @@ test('optional employer API stays generic and leaves clock/signal/fallback intac
   assert.deepEqual(bars.map(bar => bar.props.style.opacity), [1, 1, 1, .22, .22])
 })
 
-test('logo→signal→5G→age stays in the last-child group across hardware and canonical copies', () => {
+test('logo→signal→Wi-Fi→age stays in the last-child group across hardware and canonical copies', () => {
   for (const port of [false, true]) for (const mode of ['fold', 'open']) for (const interactive of [false, true]) {
     const device = render({ employerLogo: logo }, port, mode, interactive)
     const groups = elements(device, el => Children.toArray(el.props.children).some(child => isValidElement(child) && child.props['data-ff-employer'] !== undefined))
@@ -75,7 +75,8 @@ test('logo→signal→5G→age stays in the last-child group across hardware and
       assert.equal(employer.props.style.width, 22)
       assert.equal(employer.props.style.height, 22)
       assert.equal(signal.props['data-ff-signal'], '')
-      assert.equal(network.props.children, '5G')
+      assert.equal(network.props['data-ff-wifi'], '')
+      assert.equal(network.props['aria-hidden'], 'true')
       assert.equal(battery.props['aria-label'], age.batteryLabel)
       assert.equal(battery.props.width, '30')
       assert.equal(battery.props.height, '14')
@@ -91,6 +92,91 @@ test('logo→signal→5G→age stays in the last-child group across hardware and
     }
   }
   assert.equal(marked(render({ show: false, employerLogo: logo }), 'data-ff-employer').length, 0)
+})
+
+test('all status copies coordinate cellular and Wi-Fi opacity directly from the single shared level', () => {
+  for (const port of [false, true]) for (const mode of ['fold', 'open']) for (const interactive of [false, true]) {
+    for (const level of [2, 3, 4, 5]) {
+      const device = render({ employerLogo: logo }, port, mode, interactive, level)
+      const signals = marked(device, 'data-ff-signal')
+      const wifi = marked(device, 'data-ff-wifi')
+      assert.ok(signals.length > 0)
+      assert.equal(signals.length, wifi.length)
+      for (const signal of signals) {
+        const bars = Children.toArray(signal.props.children)
+        assert.deepEqual(bars.map(bar => bar.props.style.opacity), Array.from({ length: 5 }, (_, i) => i < level ? 1 : .22))
+        assert.ok(bars.every(bar => bar.props.style.transition === 'opacity .45s ease'))
+        assert.equal(signal.props['aria-hidden'], 'true')
+      }
+      for (const icon of wifi) {
+        const arcs = elements(icon, el => el.type === 'path')
+        assert.deepEqual(arcs.map(arc => arc.props.style.opacity), [3, 4, 5].map(threshold => level >= threshold ? 1 : .22))
+        assert.ok(arcs.every(arc => arc.props.style.transition === 'opacity .45s ease' && arc.props.stroke === 'currentColor'))
+        assert.equal(elements(icon, el => el.type === 'circle').length, 1)
+        assert.equal(icon.props['aria-hidden'], 'true')
+        assert.equal(icon.props.role, undefined, 'decorative, not a real connectivity announcement')
+      }
+      assert.doesNotMatch(renderToStaticMarkup(device), /5G/)
+    }
+  }
+  const source = readFileSync(new URL('../src/features/foldfolio/components/renderDevice.tsx', import.meta.url), 'utf8')
+  assert.doesNotMatch(source, /setTimeout|setInterval|Math\.random|useSignalLevel|navigator\./)
+  const controller = readFileSync(new URL('../src/features/foldfolio/FoldfolioDevice.tsx', import.meta.url), 'utf8')
+  assert.equal((controller.match(/useSignalLevel\(status.show && !isCanvas\)/g) || []).length, 1)
+})
+
+test('fixed common rows and centered painted geometry survive orientation, level and copy changes', () => {
+  for (const port of [false, true]) for (const mode of ['fold', 'open']) for (const interactive of [false, true]) {
+    for (const level of [2, 3, 4, 5]) {
+      const device = render({ employerLogo: logo }, port, mode, interactive, level)
+      const rows = [...marked(device, 'data-ff-status-time'), ...marked(device, 'data-ff-status-right')]
+      for (const row of rows) {
+        assert.equal(row.props.style.height, 22)
+        assert.equal(row.props.style.alignItems, 'center')
+        assert.equal(row.props.style.flexShrink, 0)
+        const parent = elements(device, el => Children.toArray(el.props.children).some(child => child.props === row.props))[0]
+        assert.equal(parent.props.style.height, port ? 36 : 40)
+        assert.equal(parent.props.style.alignItems, 'center')
+        if (parent.props.ref) {
+          assert.equal(parent.props.style.visibility, mode === 'fold' ? 'hidden' : undefined)
+          assert.equal(parent.props['aria-hidden'], mode === 'fold')
+        } else {
+          assert.equal(parent.props['aria-hidden'], interactive ? true : undefined)
+        }
+      }
+      for (const signal of marked(device, 'data-ff-signal')) {
+        assert.equal(signal.props.height, '14')
+        assert.equal(signal.props.viewBox, '0 0 21 14')
+        const bars = Children.toArray(signal.props.children)
+        const left = Math.min(...bars.map(bar => bar.props.x))
+        const right = Math.max(...bars.map(bar => bar.props.x + Number(bar.props.width)))
+        const top = Math.min(...bars.map(bar => bar.props.y))
+        const bottom = Math.max(...bars.map(bar => bar.props.y + bar.props.height))
+        assert.equal((left + right) / 2, 10.5)
+        assert.equal((top + bottom) / 2, 7)
+      }
+      for (const wifi of marked(device, 'data-ff-wifi')) {
+        assert.equal(wifi.props.width, '18')
+        assert.equal(wifi.props.height, '14')
+        assert.equal(wifi.props.viewBox, '0 0 18 14')
+        // Symmetric quadratic arcs: extrema at t=.5, plus half the round stroke.
+        const arcs = elements(wifi, el => el.type === 'path')
+        const tops = arcs.map(arc => {
+          const [x1, y1, cx, cy, x2, y2] = arc.props.d.match(/-?\d+(?:\.\d+)?/g).map(Number)
+          assert.equal((x1 + x2) / 2, cx)
+          assert.equal(cx, 9)
+          assert.equal(y1, y2)
+          return (y1 + 2 * cy + y2) / 4 - Number(arc.props.strokeWidth) / 2
+        })
+        const dot = elements(wifi, el => el.type === 'circle')[0]
+        const top = Math.min(...tops)
+        const bottom = Number(dot.props.cy) + Number(dot.props.r)
+        assert.equal(top, .75)
+        assert.equal(bottom, 13.25)
+        assert.equal((top + bottom) / 2, 7)
+      }
+    }
+  }
 })
 
 test('fixed tint and missing dark variant have deterministic initial image presentation', () => {

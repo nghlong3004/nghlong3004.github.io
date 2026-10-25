@@ -87,11 +87,14 @@ export function renderDevice({
                     visibility: interactive && foldMode ? "hidden" : undefined,
                 }}
             >
-                {part !== "right" && <span>{clock}</span>}
+                {part !== "right" && <span data-ff-status-time="" style={{ display: "inline-flex", height: 22, alignItems: "center", flexShrink: 0 }}>{clock}</span>}
                 {part !== "left" && (
                     <span
+                        data-ff-status-right=""
                         style={{
                             display: "flex",
+                            height: 22,
+                            flexShrink: 0,
                             gap: 6,
                             alignItems: "center",
                             fontSize: 12,
@@ -109,17 +112,30 @@ export function renderDevice({
                                 )}
                             </span>
                         )}
-                        <svg data-ff-signal="" aria-hidden="true" width="21" height="13" viewBox="0 0 21 13" style={{ display: "block" }}>
+                        {/* Center the painted bars (including their unequal heights), not just the SVG box. */}
+                        <svg data-ff-signal="" aria-hidden="true" width="21" height="14" viewBox="0 0 21 14" style={{ display: "block", flexShrink: 0 }}>
                             {[4, 6, 8, 10, 12].map((height, index) => (
-                                <rect key={index} x={index * 4.2} y={13 - height} width="2.8" height={height} rx=".7"
+                                <rect key={index} x={0.7 + index * 4.2} y={13 - height} width="2.8" height={height} rx=".7"
                                     fill="currentColor" style={{ opacity: index < signalLevel ? 1 : 0.22, transition: "opacity .45s ease" }} />
                             ))}
                         </svg>
-                        <span>5G</span>
+                        {/* Painted Wi-Fi bounds y=.75–13.25 balance around the same y=7 as the bars and age outline. */}
+                        <svg data-ff-wifi="" aria-hidden="true" width="18" height="14" viewBox="0 0 18 14"
+                            style={{ display: "block", flexShrink: 0 }}>
+                            {[
+                                "M6.5 9.5 Q9 7.5 11.5 9.5",
+                                "M4 7 Q9 3 14 7",
+                                "M1.5 4.5 Q9 -1 16.5 4.5",
+                            ].map((d, index) => (
+                                <path key={d} d={d} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
+                                    style={{ opacity: signalLevel >= index + 3 ? 1 : 0.22, transition: "opacity .45s ease" }} />
+                            ))}
+                            <circle cx="9" cy="12" r="1.25" fill="currentColor" />
+                        </svg>
                         {status.batteryText !== undefined ? (
                             <svg data-ff-battery="" width="30" height="14" viewBox="0 0 30 14"
                                 role="img" aria-label={status.batteryLabel || status.batteryText}
-                                style={{ display: "block" }}>
+                                style={{ display: "block", flexShrink: 0 }}>
                                 <rect x=".75" y=".75" width="25.5" height="12.5" rx="3.25"
                                     fill="none" stroke="currentColor" strokeWidth="1.5" />
                                 <rect x="28" y="4.5" width="2" height="5" rx="1" fill="currentColor" opacity="0.55" />

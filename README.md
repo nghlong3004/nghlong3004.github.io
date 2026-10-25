@@ -42,9 +42,14 @@ The Contact view has no avatar; entry, About and the separate final folded scree
 the original portrait. Vietnamese technology headings read `Công nghệ sử dụng` on one
 line. Project technology lists and their loops exclude OAuth2/JWT, WebSocket and
 A* Pathfinding; unrelated project narratives and past experience remain intact.
-The top status group adds logo-only current-employer branding, simulated signal/5G,
+The top status group adds logo-only current-employer branding, simulated cellular/Wi-Fi indicators,
 and completed age inside a battery-like outline—not a live charge reading. It is an
 iPhone 18 Pro/iOS-inspired adaptation, not an exact Apple interface.
+Wi-Fi replaces the 5G text; both indicators share the existing simulated level/cadence
+and hidden-tab cleanup, not network APIs. Common fixed-height rows center the status
+items; painted bounds matter as well as their SVG boxes. Home and Work have localized
+Contact footers after their content, matching existing footer conventions without
+adding a sixth Home content section or bringing back the terminal folding screen.
 About uses Kokonut's Marker Text on the introduction. The retained reusable final component
 uses Kokonut's Slide to Confirm to return to entry/Home; this portfolio does not expose
 that terminal screen. It never initiates a call, recording or external action.

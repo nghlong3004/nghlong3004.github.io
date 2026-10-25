@@ -10,10 +10,11 @@ test('Work renders only real bilingual employment history and preserves the curr
     const { WorkView } = await server.ssrLoadModule('/src/features/portfolio/components/views/WorkView.tsx')
     const { portfolio } = await server.ssrLoadModule('/src/features/portfolio/data/portfolio.ts')
     const escape = text => renderToStaticMarkup(createElement('span', null, text)).slice(6, -7)
-    const unused = () => assert.fail('Employment-only Work must not call shared interaction callbacks')
     for (const language of ['vi', 'en']) {
       const data = portfolio[language]
-      const props = { data, expandedProject: 'vinqa', workFilter: 'vinqa', onToggle: unused, onNavigate: unused, onWorkFilterChange: unused }
+      const calls = []
+      const props = { data, expandedProject: 'vinqa', workFilter: 'vinqa', onToggle: () => assert.fail('Work does not open projects'), onNavigate: destination => calls.push(destination), onWorkFilterChange: () => assert.fail('Work has no project filter') }
+      const tree = WorkView(props)
       const html = renderToStaticMarkup(createElement(WorkView, props))
       assert.equal((html.match(/<h1>/g) || []).length, 1)
       assert.ok(html.includes(`<h1>${escape(data.ui.work)}</h1>`))
@@ -24,6 +25,12 @@ test('Work renders only real bilingual employment history and preserves the curr
         : 'Where I work now and experience from my previous internship.'))
       assert.equal((html.match(/<article /g) || []).length, data.experience.length)
       assert.equal((html.match(/<section /g) || []).length, 1)
+      assert.equal((html.match(/<footer\b/g) || []).length, 1)
+      assert.equal((html.match(/<button\b/g) || []).length, 1)
+      assert.ok(html.endsWith('</footer></div>'))
+      assert.ok(html.includes(`data-framer-component-type="RichTextContainer"><h2>${escape(data.ui.contactHeading)}</h2></div>`))
+      assert.ok(html.includes(`>${escape(data.ui.contact)}<svg`))
+      assert.ok(html.includes(`<p>${escape(data.ui.contactIntro)}</p>`))
       assert.ok(html.includes(`data-ff-section="experience" aria-label="${escape(data.ui.experience)}"`))
       for (const job of data.experience) {
         assert.ok(html.includes(`aria-label="${escape(job.company)}"`))
@@ -41,7 +48,7 @@ test('Work renders only real bilingual employment history and preserves the curr
       assert.match(current[0], /tabindex="-1" aria-label="VinFast"/)
       assert.ok(current[0].includes(language === 'vi' ? 'Đang làm việc tại VinFast' : 'Currently working at VinFast'))
       assert.doesNotMatch(current[0], /<ul|portfolio-tech|portfolio-meta/)
-      assert.doesNotMatch(html, /<button|<dialog|<dl|<dt|<form|aria-haspopup|aria-pressed|Count|pf-work__(?:filters|grid|index|metrics|contact)|data-ff-section="(?:project[^"]*|impact|honors|contact)"/)
+      assert.doesNotMatch(html, /<dialog|<dl|<dt|<form|aria-haspopup|aria-pressed|Count|pf-work__(?:filters|grid|index|metrics|contact)|data-ff-section="(?:project[^"]*|impact|honors|contact)"/)
       for (const project of data.projects) {
         assert.ok(!html.includes(escape(project.title)))
         assert.ok(!html.includes(project.image.src))
@@ -52,6 +59,10 @@ test('Work renders only real bilingual employment history and preserves the curr
       const employmentOnly = { ui: data.ui, experience: data.experience }
       assert.equal(renderToStaticMarkup(createElement(WorkView, { ...props, data: employmentOnly })), html)
       assert.equal(renderToStaticMarkup(createElement(WorkView, { ...props, workFilter: 'all', expandedProject: null })), html)
+      const footer = tree.props.children.at(-1)
+      assert.equal(footer.props.children[1].type, 'button')
+      footer.props.children[1].props.onClick()
+      assert.deepEqual(calls, ['contact'])
     }
   } finally { await server.close() }
 })

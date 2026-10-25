@@ -123,7 +123,7 @@ test('every display declaration selects Alumni for both languages without changi
       uses++
     }
   }
-  assert.equal(uses, 14, 'Shared tokens reach view headings, names, cards and metrics, including compact overrides')
+  assert.equal(uses, 16, 'Shared tokens reach view headings, footers, names, cards and metrics, including compact overrides')
   assert.match(read(`${stylesPath}home.css`), /\.portfolio-screen--compact \.home-hero__summary \.pf-name \{ max-width: min-content; overflow-wrap: normal; \}/, 'Keep the compact name split at its space, not inside a word')
   assert.ok(face.some((body) => body.includes("font-family: 'Geist';") && body.includes('font-weight: 500 600;')))
 })

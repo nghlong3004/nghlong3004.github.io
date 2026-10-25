@@ -25,7 +25,7 @@
 │   ├── project-overlay.test.mjs        # Controlled device-local drawer
 │   ├── reference-motion.test.mjs       # Shared engine markers across screen content
 │   ├── status-surface.test.mjs         # Nested full-width background boundaries for status tint
-│   ├── status-employer.test.mjs        # Logo contrast, outlined age and generic status API
+│   ├── status-employer.test.mjs        # Logo/age, common rows and shared cellular/Wi-Fi levels
 │   ├── open-ending.test.mjs            # App stays open at content end; generic closing retained
 │   ├── technology-presentation.test.mjs # One-line bilingual headings, project stack exclusions
 │   ├── screen-motion-cleanup.test.mjs  # Counter/reveal timeout and rAF disposal/StrictMode
@@ -101,7 +101,7 @@
             │   ├── useIsoLayoutEffect.ts
             │   ├── useSectionNavigation.ts # React ref scrollToSection
             │   ├── useSceneImages.ts
-            │   ├── useSignalLevel.ts  # Shared simulated signal, hidden-tab pause/cleanup
+            │   ├── useSignalLevel.ts  # One cellular/Wi-Fi level, hidden-tab pause/cleanup
             │   ├── useScreenMotion.ts
             │   ├── useScreenNavigation.ts  # Preload và filter Framer
             │   ├── useAnimationLoop.ts

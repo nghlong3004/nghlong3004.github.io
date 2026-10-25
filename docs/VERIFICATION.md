@@ -1,5 +1,36 @@
 # Portfolio verification
 
+## Local Wi-Fi/status and Home/Work footer follow-up — 2026-10-25
+
+Based on released `4277c84`. Decorative Wi-Fi replaces the status row's5G text.
+It derives zero to three active arcs (plus an always-visible dot) from the existing
+shared2–5 cellular level. No extra timer, network measurement or connectivity claim
+is added; hidden-tab pause/cleanup and the original cadence/transitions remain.
+Clock and right-side indicators use common fixed22px rows. Cellular and Wi-Fi
+painted geometry is centered within its box; the employer assets, contrast selection,
+five cellular bars and outlined age-not-charge indicator remain intact.
+
+Home and Work append semantic localized Contact footers using existing heading,
+intro, action and light-theme conventions. Home retains its five ordered content
+sections and nested honor metrics; Work content remains employment history only.
+Both footer buttons open the existing Contact view. No terminal folding screen is
+restored. Hero markup/styles, App navigation, open-ending configuration, shared
+signal controller and native focus/input repairs are byte-unchanged.
+
+Production build and125 tests pass; lint reports0 errors/41 existing warnings.
+Built/source privacy comparison passes. Initial integration fixtures still expected
+pre-footer heading/surface/font counts; their failed run remains separate from the
+corrected full pass. Six production Chromium1440/390/320px VI/EN cases pass:12
+visible footer actions open Contact above the nav, Home keeps its section order,
+and Work has no projects/honors/metrics. Both views remain open and interactive at
+document bottom. Each case checks all four simulated levels through the unchanged
+controller, with synchronized hardware/canonical copies. Full-viewport raster
+sampling of24 level cases measures at most0.5px spread between painted-bounds
+centers of time/logo/cellular/Wi-Fi/age, rather than assuming equal SVG boxes suffice.
+Twelve About/Contact cases retain the correct logo asset/tint, and all six native
+Contact outside-tap checks retain scroll. These local results do not establish
+publication or physical-device/cross-browser coverage.
+
 ## Employment/Home/navigation and open ending — 2026-10-25
 
 This revision includes the accepted mobile-polish work below. Work now contains only

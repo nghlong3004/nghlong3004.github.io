@@ -49,6 +49,10 @@
 .portfolio-screen .home-honors__list { list-style: none; padding: 0; margin: 0; display: grid; gap: 34px; }
 .home-honors__list li { display: grid; grid-template-columns: 1fr 1.2fr; gap: 34px; }
 .portfolio-screen .home-honors__list .pf-meta { margin-bottom: 12px; }
+.home-footer { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--pf-grid-gap); margin: var(--pf-section-gap) calc(-1 * var(--pf-padding)) calc(-1 * var(--pf-bottom)); padding: 32px var(--pf-padding) var(--pf-bottom); }
+.portfolio-screen .home-footer h2 { max-width: 14ch; margin: 0 0 16px; font: var(--pf-heading); letter-spacing: -.025em; text-wrap: balance; }
+.home-footer p { max-width: 50ch; }
+.home-footer .pf-action { flex-shrink: 0; }
 .portfolio-screen--compact .home-hero { grid-template-columns: minmax(0, 1fr); min-height: auto; }
 .portfolio-screen--compact .home-hero__copy { padding-bottom: 32px; gap: 40px; }
 .portfolio-screen--compact .home-hero__summary .pf-name { max-width: min-content; overflow-wrap: normal; }
@@ -64,3 +68,4 @@
 .portfolio-screen--compact .home-honors__list li,
 .portfolio-screen--compact .home-employers { grid-template-columns: minmax(0, 1fr); gap: 28px; }
 .portfolio-screen--compact .home-employer img { width: 64px; height: 64px; }
+.portfolio-screen--compact .home-footer { align-items: flex-start; flex-direction: column; }

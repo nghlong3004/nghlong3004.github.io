@@ -1,1 +1,6 @@
 .pf-work__intro { max-width: 58ch; }
+.work-footer { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--pf-grid-gap); margin: var(--pf-section-gap) calc(-1 * var(--pf-padding)) calc(-1 * var(--pf-bottom)); padding: 32px var(--pf-padding) var(--pf-bottom); }
+.portfolio-screen .work-footer h2 { max-width: 14ch; margin: 0 0 16px; font: var(--pf-heading); letter-spacing: -.025em; text-wrap: balance; }
+.work-footer p { max-width: 50ch; }
+.work-footer .pf-action { flex-shrink: 0; }
+.portfolio-screen--compact .work-footer { align-items: flex-start; flex-direction: column; }

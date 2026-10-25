@@ -94,5 +94,13 @@ export function HomeView({ data, onNavigate, expandedProject, onToggle }: Portfo
         </dl>
       </div>
     </section>
+
+    <footer className="home-footer" data-ff-surface>
+      <div>
+        <div data-framer-component-type="RichTextContainer"><h2>{data.ui.contactHeading}</h2></div>
+        <p>{data.ui.contactIntro}</p>
+      </div>
+      <button type="button" className="pf-action" onClick={() => onNavigate('contact')}>{data.ui.contact}<Icon size={15} /></button>
+    </footer>
   </div>
 }

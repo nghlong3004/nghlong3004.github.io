@@ -161,8 +161,8 @@ test('90% content-width cutoff rejects narrow/hidden markers but preserves legac
 
 test('five actual views mark surface boundaries, not arbitrary cards or controls', () => {
   const expected = {
-    Home: ['pf-page home-page', 'home-hero', '', 'pf-section home-work', 'pf-section home-honors', 'home-impact'],
-    Work: ['pf-page pf-work'],
+    Home: ['pf-page home-page', 'home-hero', '', 'pf-section home-work', 'pf-section home-honors', 'home-impact', 'home-footer'],
+    Work: ['pf-page pf-work', 'work-footer'],
     Projects: ['pf-page pf-projects'],
     About: ['pf-page about-view', 'about-view__hero', '', 'about-view__copy pf-page--dark', 'about-view__numbers', 'about-view__body', 'pf-section about-view__contact'],
     Contact: ['contact-view', 'pf-page pf-page--dark contact-view__hero', 'pf-page contact-view__brief'],
@@ -175,7 +175,7 @@ test('five actual views mark surface boundaries, not arbitrary cards or controls
       const attrs = path.node.attributes
       if (attrs.some(attr => attr.name?.name === 'data-ff-surface')) {
         marked.push(attrs.find(attr => attr.name?.name === 'className')?.value.value || '')
-        assert.ok(['div', 'article', 'header', 'section', 'dl'].includes(path.node.name.name))
+        assert.ok(['div', 'article', 'header', 'section', 'footer', 'dl'].includes(path.node.name.name))
       }
     } })
     assert.deepEqual(marked, classes, view)

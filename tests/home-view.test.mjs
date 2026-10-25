@@ -26,8 +26,10 @@ test('Home SSR preserves real VI/EN content in exactly five ordered sections aft
       const tree = HomeView(props)
       const direct = tree.props.children.filter(Boolean)
       const keys = ['employment', 'tools', 'capabilities', 'projects', 'honors']
-      assert.deepEqual(direct.map(node => node.type), ['header', ...keys.map(() => 'section')])
-      assert.deepEqual(direct.slice(1).map(node => node.props['data-ff-section']), keys)
+      assert.deepEqual(direct.map(node => node.type), ['header', ...keys.map(() => 'section'), 'footer'])
+      const sections = direct.filter(node => node.type === 'section')
+      assert.equal(sections.length, 5)
+      assert.deepEqual(sections.map(node => node.props['data-ff-section']), keys)
       const html = renderToStaticMarkup(createElement(HomeView, props))
       assert.deepEqual([...html.matchAll(/<section\b[^>]*data-ff-section="([^"]+)"/g)].map(match => match[1]), keys)
       assert.ok(html.indexOf('<header') < html.indexOf('<section'))
@@ -36,10 +38,14 @@ test('Home SSR preserves real VI/EN content in exactly five ordered sections aft
       assert.ok(html.includes(textMarkup(data.profile.displayName)))
       assert.ok(html.includes(data.profile.portrait.src) && html.includes(data.profile.portrait.alt))
       assert.ok(!html.includes('data-ff-section="contact"'))
-      assert.equal((html.match(/data-framer-component-type="RichTextContainer"/g) || []).length, 6 + data.projects.length)
+      assert.equal((html.match(/<footer\b/g) || []).length, 1)
+      assert.ok(html.endsWith('</footer></div>'))
+      assert.ok(html.includes(`data-framer-component-type="RichTextContainer"><h2>${textMarkup(data.ui.contactHeading)}</h2></div>`))
+      assert.ok(html.includes(`<p>${textMarkup(data.ui.contactIntro)}</p>`))
+      assert.equal((html.match(/data-framer-component-type="RichTextContainer"/g) || []).length, 7 + data.projects.length)
       assert.equal((html.match(/data-framer-background-image-wrapper="true"/g) || []).length, 1 + data.projects.length)
 
-      const honors = renderToStaticMarkup(direct.at(-1))
+      const honors = renderToStaticMarkup(sections.at(-1))
       assert.ok(honors.includes(`<h2>${textMarkup(data.ui.honors)}</h2>`))
       assert.equal((honors.match(/<li>/g) || []).length, data.honors.length)
       for (const honor of data.honors) {
@@ -50,7 +56,7 @@ test('Home SSR preserves real VI/EN content in exactly five ordered sections aft
         assert.ok(honors.includes(`>${textMarkup(item.value)}</dt><dd>${textMarkup(item.label)}</dd>`))
       }
       assert.ok(honors.indexOf('data-ff-section="impact"') > honors.indexOf('</ul>'))
-      assert.ok(!renderToStaticMarkup(direct.slice(0, -1)).includes('data-framer-name="Count impact"'))
+      assert.ok(!renderToStaticMarkup(sections.slice(0, -1)).includes('data-framer-name="Count impact"'))
       assert.ok(honors.includes('data-ff-surface="true"') || honors.includes('data-ff-surface=""'))
       for (const project of data.projects) {
         assert.ok(html.includes(`data-ff-section="project-${project.id}" tabindex="-1"`))
@@ -109,7 +115,15 @@ test('Home buttons invoke the shared navigation and selection handlers', async (
       assert.deepEqual(calls, [
         ['navigate', 'projects'], ['navigate', 'contact'], ['navigate', 'work'], ['navigate', 'projects'],
         ...data.projects.map(project => ['project', project.id]),
+        ['navigate', 'contact'],
       ])
+      const footerCalls = []
+      const footerTree = HomeView({ ...props, onNavigate: destination => footerCalls.push(destination) })
+      const footer = elements(footerTree).find(node => node.type === 'footer')
+      const footerButtons = elements(footer).filter(node => node.type === 'button')
+      assert.equal(footerButtons.length, 1)
+      footerButtons[0].props.onClick()
+      assert.deepEqual(footerCalls, ['contact'])
       for (const expandedProject of [null, ...data.projects.map(project => project.id)]) {
         const triggers = elements(HomeView({ ...props, expandedProject })).filter(node => node.props['aria-haspopup'] === 'dialog')
         assert.deepEqual(triggers.map(node => node.props['aria-expanded']), data.projects.map(project => project.id === expandedProject))
