@@ -1,4 +1,5 @@
 import { useRef } from "react"
+import { gsap } from "gsap"
 import type { RefObject } from "react"
 import type { DeviceRefs } from "./useDeviceRefs"
 import { clamp, easeOut } from "../lib/math"
@@ -6,6 +7,7 @@ import { toHex } from "../lib/colors"
 import { useIsoLayoutEffect } from "./useIsoLayoutEffect"
 import type { ScreenMotion } from "../types"
 import type { GeometryState, LiveState, MItem, Reveal, SceneImage, TintSection } from "../engine/types"
+import { collectCompositionGroups } from "../engine/compositionMotion.ts"
 
 export function useScreenMotion({
     isCanvas, R, autoImgs, measureSat, paintScenes, screenColor, measureLum, tintMap, rootRef,
@@ -39,6 +41,35 @@ export function useScreenMotion({
     const timers = useRef(new Set<number>())
     const frames = useRef(new Set<number>())
     const counters = useRef(new Map<Text, { el: HTMLElement; original: string }>())
+    const compositions = useRef(new Map<HTMLElement, ReturnType<typeof gsap.context>>())
+    const compositionGroups = useRef(new Map<HTMLElement, HTMLElement>())
+    const compositionCounters = useRef(new Map<HTMLElement, HTMLElement>())
+    const compositionCounterTimers = useRef(new Map<HTMLElement, number>())
+    const compositionTimelines = useRef(new Map<HTMLElement, ReturnType<typeof gsap.timeline>>())
+    const releaseComposition = (screen: HTMLElement) => {
+        compositions.current.get(screen)?.revert()
+        compositions.current.delete(screen)
+        const removed = new Set<HTMLElement>()
+        compositionGroups.current.forEach((owner, group) => {
+            if (owner !== screen) return
+            removed.add(group)
+            compositionGroups.current.delete(group)
+            compositionTimelines.current.delete(group)
+        })
+        compositionCounters.current.forEach((owner, counter) => {
+            if (owner !== screen) return
+            const timer = compositionCounterTimers.current.get(counter)
+            if (timer !== undefined) {
+                window.clearTimeout(timer)
+                timers.current.delete(timer)
+                compositionCounterTimers.current.delete(counter)
+            }
+            removed.add(counter)
+            compositionCounters.current.delete(counter)
+        })
+        mItems.current = mItems.current.filter(item => !removed.has(item.el))
+        reveals.current.forEach(reveal => { if (removed.has(reveal.el)) reveal.dur = -1 })
+    }
     const forgetCounter = (el: HTMLElement) => {
         counters.current.forEach((counter, node) => {
             if (counter.el === el) counters.current.delete(node)
@@ -51,6 +82,7 @@ export function useScreenMotion({
             else if (!el.isConnected) forgetCounter(el)
         }, delay)
         timers.current.add(id)
+        return id
     }
     const nextFrame = (el: HTMLElement, callback: (now: number) => void) => {
         const id = window.requestAnimationFrame((now) => {
@@ -68,6 +100,12 @@ export function useScreenMotion({
             Boolean
         ) as HTMLElement[]
         const list: MItem[] = []
+        const screens = roots.flatMap(root => Array.from(root.querySelectorAll<HTMLElement>('[data-ff-motion="composition"]')))
+        const liveScreens = new Set(screens)
+        compositions.current.forEach((_context, screen) => {
+            if (screen.isConnected && liveScreens.has(screen)) return
+            releaseComposition(screen)
+        })
         const topOf = (el: HTMLElement, root: HTMLElement) => {
             let y = 0
             let e: HTMLElement | null = el
@@ -372,8 +410,29 @@ export function useScreenMotion({
         )
         if (!motionOn && !mo.hover) return
         roots.forEach((root) => {
+            const marked = screens.filter(screen => root.contains(screen))
+            if (motionOn) marked.forEach(screen => {
+                let context = compositions.current.get(screen)
+                if (!context) {
+                    context = gsap.context(() => {}, screen)
+                    compositions.current.set(screen, context)
+                }
+                collectCompositionGroups(screen).forEach(el => {
+                    if (seen.current.has(el)) return
+                    seen.current.add(el)
+                    compositionGroups.current.set(el, screen)
+                    list.push({ el, root, top: 0, h: 0, kind: "t", done: false })
+                    if (mo.counters) el.querySelectorAll<HTMLElement>('[data-framer-name^="Count"],[data-framer-name^="count"]').forEach(counter => {
+                        if (seen.current.has(counter)) return
+                        seen.current.add(counter)
+                        compositionCounters.current.set(counter, screen)
+                        list.push({ el: counter, root, top: 0, h: 0, kind: "c", done: false })
+                    })
+                })
+            })
+            const grouped = (el: HTMLElement) => marked.some(screen => screen.contains(el))
             const add = (el: HTMLElement | null, kind: MItem["kind"]) => {
-                if (!motionOn || !el || seen.current.has(el)) return
+                if (!motionOn || !el || seen.current.has(el) || grouped(el)) return
                 seen.current.add(el)
                 el.classList.add("ffm-" + kind)
                 list.push({ el, root, top: 0, h: 0, kind, done: false })
@@ -508,12 +567,35 @@ export function useScreenMotion({
         const lo = inner - 40
         const hi = inner + g.Hs * (g.port ? 1 : 0.94)
         let n = 0
+        let compositionStart: number | undefined
         for (const m of mItems.current) {
             if (m.done || !m.el.isConnected || m.top > hi || m.top + m.h < lo) continue
             m.done = true
             const d = Math.min(n * mo.stagger, 0.6)
             n++
             const el = m.el
+            if (compositionCounters.current.has(el)) {
+                const timer = later(el, () => {
+                    compositionCounterTimers.current.delete(el)
+                    countUp(el)
+                }, d * 1000 + 150)
+                compositionCounterTimers.current.set(el, timer)
+                continue
+            }
+            const screen = compositionGroups.current.get(el)
+            if (screen) {
+                const context = compositions.current.get(screen)!
+                let timeline: ReturnType<typeof gsap.timeline>
+                context.add(() => {
+                    timeline = gsap.timeline({ paused: true }).fromTo(el,
+                        { opacity: 0, y: mo.distance },
+                        { opacity: 1, y: 0, duration: mo.duration, ease: easeOut, immediateRender: false })
+                })
+                timeline!.time(0)
+                compositionTimelines.current.set(el, timeline!)
+                reveals.current.push({ el, img: null, kind: "t", t0: compositionStart ??= performance.now(), dur: mo.duration * 1000, dist: mo.distance })
+                continue
+            }
             const img =
                 m.kind === "i"
                     ? (el.querySelector(
@@ -555,6 +637,27 @@ export function useScreenMotion({
         if (!list.length) return false
         let keep = false
         for (const r of list) {
+            const timeline = compositionTimelines.current.get(r.el)
+            if (timeline) {
+                if (!r.el.isConnected) {
+                    const screen = compositionGroups.current.get(r.el)
+                    if (screen && !screen.isConnected) releaseComposition(screen)
+                    else {
+                        timeline.revert()
+                        compositionTimelines.current.delete(r.el)
+                    }
+                    r.dur = -1
+                    continue
+                }
+                const elapsed = Math.max(0, (t - r.t0) / 1000)
+                timeline.time(Math.min(elapsed, timeline.duration()))
+                if (elapsed >= timeline.duration()) {
+                    timeline.revert()
+                    compositionTimelines.current.delete(r.el)
+                    r.dur = -1
+                } else keep = true
+                continue
+            }
             if (!r.el.isConnected) {
                 r.dur = -1
                 continue
@@ -600,7 +703,15 @@ export function useScreenMotion({
                 if (el.isConnected && el.contains(node)) node.nodeValue = original
             })
             counters.current.clear()
+            const grouped = new Set(compositionGroups.current.keys())
+            compositions.current.forEach(context => context.revert())
+            compositions.current.clear()
+            compositionGroups.current.clear()
+            compositionCounters.current.clear()
+            compositionCounterTimers.current.clear()
+            compositionTimelines.current.clear()
             reveals.current.forEach(({ el, img, kind }) => {
+                if (grouped.has(el)) return
                 if (!el.isConnected) return
                 el.classList.remove("ffm-" + kind)
                 el.style.removeProperty("opacity")

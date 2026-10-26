@@ -58,11 +58,14 @@ test('only actual Home and About metric values opt into count-up', () => {
   }
 })
 
-test('Home fits the desktop name and preserves the compact word break at unchanged size', () => {
+test('Home keeps the shared name role, intact compact words and accessible full name', () => {
   const css = readFileSync(new URL('../src/features/portfolio/styles/home.css', import.meta.url), 'utf8')
   const shared = readFileSync(new URL('../src/features/portfolio/styles/portfolio.css', import.meta.url), 'utf8')
   assert.match(css, /\.portfolio-screen:not\(\.portfolio-screen--compact\) \.home-hero__summary \.pf-name\s*\{\s*font-size: 100px;\s*white-space: nowrap;/)
-  assert.match(css, /\.portfolio-screen--compact \.home-hero__summary \.pf-name\s*\{ max-width: min-content; overflow-wrap: normal; \}/)
-  assert.match(shared, /--pf-name: 900 78px\/\.84 var\(--pf-display\)/)
+  const compactName = css.match(/\.portfolio-screen--compact \.home-hero__summary \.pf-name\s*\{([^}]+)\}/)?.[1]
+  assert.ok(compactName, 'compact name layout is defined')
+  assert.doesNotMatch(compactName, /font(?:-size)?\s*:|word-break\s*:\s*break-all|overflow-wrap\s*:\s*(?:anywhere|break-word)|white-space\s*:\s*nowrap|text-overflow\s*:\s*ellipsis|overflow\s*:\s*(?:hidden|clip)/, 'wrap whole words without overriding the name role or clipping the name')
+  assert.match(shared, /\.portfolio-screen \.pf-name\s*\{[^}]*font:\s*var\(--pf-name\)/)
+  assert.match(shared, /--pf-name: 900 72px\/1 var\(--pf-display\)/)
   assert.match(sources.Home, /aria-label=\{data\.profile\.name\}>\{data\.profile\.displayName\}/)
 })

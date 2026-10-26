@@ -10,3 +10,13 @@ export function resolvePortfolioDestination(destination: string): { view: Portfo
   if (destination === 'home' || destination === 'work' || destination === 'projects' || destination === 'about' || destination === 'contact') return { view: destination }
   return { view: 'home' }
 }
+
+export function isPortfolioNavigationNoop(
+  current: { view: PortfolioView; target?: string; open: boolean },
+  next: { view: PortfolioView; target?: string; project?: string },
+  expandedProject: string | null,
+): boolean {
+  return current.open && current.view === next.view &&
+    (current.target || 'view-root') === (next.target || 'view-root') &&
+    (!next.project || next.project === expandedProject)
+}

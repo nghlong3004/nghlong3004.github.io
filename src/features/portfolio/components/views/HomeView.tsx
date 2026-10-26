@@ -37,12 +37,12 @@ export function HomeView({ data, onNavigate, expandedProject, onToggle }: Portfo
         <div data-framer-component-type="RichTextContainer"><h2>{copy.employment}</h2></div>
         <button type="button" className="pf-action" onClick={() => onNavigate('work')}>{data.ui.experience}<Icon size={15} /></button>
       </div>
-      <div className="home-employers">
-        {data.experience.map(job => <article className="home-employer" key={job.company}>
+      <ul className="home-employers">
+        {data.experience.map(job => <li className="home-employer" key={job.company}>
           {job.logo ? <img src={job.logo} alt={job.company} loading="lazy" /> : null}
           <div><h3 className="pf-card-title">{job.company}</h3><p>{job.role}</p><p className="pf-meta">{job.period}</p></div>
-        </article>)}
-      </div>
+        </li>)}
+      </ul>
     </section>
 
     <section className="pf-section home-tools" data-ff-section="tools">
@@ -66,7 +66,7 @@ export function HomeView({ data, onNavigate, expandedProject, onToggle }: Portfo
       </div>
       <div className="home-projects">
         {data.projects.map(project => <article key={project.id} className="home-project" data-ff-section={`project-${project.id}`} tabIndex={-1} aria-label={project.title}>
-          <div style={{ overflow: 'hidden', borderRadius: 12 }}><div data-framer-background-image-wrapper="true">
+          <div className="home-project__media"><div data-framer-background-image-wrapper="true">
             <img className="home-project__image" src={project.image.src} alt={project.image.alt} loading="lazy" />
           </div></div>
           <div className="home-project__copy">

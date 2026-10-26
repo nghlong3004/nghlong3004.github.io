@@ -151,8 +151,11 @@ test('Home employer summaries expose only company, role, period and logo, never 
       }
       assert.equal(renderToStaticMarkup(createElement(HomeView, { ...props, data: extraDetails })), safe)
       const employers = elements(HomeView(props)).filter(node => node.props.className === 'home-employer')
+      const employerList = elements(HomeView(props)).find(node => node.props.className === 'home-employers')
+      assert.equal(employerList.type, 'ul', 'Employment summaries form a semantic list')
       assert.equal(employers.length, data.experience.length)
       employers.forEach((employer, index) => {
+        assert.equal(employer.type, 'li')
         const job = data.experience[index]
         const text = elements(employer).filter(node => ['h3', 'p'].includes(node.type)).map(node => node.props.children)
         assert.deepEqual(text, [job.company, job.role, job.period])

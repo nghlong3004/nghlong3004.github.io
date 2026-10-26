@@ -7,8 +7,6 @@ const read = (path, encoding = 'utf8') => readFileSync(new URL(`../${path}`, imp
 const font = read('public/fonts/alumni-sans-variable.ttf', null)
 const sha256 = (bytes) => createHash('sha256').update(bytes).digest('hex')
 const stylesPath = 'src/features/portfolio/styles/'
-const css = read(`${stylesPath}portfolio.css`)
-const drawer = read(`${stylesPath}project-overlay.css`)
 
 function table(tag) {
   for (let i = 0; i < font.readUInt16BE(4); i++) {
@@ -83,46 +81,85 @@ test('Alumni Unicode cmap maps all 146 Vietnamese letters and eight NFD marks to
   for (const character of [...letters, ...marks, ...ascii]) assert.ok(glyph(character) > 0, `Missing ${character} U+${character.codePointAt(0).toString(16)}`)
 })
 
-test('every display declaration selects Alumni for both languages without changing role weights', () => {
-  const face = [...css.matchAll(/@font-face\s*\{([^}]+)\}/g)].map((m) => m[1])
-  assert.equal(face.length, 4)
-  assert.equal(face.filter((body) => body.includes("font-family: 'Alumni Sans'")).length, 1)
-  assert.ok(face.some((body) => /font-family: 'Alumni Sans'; src: url\('\/fonts\/alumni-sans-variable.ttf'\) format\('truetype'\); font-weight: 100 900; font-display: swap;/.test(body)))
-  assert.doesNotMatch(css + drawer, /Sofia|size-adjust|unicode-range|:lang\(|\[lang[=|]/)
-  const root = css.match(/\.portfolio-screen, \.portfolio-cover, \.portfolio-call\s*\{([^}]+)\}/)[1]
-  assert.match(root, /--pf-display: 'Alumni Sans', sans-serif;/)
-  assert.match(root, /--pf-body: 'Geist', sans-serif; --pf-mono: 'Geist Mono', monospace;/)
-  const direct = new Map([
-    ['.portfolio-screen h1', '900 100px/.84'], ['.portfolio-screen h2', '900 72px/1.02'],
-    ['.portfolio-impact dt', '900 62px/1'], ['.portfolio-email', '900 52px/1.2'],
-    ['.portfolio-signature', '900 84px/1'], ['.portfolio-cover__clock', '800 132px/.9'],
-    ['.portfolio-call__name', '900 48px/1'], ['.project-overlay__header h2', '900 48px/.94'],
-    ['.project-overlay__details h3', '900 30px/.94'],
+test('active typography keeps Alumni display and Geist body, controls and metadata in both languages', () => {
+  const files = readdirSync(new URL(`../${stylesPath}`, import.meta.url)).filter((file) => file.endsWith('.css'))
+  const styles = [['globals.css', read('src/app/styles/globals.css')], ...files.map((file) => [file, read(stylesPath + file)])]
+  const declaration = (body, name) => body.match(new RegExp(`(?:^|;)\\s*${name}\\s*:\\s*([^;]+)`))?.[1]?.trim()
+  const rules = styles.flatMap(([file, source]) => {
+    assert.doesNotMatch(source, /Geist Mono|--pf-mono|geist-mono|Sofia|size-adjust|unicode-range|:lang\(|\[lang[=|]/, file)
+    return [...source.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(/([^{}]+)\{([^{}]+)\}/g)]
+      .map(([, selector, body]) => ({ file, selector: selector.trim(), body }))
+  })
+  const face = rules.filter(({ selector }) => selector === '@font-face').map(({ body }) => ({
+    family: declaration(body, 'font-family'),
+    src: declaration(body, 'src'),
+    weight: declaration(body, 'font-weight'),
+    display: declaration(body, 'font-display'),
+  }))
+  assert.deepEqual(face.sort((a, b) => a.src.localeCompare(b.src)), [
+    { family: "'Alumni Sans'", src: "url('/fonts/alumni-sans-variable.ttf') format('truetype')", weight: '100 900', display: 'swap' },
+    { family: "'Geist'", src: "url('/fonts/geist-medium.ttf') format('truetype')", weight: '500 600', display: 'swap' },
+    { family: "'Geist'", src: "url('/fonts/geist-regular.ttf') format('truetype')", weight: '400', display: 'swap' },
   ])
-  const rules = [...(css + drawer).matchAll(/([^{}]+)\{([^{}]+)\}/g)]
-  for (const [selector, metrics] of direct) {
-    assert.ok(rules.some(([, s, body]) => s.trim() === selector && body.includes(`font: ${metrics} 'Alumni Sans', sans-serif;`)), selector)
+
+  const root = rules.find(({ selector }) => selector === '.portfolio-screen, .portfolio-cover, .portfolio-call')?.body
+  assert.ok(root, 'shared portfolio font roles')
+  const compact = rules.find(({ selector, body }) => selector === '.portfolio-screen--compact' && declaration(body, '--pf-title'))?.body
+  assert.ok(compact, 'compact font roles')
+  const tokens = new Map([...root.matchAll(/(--pf-[\w-]+):\s*([^;]+);/g)].map(([, key, value]) => [key, value]))
+  const compactTokens = new Map([...tokens, ...[...compact.matchAll(/(--pf-[\w-]+):\s*([^;]+);/g)].map(([, key, value]) => [key, value])])
+  assert.equal(tokens.get('--pf-display'), "'Alumni Sans', sans-serif")
+  assert.equal(tokens.get('--pf-body'), "'Geist', sans-serif")
+  function resolve(value, roles = tokens) {
+    assert.ok(value, 'font declaration exists')
+    return value.replace(/var\((--pf-[\w-]+)\)/g, (_, key) => resolve(roles.get(key), roles))
   }
-  assert.equal(rules.filter(([, , body]) => /\bfont: [^;]*'Alumni Sans'/.test(body)).length, direct.size)
-  const tokens = new Map([...root.matchAll(/(--pf-[\w-]+):\s*([^;]+);/g)].map((m) => [m[1], m[2]]))
-  function resolve(value) {
-    return value.replace(/var\((--pf-[\w-]+)\)/g, (_, key) => {
-      assert.ok(tokens.has(key), key)
-      return resolve(tokens.get(key))
-    })
+  for (const [key, desktop, compactSize] of [
+    ['title', 84, 60], ['name', 100, 72], ['heading', 60, 44], ['card-title', 30, 28],
+  ]) {
+    assert.equal(resolve(tokens.get(`--pf-${key}`)), `900 ${desktop}px/1 'Alumni Sans', sans-serif`, `desktop ${key} size`)
+    assert.equal(resolve(compactTokens.get(`--pf-${key}`), compactTokens), `900 ${compactSize}px/1 'Alumni Sans', sans-serif`, `compact ${key} size`)
   }
-  for (const key of ['title', 'name', 'heading', 'card-title']) assert.match(resolve(tokens.get(`--pf-${key}`)), /^900 .*'Alumni Sans', sans-serif$/)
-  let uses = 0
-  for (const file of readdirSync(new URL(`../${stylesPath}`, import.meta.url)).filter((f) => f.endsWith('.css'))) {
-    const source = read(stylesPath + file)
-    assert.doesNotMatch(source, /Sofia|:lang\(|\[lang[=|]/, file)
-    for (const [, declaration] of source.matchAll(/(?:font|--pf-(?:title|name|heading|card-title)):\s*([^;{}]+);/g)) {
-      if (!/var\(--pf-(?:display|title|name|heading|card-title)\)/.test(declaration)) continue
-      assert.match(resolve(declaration), /^900 .*'Alumni Sans', sans-serif$/, `${file}: ${declaration}`)
-      uses++
+  for (const roles of [tokens, compactTokens]) {
+    for (const key of ['title', 'name', 'heading', 'card-title']) {
+      assert.match(resolve(roles.get(`--pf-${key}`), roles), /^900\b.*'Alumni Sans', sans-serif$/, key)
     }
   }
-  assert.equal(uses, 16, 'Shared tokens reach view headings, footers, names, cards and metrics, including compact overrides')
-  assert.match(read(`${stylesPath}home.css`), /\.portfolio-screen--compact \.home-hero__summary \.pf-name \{ max-width: min-content; overflow-wrap: normal; \}/, 'Keep the compact name split at its space, not inside a word')
-  assert.ok(face.some((body) => body.includes("font-family: 'Geist';") && body.includes('font-weight: 500 600;')))
+
+  function fontAt(selector) {
+    const body = rules.find((rule) => rule.selector === selector)?.body
+    assert.ok(body, selector)
+    return resolve(declaration(body, 'font'))
+  }
+  assert.equal(fontAt('.portfolio-screen .pf-page'), "400 16px/1.6 'Geist', sans-serif")
+  assert.equal(fontAt('.portfolio-screen .pf-meta'), "500 13px/1.45 'Geist', sans-serif")
+  assert.equal(fontAt('.portfolio-screen .pf-action'), "500 13px/1.45 'Geist', sans-serif")
+  for (const selector of [
+    '.portfolio-screen h1', '.portfolio-screen h2', '.portfolio-impact dt',
+    '.portfolio-email', '.portfolio-signature', '.portfolio-call__name',
+    '.project-overlay__header h2', '.project-overlay__details h3',
+    '.portfolio-screen .pf-header h1', '.portfolio-screen .pf-name',
+    '.portfolio-screen .pf-section h2', '.portfolio-screen .pf-card-title',
+    '.portfolio-screen .pf-metrics dt', '.portfolio-screen .home-footer h2',
+  ]) assert.match(fontAt(selector), /^900\b.*'Alumni Sans', sans-serif$/, selector)
+  assert.match(fontAt('.portfolio-cover__clock'), /^800\b.*'Alumni Sans', sans-serif$/)
+  for (const [selector, weight] of [
+    ['.portfolio-screen .pf-page', 400], ['.portfolio-screen .pf-meta', 500],
+    ['.portfolio-screen .pf-action', 500], ['.portfolio-nav', 500],
+    ['.contact-view__brief label', 500], ['.technology-loop__fallback', 600],
+  ]) assert.match(fontAt(selector), new RegExp(`^${weight}\\b.*'Geist', sans-serif$`), selector)
+
+  for (const { file, selector, body } of rules) {
+    if (selector === '@font-face') continue
+    for (const name of ['font', 'font-family']) {
+      const value = declaration(body, name)
+      if (!value || value === 'inherit') continue
+      const resolved = resolve(value)
+      assert.match(resolved, /(?:'Alumni Sans'|'Geist'|\bGeist), sans-serif$/, `${file}: ${selector}`)
+      if (name === 'font') {
+        const weight = resolved.includes('Alumni Sans') ? (selector === '.portfolio-cover__clock' ? 800 : 900) : '(?:400|500|600)'
+        assert.match(resolved, new RegExp(`^${weight}\\b`), `${file}: ${selector}`)
+      }
+    }
+  }
 })

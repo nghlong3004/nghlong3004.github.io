@@ -14,7 +14,7 @@ Read only the section relevant to the change. Paths are under `src/features/port
 
 ## Typography
 
-- Self-hosted Alumni Sans variable: bilingual name/clock/headings (clock 800, headings 900); Geist: UI/body; Geist Mono: metadata. Keep OFL and unused original Sofia. No per-language fonts or claims that font changes prove rasterization fixes; preserve hardware.
+- Self-hosted Alumni Sans variable: bilingual name/clock/headings (clock 800, headings 900); Geist: UI/body, controls and metadata. These are the only active authored families. Keep OFL and unused original Sofia/Geist Mono assets; no per-language fonts or claims that font changes alone prove rasterization fixes; preserve hardware.
 
 ## Technology presentation
 

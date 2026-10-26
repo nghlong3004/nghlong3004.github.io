@@ -36,10 +36,10 @@ export function ProjectsView({ data, expandedProject, onToggle, onNavigate }: Po
             loading="lazy"
             decoding="async"
           /></div>
-          <span className="pf-projects__open" aria-hidden="true"><Icon /></span>
+          <span className="pf-projects__open" aria-hidden="true">{data.ui.open}<Icon /></span>
         </button>
         <figcaption>
-          <div className="pf-projects__caption"><span>{project.title}</span><span className="pf-meta">{project.year}</span></div>
+          <div className="pf-projects__caption"><h3 className="pf-card-title">{project.title}</h3><span className="pf-meta">{project.year}</span></div>
           <p className="pf-meta pf-projects__category">{project.category}</p>
         </figcaption>
       </figure>)}

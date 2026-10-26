@@ -115,6 +115,6 @@ test('explicit language wins; supported browser preferences are ordered; unknown
 })
 
 test('entry CTA remains bilingual', () => {
-  assert.equal(labels.vi.open, 'Cuộn để mở')
-  assert.equal(labels.en.open, 'Scroll to unfold')
+  assert.equal(labels.vi.open, 'Nhấn để mở')
+  assert.equal(labels.en.open, 'Tap to open')
 })

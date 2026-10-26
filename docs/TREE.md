@@ -30,11 +30,11 @@ src/features/foldfolio/   # Reusable device, public types, components, engine, h
 | Focus/selection/navigation | `F/components/renderDevice.tsx`, `F/hooks/useSectionNavigation.ts`, `F/engine/navigation.ts` | [Interaction](DEVICE.md#interactive-surface-and-navigation) |
 | Cellular/Wi-Fi/status tint | `F/hooks/useSignalLevel.ts`, `F/components/renderDevice.tsx`, `F/engine/createFrameRenderer.ts` | [Status](DEVICE.md#status) |
 | Fold/scroll/geometry | `F/FoldfolioDevice.tsx`, `F/config/constants.ts`, `F/engine/createFrameRenderer.ts` | [Engine](DEVICE.md#animation-and-lifecycle) |
-| Intro/motion/snapshots/scenes | Relevant `F/hooks/usePageTransitions.ts`, `useAnimationLoop.ts`, `useScreenMotion.ts`, `useSceneImages.ts`; `F/engine/snapshots.ts`, `F/components/renderScenes.tsx` | [Engine](DEVICE.md#animation-and-lifecycle) |
+| Intro/motion/snapshots/scenes | Relevant `F/hooks/usePageTransitions.ts`, `useAnimationLoop.ts`, `useScreenMotion.ts`, `useSceneImages.ts`; `F/engine/compositionMotion.ts`, `snapshots.ts`, `F/components/renderScenes.tsx` | [Engine](DEVICE.md#animation-and-lifecycle) |
 
 ## Supporting files
 
-- `tests/`: behavior/view tests; [selection and commands](../tests/README.md).
+- `tests/`: behavior/view tests, including `composition-motion.test.mjs`; [selection and commands](../tests/README.md).
 - `public/`: project galleries, company/technology logos, shared original portrait, fonts/licenses and user references.
 - [THIRD_PARTY_NOTICES](THIRD_PARTY_NOTICES.md): provenance/licenses. [VERIFICATION](VERIFICATION.md): historical archive, read only for a specific past revision.
 - `package.json` / `pnpm-lock.yaml`, Vite/TypeScript/oxlint configs: tooling; `.github/workflows/deploy.yml`: GitHub Pages; `.gitattributes`: preserve upstream asset/license bytes; `components.json`: registry discovery; `.taste-skill/`: design notes, ignored captures.

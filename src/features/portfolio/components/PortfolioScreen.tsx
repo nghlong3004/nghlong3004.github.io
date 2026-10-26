@@ -16,7 +16,7 @@ export function PortfolioScreen({ data, view, launch = false, compact = false, e
   const viewProps: PortfolioViewProps = { data, expandedProject, onToggle, onNavigate, contactDraft, onContactDraftChange, contactValidation, onContactValidationChange, onContactFocusField }
   return (
     <div className={`portfolio-screen${compact ? ' portfolio-screen--compact' : ''}${launch ? ' portfolio-screen--launch' : ''}`}
-      data-portfolio-view={view} data-ff-section="view-root" role="region" aria-label={label} tabIndex={-1} style={style}>
+      data-portfolio-view={view} data-ff-section="view-root" data-ff-motion="composition" role="region" aria-label={label} tabIndex={-1} style={style}>
       {view === 'home' ? <HomeView {...viewProps} />
         : view === 'about' ? <AboutView {...viewProps} />
         : view === 'projects' ? <ProjectsView {...viewProps} />

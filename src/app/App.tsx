@@ -13,7 +13,7 @@ import { usePortfolioLanguage } from '../features/portfolio/hooks/usePortfolioLa
 import { useVietnamClock } from '../features/portfolio/hooks/useVietnamClock'
 import { deviceConfig } from './config/device'
 import RainGlassBackground from './components/kokonut/RainGlassBackground'
-import { resolvePortfolioDestination } from '../features/portfolio/lib/navigation'
+import { isPortfolioNavigationNoop, resolvePortfolioDestination } from '../features/portfolio/lib/navigation'
 
 export default function App() {
   const { time, age } = useVietnamClock()
@@ -29,8 +29,9 @@ export default function App() {
   const data = portfolio[language]
   const currentEmployer = data.experience.find(job => job.current)
   const navigate = (destination: string) => {
-    window.cancelAnimationFrame(entryFrame.current)
     const next = resolvePortfolioDestination(destination)
+    if (isPortfolioNavigationNoop(navigation, next, expandedProject)) return
+    window.cancelAnimationFrame(entryFrame.current)
     if (next.project) setExpandedProject(next.project)
     else if (next.view !== navigation.view) setExpandedProject(null)
     setNavigation(current => ({ view: next.view, target: next.target, revision: current.revision + 1, open: true }))
@@ -93,7 +94,9 @@ export default function App() {
             ['projects', data.ui.archive],
             ['work', data.ui.work],
             ['contact', data.ui.contact],
-          ].map(([view, label]) => <button key={view} type="button" data-portfolio-destination={view} aria-current={navigation.view === view ? 'page' : undefined} onClick={() => navigate(view)}>{label}</button>)}
+          ].map(([view, label]) => <button key={view} type="button" data-portfolio-destination={view} aria-current={navigation.view === view ? 'page' : undefined} onPointerDown={event => {
+            if (isPortfolioNavigationNoop(navigation, resolvePortfolioDestination(view), expandedProject)) event.preventDefault()
+          }} onClick={() => navigate(view)}>{label}</button>)}
         </nav>}
       />
     </TechnologyLoopProvider>

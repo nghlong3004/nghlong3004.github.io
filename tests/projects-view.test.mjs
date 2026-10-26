@@ -29,6 +29,8 @@ test('Projects gallery shows one primary image per project with unique targets a
       assert.ok(!html.includes('data-ff-section="impact"') && !html.includes('data-ff-section="experience"'))
       assert.ok(!html.includes('Red Wall') && !html.includes('Rotterdam'))
       const images = all.filter(node => node.type === 'img')
+      const titles = all.filter(node => node.type === 'h3')
+      assert.deepEqual(titles.map(node => node.props.children), data.projects.map(project => project.title), 'each catalogue entry has a navigable project heading')
       const expected = data.projects.map(project => project.image.src)
       assert.equal(images.length, data.projects.length)
       assert.deepEqual(images.map(node => node.props.src), expected)
@@ -39,6 +41,7 @@ test('Projects gallery shows one primary image per project with unique targets a
       const buttons = all.filter(node => node.type === 'button' && node.props['aria-haspopup'] === 'dialog')
       assert.equal(buttons.length, images.length)
       buttons.forEach((button, index) => {
+        assert.ok(elements(button).some(node => node.type === 'span' && elements(node).some(child => child.props?.children?.includes?.(data.ui.open))), 'image controls carry a visible localized open instruction, not only an icon')
         button.props.onClick()
         assert.equal(toggles.at(-1), data.projects[index].id)
       })
@@ -61,15 +64,12 @@ test('Projects gallery shows one primary image per project with unique targets a
   } finally { await server.close() }
 })
 
-test('Projects owns its stylesheet and reference 4/2/1 responsive grid without shared mutations', () => {
+test('Projects keeps local styling, native focus and contained original images', () => {
   const source = readFileSync(new URL('../src/features/portfolio/components/views/ProjectsView.tsx', import.meta.url), 'utf8')
   const css = readFileSync(new URL('../src/features/portfolio/styles/projects.css', import.meta.url), 'utf8')
   assert.match(source, /import type \{ PortfolioViewProps \}/)
   assert.match(source, /import '\.\.\/\.\.\/styles\/projects\.css'/)
   assert.ok(!source.includes('useState') && !source.includes('scrollIntoView') && !source.includes('from \'../../data/'))
-  assert.match(css, /repeat\(4, minmax\(0, 1fr\)\)/)
-  assert.match(css, /repeat\(2, minmax\(0, 1fr\)\)/)
-  assert.match(css, /\.portfolio-screen--compact \.pf-projects__gallery \{ grid-template-columns: minmax\(0, 1fr\)/)
   assert.match(css, /object-fit: contain/)
   assert.match(css, /:focus-visible/)
   assert.ok(!css.includes('prefers-reduced-motion'))

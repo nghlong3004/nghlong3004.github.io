@@ -5,18 +5,22 @@ import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { createServer } from 'vite'
 
-test('Work employment tone is scoped and expands into the gutter without narrowing text', () => {
+test('Work uses one full-bleed dark field and identical contained adjacent logo grids', () => {
   const css = readFileSync(new URL('../src/features/portfolio/styles/work.css', import.meta.url), 'utf8')
-  const surface = css.match(/\.pf-work \.portfolio-experience\s*\{([^}]+)\}/)?.[1]
-  assert.ok(surface, 'Work-only entry surface')
-  assert.match(surface, /background:\s*var\(--pf-surface\)/)
-  assert.match(surface, /margin-inline:\s*-16px/)
-  assert.match(surface, /padding:\s*20px 16px/)
-  assert.doesNotMatch(surface, /(?:border|box-shadow|border-radius|min-height|height|grid-template-columns|gap|cursor|display)\s*:/)
-  assert.match(css, /\.pf-work \.portfolio-experience \+ \.portfolio-experience\s*\{\s*margin-top:\s*24px;\s*\}/)
-  for (const [, selector] of css.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(/([^{}]+)\{/g)) {
-    if (selector.includes('portfolio-experience')) assert.ok(selector.trim().startsWith('.pf-work '))
-  }
+  const history = css.match(/\.portfolio-screen \.pf-work \.work-history\s*\{([^}]+)\}/)?.[1]
+  assert.match(history, /background:\s*var\(--pf-dark\)/)
+  assert.match(history, /color:\s*var\(--pf-on-dark\)/)
+  assert.match(history, /margin-inline:\s*calc\(-1 \* var\(--pf-padding\)\)/)
+  assert.match(history, /padding:\s*40px var\(--pf-padding\)/)
+  const header = css.match(/\.portfolio-screen \.pf-work \.work-record__header\s*\{([^}]+)\}/)?.[1]
+  assert.match(header, /display:\s*grid/)
+  assert.match(header, /grid-template-columns:\s*96px minmax\(0, 1fr\)/)
+  const logo = css.match(/\.portfolio-screen \.pf-work \.work-record__logo\s*\{([^}]+)\}/)?.[1]
+  assert.match(logo, /object-fit:\s*contain/)
+  assert.match(logo, /background:\s*var\(--pf-ground\)/)
+  assert.doesNotMatch(css, /work-record--(?:current|past)\s*\{|(?:filter|mix-blend-mode)\s*:/)
+  assert.match(css, /work-record:focus-visible\s*\{[^}]*outline:\s*2px solid currentColor/)
+  assert.doesNotMatch(css, /210px|(?:box-shadow|border-radius|min-height)\s*:/)
 })
 
 test('Work renders only real bilingual employment history and preserves the current-job target', async () => {
@@ -47,15 +51,26 @@ test('Work renders only real bilingual employment history and preserves the curr
       assert.ok(html.includes(`>${escape(data.ui.contact)}<svg`))
       assert.ok(html.includes(`<p>${escape(data.ui.contactIntro)}</p>`))
       assert.ok(html.includes(`data-ff-section="experience" aria-label="${escape(data.ui.experience)}"`))
+      assert.match(html, /<section class="work-history" data-ff-surface="true"/)
       for (const job of data.experience) {
-        assert.ok(html.includes(`aria-label="${escape(job.company)}"`))
-        assert.ok(html.includes(`<h3>${escape(job.company)}</h3>`))
-        assert.ok(html.includes(`<h4>${escape(job.role)}</h4>`))
-        if (job.logo) assert.ok(html.includes(`src="${job.logo}"`))
+        const article = (html.match(/<article\b[^>]*>.*?<\/article>/g) || []).find(markup => markup.includes(`aria-label="${escape(job.company)}"`))
+        assert.ok(article, 'every employer has its own named article')
+        assert.doesNotMatch(article, /^<article\b[^>]*\bdata-ff-surface/, 'both records inherit the dark history without sampling logo luminance')
+        assert.ok(article.includes(`<h2>${escape(job.company)}</h2>`), 'company is a section heading')
+        if (job.logo) {
+          assert.match(article, /<header class="work-record__header"><img class="work-record__logo"/)
+          assert.ok(article.includes(`src="${job.logo}" alt="${escape(job.company)}" width="96" height="96"`))
+          assert.ok(article.indexOf('<img ') < article.indexOf('work-record__identity'), 'original logo immediately precedes company identity')
+        }
         if (!job.current) {
-          assert.ok(html.includes(escape(job.period)))
-          for (const highlight of job.highlights) assert.ok(html.includes(`<li>${escape(highlight)}</li>`))
-          assert.ok(html.includes(escape(job.tech.join(' / '))))
+          assert.match(article, /work-record--past/)
+          assert.ok(article.includes(`<h3>${escape(job.role)}</h3>`), 'historical role follows company in the heading hierarchy')
+          assert.ok(article.includes(escape(job.period)))
+          for (const highlight of job.highlights) assert.ok(article.includes(`<li>${escape(highlight)}</li>`))
+          assert.ok(article.includes(escape(job.tech.join(' / '))))
+        } else {
+          assert.match(article, /work-record--current/)
+          assert.ok(article.includes(`<p>${escape(job.role)}</p>`), 'current fact is body copy, not a role heading')
         }
       }
       const current = html.match(/<article [^>]*data-ff-section="job-current"[^>]*>.*?<\/article>/g) || []
@@ -74,6 +89,16 @@ test('Work renders only real bilingual employment history and preserves the curr
       const employmentOnly = { ui: data.ui, experience: data.experience }
       assert.equal(renderToStaticMarkup(createElement(WorkView, { ...props, data: employmentOnly })), html)
       assert.equal(renderToStaticMarkup(createElement(WorkView, { ...props, workFilter: 'all', expandedProject: null })), html)
+      const factOnly = data.experience.map(job => job.current
+        ? { ...job, period: 'CURRENT_DATE_SENTINEL', tech: ['CURRENT_TECH_SENTINEL'], highlights: ['CURRENT_DETAIL_SENTINEL'] }
+        : job)
+      assert.equal(renderToStaticMarkup(createElement(WorkView, { ...props, data: { ...employmentOnly, experience: factOnly } })), html, 'current details never render even if supplied')
+      const extraPast = { ...data.experience.find(job => !job.current), company: 'Historical record fixture', logo: undefined }
+      const reordered = [extraPast, ...data.experience.toReversed()]
+      const reorderedHtml = renderToStaticMarkup(createElement(WorkView, { ...props, data: { ...employmentOnly, experience: reordered } }))
+      const articles = reorderedHtml.match(/<article\b[^>]*>.*?<\/article>/g) || []
+      assert.equal(articles.length, reordered.length)
+      reordered.forEach((job, index) => assert.ok(articles[index].includes(`<h2>${escape(job.company)}</h2>`), 'all records stay in supplied order'))
       const footer = tree.props.children.at(-1)
       assert.equal(footer.props.children[1].type, 'button')
       footer.props.children[1].props.onClick()

@@ -1,9 +1,31 @@
-.pf-work__intro { max-width: 58ch; }
-/* Matching inset/outset keeps the original employment text edges and column widths. */
-.pf-work .portfolio-experience { background: var(--pf-surface); margin-inline: -16px; padding: 20px 16px; }
-.pf-work .portfolio-experience + .portfolio-experience { margin-top: 24px; }
-.work-footer { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--pf-grid-gap); margin: var(--pf-section-gap) calc(-1 * var(--pf-padding)) calc(-1 * var(--pf-bottom)); padding: 32px var(--pf-padding) var(--pf-bottom); }
+.portfolio-screen .pf-work .pf-header { gap: 24px; }
+.pf-work__intro { max-width: 62ch; }
+.portfolio-screen .pf-work .work-history { margin-top: 40px; background: var(--pf-dark); color: var(--pf-on-dark); margin-inline: calc(-1 * var(--pf-padding)); padding: 40px var(--pf-padding); }
+.portfolio-screen .pf-work .work-record { display: grid; gap: var(--pf-grid-gap); min-width: 0; }
+.portfolio-screen .pf-work .work-record + .work-record { margin-top: var(--pf-section-gap); }
+.portfolio-screen .pf-work .work-record__header { display: grid; grid-template-columns: 96px minmax(0, 1fr); align-items: start; gap: 24px; }
+.portfolio-screen .pf-work .work-record__identity { display: grid; gap: 16px; min-width: 0; }
+.portfolio-screen .pf-work .work-record h2 { margin: 0; font: var(--pf-heading); letter-spacing: -.025em; }
+.portfolio-screen .pf-work .work-record h3 { margin: 0; font: var(--pf-card-title); letter-spacing: -.02em; }
+.portfolio-screen .pf-work .work-record__logo { display: block; width: 96px; height: 96px; object-fit: contain; background: var(--pf-ground); }
+.portfolio-screen .pf-work .work-record__details,
+.portfolio-screen .pf-work .work-record > p { margin-left: 120px; }
+.portfolio-screen .pf-work .work-record__details { display: grid; gap: 16px; max-width: 62ch; min-width: 0; }
+.portfolio-screen .pf-work .work-record > p { max-width: 62ch; }
+.portfolio-screen .pf-work .work-record ul { display: grid; gap: 16px; margin: 0; padding-left: 20px; }
+.portfolio-screen .pf-work .work-record li { margin: 0; }
+.portfolio-screen .pf-work .work-record__meta { font: 500 13px/1.45 var(--pf-body); overflow-wrap: anywhere; }
+.portfolio-screen .pf-work .work-record:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+.work-footer { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--pf-grid-gap); margin-top: var(--pf-section-gap); }
 .portfolio-screen .work-footer h2 { max-width: 14ch; margin: 0 0 16px; font: var(--pf-heading); letter-spacing: -.025em; text-wrap: balance; }
 .work-footer p { max-width: 50ch; }
 .work-footer .pf-action { flex-shrink: 0; }
+.portfolio-screen--compact .pf-work .work-history { margin-top: 32px; padding-block: 32px; }
+.portfolio-screen--compact .pf-work .work-record__header { grid-template-columns: 72px minmax(0, 1fr); gap: 16px; }
+.portfolio-screen--compact .pf-work .work-record__logo { width: 72px; height: 72px; }
+.portfolio-screen--compact .pf-work .work-record__details,
+.portfolio-screen--compact .pf-work .work-record > p { margin-left: 0; }
+.portfolio-screen--compact .pf-work .work-record__identity,
+.portfolio-screen--compact .pf-work .work-record__details,
+.portfolio-screen--compact .pf-work .work-record ul { gap: 12px; }
 .portfolio-screen--compact .work-footer { align-items: flex-start; flex-direction: column; }

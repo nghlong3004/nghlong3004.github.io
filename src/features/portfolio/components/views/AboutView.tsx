@@ -11,9 +11,6 @@ export function AboutView({ data, onNavigate }: PortfolioViewProps) {
 
   return <article className="pf-page about-view" data-ff-surface>
     <header className="about-view__hero" data-ff-section="intro" data-ff-surface>
-      <div style={{ overflow: 'hidden' }} data-ff-surface><div data-framer-background-image-wrapper="true">
-        <Portrait portrait={data.profile.portrait} className="about-view__portrait" />
-      </div></div>
       <div className="about-view__copy pf-page--dark" data-ff-surface>
         <div className="pf-header">
           <div data-framer-component-type="RichTextContainer"><h1>{vi ? 'TỪ SỞ THÍCH' : 'FROM INTEREST'}<span>{vi ? 'ĐẾN DỰ ÁN.' : 'TO PROJECTS.'}</span></h1></div>
@@ -27,6 +24,9 @@ export function AboutView({ data, onNavigate }: PortfolioViewProps) {
           </div>
         </div>
       </div>
+      <div className="about-view__media" data-ff-surface><div data-framer-background-image-wrapper="true">
+        <Portrait portrait={data.profile.portrait} className="about-view__portrait" />
+      </div></div>
     </header>
 
     <section className="about-view__numbers" data-ff-section="about-impact" data-ff-surface>

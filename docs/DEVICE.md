@@ -24,6 +24,7 @@ Public API: `FoldfolioDevice.tsx`, `FoldfolioProps`/`FoldfolioHandle` in `types.
 - Reusable `fold`: unfold → content → close → call; `open`: stays open while page scroll moves content. App overrides terminal phases. Auto orientation uses viewport width/aspect; designs: landscape 976×660, portrait 358×718 (config/constants.ts).
 - Call JSX functions renderDevice/renderScenes directly; preserve DOM/slots/refs used by scanner/filter/tint. No extra wrappers or conversion to components.
 - geo/live/R and callback refs renderFrame/scan/motionTick/paintScenes/kick own engine state. rAF writes DOM through S, never React state per frame. Preserve render-time callback-ref assignments/dependency arrays unless lifecycle changes are verified.
+- `data-ff-motion="composition"` opts a screen into generic semantic header/section/footer reveals. The existing scanner groups ordinary copy/actions/media once, preserving legacy unmarked callers and counter/hover behavior. Paused GSAP timelines use the device loop's clock and scoped contexts; replacement, detach, hidden settling, StrictMode replay and unmount release inline motion state.
 - Declare each useDeviceRefs useRef separately, outside object literals (React Compiler caching). Motion callbacks: owned/cancellable, detached-target guards, StrictMode rearming, nominal reveal/counter timings. Clean up listeners/observers/timers/rAF; handle resize/tab changes.
 - Storage/event: `foldfolio:style`; session: `ff-seen`, `ff-warm:*`; snapshot DOM: `ff-pagesnap`.
 

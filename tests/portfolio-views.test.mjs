@@ -4,7 +4,25 @@ import { readFileSync } from 'node:fs'
 import { Children, createElement, isValidElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { createServer } from 'vite'
-import { resolvePortfolioDestination } from '../src/features/portfolio/lib/navigation.ts'
+import * as navigationHelpers from '../src/features/portfolio/lib/navigation.ts'
+const { resolvePortfolioDestination } = navigationHelpers
+
+test('resolved repeat targets are inert only while open and without a drawer change', () => {
+  assert.equal(typeof navigationHelpers.isPortfolioNavigationNoop, 'function')
+  const { isPortfolioNavigationNoop } = navigationHelpers
+  const root = { view: 'work', open: true }
+  assert.equal(isPortfolioNavigationNoop(root, resolvePortfolioDestination('experience'), null), true)
+  assert.equal(isPortfolioNavigationNoop(root, resolvePortfolioDestination('work'), null), true)
+  assert.equal(isPortfolioNavigationNoop({ ...root, open: false }, resolvePortfolioDestination('work'), null), false)
+  assert.equal(isPortfolioNavigationNoop(root, resolvePortfolioDestination('job-current'), null), false)
+  assert.equal(isPortfolioNavigationNoop({ ...root, target: 'job-current' }, resolvePortfolioDestination('job-current'), null), true)
+  assert.equal(isPortfolioNavigationNoop({ ...root, target: 'job-current' }, resolvePortfolioDestination('work'), null), false)
+  const project = resolvePortfolioDestination('project-vinqa')
+  assert.equal(isPortfolioNavigationNoop({ view: 'projects', target: project.target, open: true }, project, null), false)
+  assert.equal(isPortfolioNavigationNoop({ view: 'projects', target: project.target, open: true }, project, 'vinqa'), true)
+  assert.equal(isPortfolioNavigationNoop({ view: 'projects', target: project.target, open: true }, resolvePortfolioDestination('project-other'), 'vinqa'), false)
+  assert.equal(isPortfolioNavigationNoop({ view: 'projects', open: true }, resolvePortfolioDestination('projects'), 'vinqa'), true)
+})
 
 test('navigation resolves genuine views and optional deep targets, not cross-view anchors', () => {
   assert.deepEqual(resolvePortfolioDestination('intro'), { view: 'home' })
@@ -23,18 +41,20 @@ test('navigation resolves genuine views and optional deep targets, not cross-vie
 test('App navigation selects notifications, clears selection only when leaving, and returns Home', () => {
   const source = readFileSync(new URL('../src/app/App.tsx', import.meta.url), 'utf8')
   const body = source.match(/const navigate = \(destination: string\) => \{([\s\S]*?)\n  \}/)[1]
-  let navigation = { view: 'projects', revision: 2, open: true }, selected = 'vinqa'
-  const navigate = destination => new Function('destination', 'window', 'entryFrame', 'resolvePortfolioDestination', 'navigation', 'setExpandedProject', 'setNavigation', body)(
-    destination, { cancelAnimationFrame() {} }, { current: 0 }, resolvePortfolioDestination, navigation,
+  let navigation = { view: 'projects', revision: 2, open: true }, selected = 'vinqa', cancelled = 0
+  const navigate = destination => new Function('destination', 'window', 'entryFrame', 'resolvePortfolioDestination', 'isPortfolioNavigationNoop', 'navigation', 'expandedProject', 'setExpandedProject', 'setNavigation', body)(
+    destination, { cancelAnimationFrame() { cancelled++ } }, { current: 0 }, resolvePortfolioDestination, navigationHelpers.isPortfolioNavigationNoop, navigation, selected,
     value => { selected = value }, update => { navigation = update(navigation) },
   )
   navigate('projects')
   assert.equal(selected, 'vinqa')
+  assert.equal(cancelled, 0, 'same root must not cancel an ongoing frame')
+  assert.equal(navigation.revision, 2, 'same root must not remount the screen')
   navigate('work')
   assert.equal(selected, null)
   navigate('project-vinqa')
   assert.equal(selected, 'vinqa')
-  assert.deepEqual(navigation, { view: 'projects', target: 'project-vinqa', revision: 5, open: true })
+  assert.deepEqual(navigation, { view: 'projects', target: 'project-vinqa', revision: 4, open: true })
   navigate('job-current')
   assert.equal(selected, null)
   assert.equal(navigation.view, 'work')
@@ -51,13 +71,24 @@ test('App navigation selects notifications, clears selection only when leaving, 
   assert.match(source, /deviceRef.current\?\.focusScreenElement\(element\)/)
 })
 
-test('shared CSS primitives keep reference geometry and only notification image backing transparent', () => {
+test('shared CSS primitives expose the editorial frame and transparent notification image backing', () => {
   const css = readFileSync(new URL('../src/features/portfolio/styles/portfolio.css', import.meta.url), 'utf8')
   for (const name of ['pf-page', 'pf-header', 'pf-section', 'pf-action', 'pf-metrics']) assert.ok(css.includes(`.${name}`))
-  assert.match(css, /--pf-padding: 29px/)
-  assert.match(css, /--pf-padding: 26px/)
+  assert.match(css, /--pf-padding: 32px/)
+  assert.match(css, /--pf-padding: 24px/)
   assert.match(css, /\.portfolio-notification__app \{[^}]*background: transparent/)
   assert.match(css, /\.portfolio-notification \{[^}]*background: rgba\(255,255,255,\.72\)/)
+  assert.doesNotMatch(css, /portfolio-view-open|portfolio-screen--launch\s*\{[^}]*animation:/)
+})
+
+test('shared authored typography uses Alumni Sans and Geist only', () => {
+  const files = ['portfolio', 'home', 'about', 'contact', 'technology-loop', 'project-overlay']
+  for (const file of files) {
+    const css = readFileSync(new URL(`../src/features/portfolio/styles/${file}.css`, import.meta.url), 'utf8')
+    assert.doesNotMatch(css, /Geist Mono|pf-mono|geist-mono-medium/, file)
+  }
+  const global = readFileSync(new URL('../src/app/styles/globals.css', import.meta.url), 'utf8')
+  assert.match(global, /font-family:\s*'Geist'/)
 })
 
 test('cover has one employer fact/action per copy and retains VinQA navigation in VI/EN', async () => {
@@ -97,6 +128,7 @@ test('actual VI/EN view markup contains only the active destination and its appr
     for (const language of ['vi', 'en']) for (const [view, sections] of Object.entries(groups)) {
       const html = renderToStaticMarkup(createElement(PortfolioScreen, { data: portfolio[language], view, launch: true, expandedProject: 'vinqa', onToggle() {}, onNavigate() {}, workFilter: 'all', onWorkFilterChange() {}, contactDraft: { name: '', email: '', location: '', message: '' }, onContactDraftChange() {}, contactValidation: { touched: {}, submitted: false }, onContactValidationChange() {} }))
       assert.ok(html.includes(`data-portfolio-view="${view}"`))
+      assert.ok(html.includes('data-ff-motion="composition"'))
       assert.ok(html.includes('data-ff-section="view-root"'))
       for (const key of Object.values(groups).flat()) assert.equal(html.includes(`data-ff-section="${key}"`), sections.includes(key), `${language}/${view}/${key}`)
       assert.equal(html.includes('data-ff-section="project-vinqa"'), ['home', 'projects'].includes(view))
