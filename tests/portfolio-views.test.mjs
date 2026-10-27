@@ -41,7 +41,7 @@ test('navigation resolves genuine views and optional deep targets, not cross-vie
 test('App navigation selects notifications, clears selection only when leaving, and returns Home', () => {
   const source = readFileSync(new URL('../src/app/App.tsx', import.meta.url), 'utf8')
   const body = source.match(/const navigate = \(destination: string\) => \{([\s\S]*?)\n  \}/)[1]
-  let navigation = { view: 'projects', revision: 2, open: true }, selected = 'vinqa', cancelled = 0
+  let navigation = { view: 'projects', revision: 2, entryRevision: 1, open: true }, selected = 'vinqa', cancelled = 0
   const navigate = destination => new Function('destination', 'window', 'entryFrame', 'resolvePortfolioDestination', 'isPortfolioNavigationNoop', 'navigation', 'expandedProject', 'setExpandedProject', 'setNavigation', body)(
     destination, { cancelAnimationFrame() { cancelled++ } }, { current: 0 }, resolvePortfolioDestination, navigationHelpers.isPortfolioNavigationNoop, navigation, selected,
     value => { selected = value }, update => { navigation = update(navigation) },
@@ -50,15 +50,25 @@ test('App navigation selects notifications, clears selection only when leaving, 
   assert.equal(selected, 'vinqa')
   assert.equal(cancelled, 0, 'same root must not cancel an ongoing frame')
   assert.equal(navigation.revision, 2, 'same root must not remount the screen')
+  assert.equal(navigation.entryRevision, 1, 'same root must not replay the entry')
   navigate('work')
   assert.equal(selected, null)
+  assert.equal(navigation.entryRevision, 2, 'an already-open different view arms entry')
   navigate('project-vinqa')
   assert.equal(selected, 'vinqa')
-  assert.deepEqual(navigation, { view: 'projects', target: 'project-vinqa', revision: 4, open: true })
+  assert.deepEqual(navigation, { view: 'projects', target: 'project-vinqa', revision: 4, entryRevision: 3, open: true })
   navigate('job-current')
   assert.equal(selected, null)
   assert.equal(navigation.view, 'work')
-  assert.ok(source.includes("({ view: 'home', revision: 0, open: false })"))
+  assert.equal(navigation.entryRevision, 4)
+  navigate('job-current')
+  assert.equal(navigation.entryRevision, 4, 'repeat target stays inert')
+  navigate('work')
+  assert.equal(navigation.entryRevision, 4, 'same-view changed target remains real navigation without aperture')
+  navigation = { ...navigation, view: 'home', open: false }
+  navigate('about')
+  assert.equal(navigation.entryRevision, 4, 'initial fold/open selection does not arm aperture')
+  assert.ok(source.includes("({ view: 'home', revision: 0, entryRevision: 0, open: false })"))
   assert.match(source, /const returnToEntry[\s\S]*?setExpandedProject\(null\)[\s\S]*?view: 'home'/)
   assert.equal((source.match(/onClick=\{\(\) => setLanguage\('/g) || []).length, 2)
   assert.ok(!/useEffect\([^]*?setExpandedProject/.test(source.split('const navigate')[0]))

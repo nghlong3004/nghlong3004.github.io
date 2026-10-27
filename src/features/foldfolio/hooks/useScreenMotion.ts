@@ -7,7 +7,7 @@ import { toHex } from "../lib/colors"
 import { useIsoLayoutEffect } from "./useIsoLayoutEffect"
 import type { ScreenMotion } from "../types"
 import type { GeometryState, LiveState, MItem, Reveal, SceneImage, TintSection } from "../engine/types"
-import { collectCompositionGroups } from "../engine/compositionMotion.ts"
+import { centerOutInsets, collectCompositionGroups } from "../engine/compositionMotion.ts"
 
 export function useScreenMotion({
     isCanvas, R, autoImgs, measureSat, paintScenes, screenColor, measureLum, tintMap, rootRef,
@@ -46,6 +46,56 @@ export function useScreenMotion({
     const compositionCounters = useRef(new Map<HTMLElement, HTMLElement>())
     const compositionCounterTimers = useRef(new Map<HTMLElement, number>())
     const compositionTimelines = useRef(new Map<HTMLElement, ReturnType<typeof gsap.timeline>>())
+    const consumedEntry = useRef<string | null>(null)
+    const entry = useRef<null | {
+        screens: HTMLElement[]
+        originals: { screen: HTMLElement; clip: string; priority: string; width: number; height: number }[]
+        context: ReturnType<typeof gsap.context>
+        timeline: ReturnType<typeof gsap.timeline>
+        progress: { value: number }
+        port: boolean
+        inner: number
+        height: number
+        paintedFull: boolean
+    }>(null)
+    const releaseEntry = () => {
+        const current = entry.current
+        if (!current) return
+        entry.current = null
+        current.context.revert()
+        current.originals.forEach(({ screen, clip, priority }) => {
+            if (clip) screen.style.setProperty("clip-path", clip, priority)
+            else screen.style.removeProperty("clip-path")
+        })
+        reveals.current.forEach(reveal => { if (current.screens.includes(reveal.el)) reveal.dur = -1 })
+        reveals.current = reveals.current.filter(reveal => reveal.dur > 0)
+    }
+    const armEntry = useRef<() => void>(() => {})
+    armEntry.current = () => {
+        if (!motionOn || isCanvas || typeof document === "undefined") return
+        const roots = [R.cL.current, R.cR.current, R.cOpen.current, R.cInteractive?.current].filter(Boolean) as HTMLElement[]
+        const screens = roots.flatMap(root => Array.from(root.querySelectorAll<HTMLElement>('[data-ff-motion="composition"][data-ff-motion-entry]')))
+        const token = screens[0]?.getAttribute("data-ff-motion-entry")
+        if (!token || token === consumedEntry.current) return
+        releaseEntry()
+        consumedEntry.current = token
+        const g = geo.current
+        const progress = { value: 0 }
+        let timeline!: ReturnType<typeof gsap.timeline>
+        const context = gsap.context(() => {
+            timeline = gsap.timeline({ paused: true }).to(progress, { value: 1, duration: mo.duration, ease: easeOut })
+        }, rootRef.current || screens[0])
+        const current = {
+            screens, originals: screens.map(screen => ({ screen, clip: screen.style.getPropertyValue("clip-path"), priority: screen.style.getPropertyPriority("clip-path"), width: screen.offsetWidth, height: screen.offsetHeight })),
+            context, timeline, progress, port: g.port, inner: Math.max(0, live.current.inner), height: g.Hs, paintedFull: false,
+        }
+        entry.current = current
+        current.originals.forEach(({ screen, width, height }) => {
+            screen.style.clipPath = centerOutInsets(current.port, width, height, current.height, current.inner, 0)
+        })
+        reveals.current.push({ el: screens[0], img: null, kind: "t", t0: performance.now(), dur: mo.duration * 1000, dist: 0 })
+        kick.current()
+    }
     const releaseComposition = (screen: HTMLElement) => {
         compositions.current.get(screen)?.revert()
         compositions.current.delete(screen)
@@ -419,15 +469,26 @@ export function useScreenMotion({
                 }
                 collectCompositionGroups(screen).forEach(el => {
                     if (seen.current.has(el)) return
+                    const registerCounters = () => {
+                        if (mo.counters) el.querySelectorAll<HTMLElement>('[data-framer-name^="Count"],[data-framer-name^="count"]').forEach(counter => {
+                            if (seen.current.has(counter)) return
+                            seen.current.add(counter)
+                            compositionCounters.current.set(counter, screen)
+                            list.push({ el: counter, root, top: 0, h: 0, kind: "c", done: false })
+                        })
+                    }
+                    if (entry.current?.screens.includes(screen) && !entry.current.paintedFull) {
+                        const top = topOf(el, root)
+                        if (top < live.current.inner + geo.current.Hs && top + el.offsetHeight > live.current.inner) {
+                            seen.current.add(el)
+                            registerCounters()
+                            return
+                        }
+                    }
                     seen.current.add(el)
                     compositionGroups.current.set(el, screen)
                     list.push({ el, root, top: 0, h: 0, kind: "t", done: false })
-                    if (mo.counters) el.querySelectorAll<HTMLElement>('[data-framer-name^="Count"],[data-framer-name^="count"]').forEach(counter => {
-                        if (seen.current.has(counter)) return
-                        seen.current.add(counter)
-                        compositionCounters.current.set(counter, screen)
-                        list.push({ el: counter, root, top: 0, h: 0, kind: "c", done: false })
-                    })
+                    registerCounters()
                 })
             })
             const grouped = (el: HTMLElement) => marked.some(screen => screen.contains(el))
@@ -570,6 +631,8 @@ export function useScreenMotion({
         let compositionStart: number | undefined
         for (const m of mItems.current) {
             if (m.done || !m.el.isConnected || m.top > hi || m.top + m.h < lo) continue
+            const screen = compositionGroups.current.get(m.el)
+            if (screen && entry.current?.screens.includes(screen) && !entry.current.paintedFull) continue
             m.done = true
             const d = Math.min(n * mo.stagger, 0.6)
             n++
@@ -582,7 +645,6 @@ export function useScreenMotion({
                 compositionCounterTimers.current.set(el, timer)
                 continue
             }
-            const screen = compositionGroups.current.get(el)
             if (screen) {
                 const context = compositions.current.get(screen)!
                 let timeline: ReturnType<typeof gsap.timeline>
@@ -633,10 +695,37 @@ export function useScreenMotion({
     const reveals = useRef<Reveal[]>([])
     const stepReveals = (t: number) => {
         if (!active.current) return false
+        if (entry.current?.paintedFull && entry.current.screens.some(screen => !screen.isConnected)) releaseEntry()
         const list = reveals.current
         if (!list.length) return false
         let keep = false
         for (const r of list) {
+            if (entry.current?.screens.includes(r.el)) {
+                const current = entry.current
+                if (current.screens.some(screen => !screen.isConnected) || geo.current.port !== current.port || document.visibilityState === "hidden") {
+                    releaseEntry()
+                    continue
+                }
+                if (current.paintedFull) {
+                    r.dur = -1
+                    continue
+                }
+                // A queued rAF timestamp can precede a synchronous navigation step.
+                const elapsed = Math.max(current.timeline.time(), (t - r.t0) / 1000)
+                current.timeline.time(Math.min(elapsed, current.timeline.duration()))
+                current.inner = Math.max(0, live.current.inner)
+                current.originals.forEach(({ screen, width, height }) => {
+                    screen.style.clipPath = centerOutInsets(current.port, width, height, current.height, current.inner, current.progress.value)
+                })
+                if (elapsed >= current.timeline.duration()) {
+                    // Retain the full-root clip for the observed settled-text paint stability;
+                    // lifecycle release restores the prior clip without idle playback.
+                    current.originals.forEach(({ screen }) => { screen.style.clipPath = "inset(0px)" })
+                    current.paintedFull = true
+                }
+                keep = true
+                continue
+            }
             const timeline = compositionTimelines.current.get(r.el)
             if (timeline) {
                 if (!r.el.isConnected) {
@@ -703,6 +792,8 @@ export function useScreenMotion({
                 if (el.isConnected && el.contains(node)) node.nodeValue = original
             })
             counters.current.clear()
+            releaseEntry()
+            consumedEntry.current = null
             const grouped = new Set(compositionGroups.current.keys())
             compositions.current.forEach(context => context.revert())
             compositions.current.clear()
@@ -728,5 +819,5 @@ export function useScreenMotion({
         }
     }, [])
 
-    return { motionTick, scan, reveals, stepReveals }
+    return { motionTick, scan, reveals, stepReveals, armEntry }
 }

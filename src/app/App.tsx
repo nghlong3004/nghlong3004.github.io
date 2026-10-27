@@ -22,7 +22,7 @@ export default function App() {
   const [contactDraft, setContactDraft] = useState<PortfolioContactDraft>({ name: '', email: '', location: '', message: '' })
   const [contactValidation, setContactValidation] = useState<PortfolioContactValidation>({ touched: {}, submitted: false })
   const changeContactDraft = (field: keyof PortfolioContactDraft, value: string) => setContactDraft(current => ({ ...current, [field]: value }))
-  const [navigation, setNavigation] = useState<{ view: PortfolioView; target?: string; revision: number; open: boolean }>({ view: 'home', revision: 0, open: false })
+  const [navigation, setNavigation] = useState<{ view: PortfolioView; target?: string; revision: number; entryRevision: number; open: boolean }>({ view: 'home', revision: 0, entryRevision: 0, open: false })
   const entryFrame = useRef(0)
   const deviceRef = useRef<FoldfolioHandle>(null)
   useEffect(() => () => window.cancelAnimationFrame(entryFrame.current), [])
@@ -34,12 +34,13 @@ export default function App() {
     window.cancelAnimationFrame(entryFrame.current)
     if (next.project) setExpandedProject(next.project)
     else if (next.view !== navigation.view) setExpandedProject(null)
-    setNavigation(current => ({ view: next.view, target: next.target, revision: current.revision + 1, open: true }))
+    setNavigation(current => ({ view: next.view, target: next.target, revision: current.revision + 1,
+      entryRevision: current.entryRevision + Number(current.open && current.view !== next.view), open: true }))
   }
   const returnToEntry = () => {
     window.cancelAnimationFrame(entryFrame.current)
     setExpandedProject(null)
-    setNavigation(current => ({ view: 'home', revision: current.revision, open: false }))
+    setNavigation(current => ({ view: 'home', revision: current.revision, entryRevision: current.entryRevision, open: false }))
     window.scrollTo({ top: 0, behavior: 'smooth' })
     let attempts = 0
     const focusEntry = () => {
@@ -55,8 +56,8 @@ export default function App() {
   }
   const toggleProject = (id: string) => setExpandedProject((current) => current === id ? null : id)
   const focusContactField = (element: HTMLElement) => { deviceRef.current?.focusScreenElement(element) }
-  const screen = <PortfolioScreen key={navigation.revision} view={navigation.view} launch={navigation.open} data={data} expandedProject={expandedProject} onToggle={toggleProject} onNavigate={navigate} contactDraft={contactDraft} onContactDraftChange={changeContactDraft} contactValidation={contactValidation} onContactValidationChange={setContactValidation} onContactFocusField={focusContactField} />
-  const screenPortrait = <PortfolioScreen key={navigation.revision} view={navigation.view} launch={navigation.open} data={data} compact expandedProject={expandedProject} onToggle={toggleProject} onNavigate={navigate} contactDraft={contactDraft} onContactDraftChange={changeContactDraft} contactValidation={contactValidation} onContactValidationChange={setContactValidation} onContactFocusField={focusContactField} />
+  const screen = <PortfolioScreen key={navigation.revision} view={navigation.view} launch={navigation.open} entryRevision={navigation.entryRevision} data={data} expandedProject={expandedProject} onToggle={toggleProject} onNavigate={navigate} contactDraft={contactDraft} onContactDraftChange={changeContactDraft} contactValidation={contactValidation} onContactValidationChange={setContactValidation} onContactFocusField={focusContactField} />
+  const screenPortrait = <PortfolioScreen key={navigation.revision} view={navigation.view} launch={navigation.open} entryRevision={navigation.entryRevision} data={data} compact expandedProject={expandedProject} onToggle={toggleProject} onNavigate={navigate} contactDraft={contactDraft} onContactDraftChange={changeContactDraft} contactValidation={contactValidation} onContactValidationChange={setContactValidation} onContactFocusField={focusContactField} />
 
   return (
     <TechnologyLoopProvider>

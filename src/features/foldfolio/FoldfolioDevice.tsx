@@ -427,7 +427,7 @@ export default function FoldfolioDevice(props: FoldfolioProps) {
     const { paintScenes, sat, drawGlow, measureSat, measureLum } = useSceneImages({
         sceneList, R, cardW, F, glowColors: props.glowColors, glowFlip, glowCur, kick, imgLum,
     })
-    const { motionTick, scan, reveals, stepReveals } = useScreenMotion({
+    const { motionTick, scan, reveals, stepReveals, armEntry } = useScreenMotion({
         isCanvas, R, autoImgs, measureSat, paintScenes, screenColor, measureLum,
         tintMap, rootRef, topRef, motionOn, mo, kick, live, geo,
     })
@@ -466,6 +466,7 @@ export default function FoldfolioDevice(props: FoldfolioProps) {
         request: props.screenNavigation, rootRef, measureRef, refs: R, geometry: geo,
         live, jump, cancelSection, contentH, setContentH, isCanvas,
     })
+    useIsoLayoutEffect(() => armEntry.current())
     // Navigation remaps the old scroll offset before the new fold geometry can
     // briefly hide an otherwise focused flat screen during viewport resize.
     useIsoLayoutEffect(() => {

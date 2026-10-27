@@ -19,3 +19,16 @@ test('semantic groups cover ordinary content once while later sections remain se
     assert.equal(groups.filter(group => contains(group, leaf)).length, 1)
   }
 })
+
+test('center-out insets open equally to both landscape edges using resolved port', async () => {
+  const { centerOutInsets } = await import('../src/features/foldfolio/engine/compositionMotion.ts')
+  assert.equal(centerOutInsets(false, 976, 1600, 660, 300, 0), 'inset(0px 488px 0px 488px)')
+  assert.equal(centerOutInsets(false, 976, 1600, 660, 300, 0.5), 'inset(0px 244px 0px 244px)')
+})
+
+test('portrait aperture is symmetric around the visible viewport, not tall root midpoint', async () => {
+  const { centerOutInsets } = await import('../src/features/foldfolio/engine/compositionMotion.ts')
+  assert.equal(centerOutInsets(true, 358, 1600, 718, 300, 0), 'inset(659px 0px 941px 0px)')
+  assert.equal(centerOutInsets(true, 358, 1600, 718, 300, 0.5), 'inset(479.5px 0px 761.5px 0px)')
+  assert.equal(centerOutInsets(true, 358, 1600, 718, 300, 1), 'inset(300px 0px 582px 0px)')
+})

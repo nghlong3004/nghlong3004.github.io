@@ -13,12 +13,15 @@ const resolver = registerHooks({ resolve(specifier, context, next) {
 const original = { window: globalThis.window, document: globalThis.document, performance: globalThis.performance, NodeFilter: globalThis.NodeFilter }
 globalThis.window = {}
 globalThis.__motionGSAP = { reverts: 0, timelineReverts: 0, tweens: [],
-  context: () => ({ add(fn) { fn() }, revert() { globalThis.__motionGSAP.reverts++ } }),
-  timeline: () => ({ fromTo(el, from, to) { globalThis.__motionGSAP.tweens.push({ el, from, to }); return this }, time() { return this }, duration() { return 1 }, revert() { globalThis.__motionGSAP.timelineReverts++ } }) }
+  context: fn => { fn(); return { add(callback) { callback() }, revert() { globalThis.__motionGSAP.reverts++ } } },
+  timeline: () => ({ fromTo(el, from, to) { globalThis.__motionGSAP.tweens.push({ el, from, to }); return this },
+    to(target, vars) { this.target = target; this.vars = vars; return this },
+    time(value) { if (value === undefined) return this.position || 0; this.position = value; if (this.target) this.target.value = this.vars.ease(Math.min(value / this.vars.duration, 1)); return this },
+    duration() { return this.vars?.duration || 1 }, revert() { globalThis.__motionGSAP.timelineReverts++ } }) }
 const { useScreenMotion } = await import('../src/features/foldfolio/hooks/useScreenMotion.ts')
 resolver.deregister()
 
-function useFixture(count = 2, withComposition = false, withDeepCounter = false, copyCount = 1, visibleGroups = 1) {
+function useFixture(count = 2, withComposition = false, withDeepCounter = false, copyCount = 1, visibleGroups = 1, entryToken = null, entryClip = '', port = false, inner = 0, metricTop = 900) {
   globalThis.__motionGSAP.reverts = 0; globalThis.__motionGSAP.timelineReverts = 0; globalThis.__motionGSAP.tweens = []
   const clock = { now: 0 }
   let next = 0, writes = 0, slot = 0, nowReads = 0
@@ -42,11 +45,15 @@ function useFixture(count = 2, withComposition = false, withDeepCounter = false,
       classList: { add() {}, remove() {} }, querySelector: () => null, contains: target => target === node }
   })
   const copies = Array.from({ length: copyCount }, () => {
-    const metric = { isConnected: true, offsetTop: 900, offsetHeight: 100, style: { removeProperty() {} }, node: { nodeValue: '12' }, contains() { return true }, querySelector: () => null, classList: { add() {}, remove() {} } }
+    const metric = { isConnected: true, offsetTop: metricTop, offsetHeight: 100, style: { removeProperty() {} }, node: { nodeValue: '12' }, contains() { return true }, querySelector: () => null, classList: { add() {}, remove() {} } }
     const group = { isConnected: true, offsetTop: 0, offsetHeight: withDeepCounter ? 1200 : 300, style: { removeProperty() {} }, children: [], tagName: 'HEADER', querySelectorAll: () => withDeepCounter ? [metric] : [] }
     const visible = Array.from({ length: visibleGroups - 1 }, (_, i) => ({ isConnected: true, offsetTop: (i + 1) * 300, offsetHeight: 300, style: { removeProperty() {} }, children: [], tagName: 'SECTION', querySelectorAll: () => [] }))
     const laterGroup = { isConnected: true, offsetTop: 900, offsetHeight: 300, style: { removeProperty() {} }, children: [], tagName: 'SECTION', querySelectorAll: () => [] }
-    const composition = { isConnected: true, children: [group, ...visible, laterGroup], tagName: 'DIV', querySelectorAll: () => [] }
+    const composition = { isConnected: true, offsetWidth: 976, offsetHeight: 1600,
+      style: { clipPath: entryClip, getPropertyValue(name) { return name === 'clip-path' ? this.clipPath : '' }, getPropertyPriority() { return '' },
+        setProperty(name, value) { if (name === 'clip-path') this.clipPath = value }, removeProperty(name) { if (name === 'clip-path') this.clipPath = '' } },
+      getAttribute(name) { return name === 'data-ff-motion-entry' ? entryToken : null },
+      children: [group, ...visible, laterGroup], tagName: 'DIV', querySelectorAll: () => [] }
     const main = { isConnected: true, offsetWidth: 976, clientWidth: 976, firstElementChild: null,
       contains(el) { return el === composition || composition.children.includes(el) },
       querySelectorAll(selector) {
@@ -60,21 +67,22 @@ function useFixture(count = 2, withComposition = false, withDeepCounter = false,
   })
   const { main, group, metric, laterGroup, composition } = copies[0]
   for (const el of elements) el.offsetParent = main
-  const document = { createTreeWalker(el) { let first = true; return {
+  const document = { visibilityState: 'visible', createTreeWalker(el) { let first = true; return {
     nextNode() { if (!first) return false; first = false; return true }, currentNode: el.node,
   } } }
   Object.assign(globalThis, { window, document, performance: { now: () => clock.now + (copyCount > 1 ? ++nowReads : 0) }, NodeFilter: { SHOW_TEXT: 4 } })
   const noop = () => {}
+  const geo = { current: { Hs: port ? 718 : 660, port } }
   const motion = useScreenMotion({ isCanvas: false,
     R: { cL: { current: copyCount > 1 ? copies[0].main : null }, cR: { current: copyCount > 1 ? copies[1].main : main }, cOpen: { current: null }, cInteractive: { current: copies[2]?.main || null } },
     autoImgs: { current: [] }, measureSat: noop, measureLum: noop, paintScenes: { current: noop },
     screenColor: '#fff', tintMap: { current: [] }, rootRef: { current: null }, topRef: { current: 0 },
-    motionOn: true, mo: { counters: true, hover: false, images: false, headlines: false, stagger: 0.2, duration: 0.5, distance: 20 },
-    kick: { current: noop }, live: { current: { inner: 0, pe: 1 } }, geo: { current: { Hs: 660, port: false } },
+    motionOn: true, mo: { counters: true, hover: false, images: false, headlines: false, stagger: 0.2, duration: 1, distance: 20 },
+    kick: { current: noop }, live: { current: { inner, pe: 1 } }, geo,
   })
   const cleanups = effects.map(effect => effect()).filter(Boolean)
   const fire = (map, id, at) => { clock.now = at; const item = map.get(id); assert.ok(item); map.delete(id); item.callback(clock.now) }
-  return { motion, elements, group, metric, laterGroup, composition, copies, timers, frames, cleanups, effects,
+  return { motion, geo, elements, group, metric, laterGroup, composition, copies, timers, frames, cleanups, effects,
     get nowReads() { return nowReads }, setNow(value) { clock.now = value },
     fireTimer(id, at) { fire(timers, id, at) }, fireFrame(id, at) { fire(frames, id, at) },
     get writes() { return writes },
@@ -100,6 +108,33 @@ test('opt-in composition enters as a group, later sections wait, and cleanup rel
   } finally { f.cleanup(); f.restore() }
 })
 
+test('portrait entry tracks the visible content offset and settles when hidden', () => {
+  const f = useFixture(0, true, false, 1, 1, '9', '', true, 300)
+  try {
+    f.motion.armEntry.current()
+    assert.equal(f.composition.style.clipPath, 'inset(659px 0px 941px 0px)')
+    f.motion.stepReveals(500)
+    assert.equal(f.composition.style.clipPath, 'inset(344.875px 0px 626.875px 0px)')
+    globalThis.document.visibilityState = 'hidden'
+    f.motion.stepReveals(600)
+    assert.equal(f.composition.style.clipPath, '')
+    f.motion.armEntry.current()
+    assert.equal(f.composition.style.clipPath, '', 'consumed token does not replay after hidden settle')
+  } finally { f.cleanup(); f.restore() }
+})
+
+test('orientation change settles the old mask without replaying the same token', () => {
+  const f = useFixture(0, true, false, 1, 1, '10')
+  try {
+    f.motion.armEntry.current()
+    f.geo.current.port = true
+    f.motion.stepReveals(100)
+    assert.equal(f.composition.style.clipPath, '')
+    f.motion.armEntry.current()
+    assert.equal(f.composition.style.clipPath, '')
+  } finally { f.cleanup(); f.restore() }
+})
+
 test('two visible groups in canonical and decorative copies start from one tick, while later groups wait', () => {
   const f = useFixture(0, true, false, 3, 2)
   try {
@@ -121,6 +156,92 @@ test('two visible groups in canonical and decorative copies start from one tick,
     assert.equal(new Set(later.map(reveal => reveal.t0)).size, 1, 'later copies share their new viewport-entry tick')
     assert.ok(later[0].t0 > firstStart, 'later content does not reveal at initial navigation')
     assert.equal(f.nowReads, 2)
+  } finally { f.cleanup(); f.restore() }
+})
+
+test('entry mask style endpoints share one aperture and retain a full-root clip while visible', () => {
+  const f = useFixture(0, true, false, 3, 2, '7')
+  try {
+    f.motion.armEntry.current()
+    assert.deepEqual(f.copies.map(copy => copy.composition.style.clipPath), Array(3).fill('inset(0px 488px 0px 488px)'))
+    f.motion.scan.current()
+    assert.ok(!f.motion.reveals.current.some(reveal => f.copies.some(copy => reveal.el === copy.group || reveal.el === copy.visible[0])))
+    f.motion.stepReveals(500)
+    const masks = f.copies.map(copy => copy.composition.style.clipPath)
+    assert.equal(new Set(masks).size, 1, 'canonical and decorative masks share progress')
+    assert.match(masks[0], /^inset\(0px (?!488|0)\d+(?:\.\d+)?px 0px \d+(?:\.\d+)?px\)$/)
+    f.motion.stepReveals(1001)
+    assert.deepEqual(f.copies.map(copy => copy.composition.style.clipPath), Array(3).fill('inset(0px)'), 'full-root clip remains explicit at the endpoint')
+    f.motion.stepReveals(1017)
+    assert.deepEqual(f.copies.map(copy => copy.composition.style.clipPath), Array(3).fill('inset(0px)'), 'settled live composition does not remove its painting clip')
+    f.cleanup()
+    assert.deepEqual(f.copies.map(copy => copy.composition.style.clipPath), ['', '', ''], 'unmount restores owned clips')
+  } finally { f.cleanup(); f.restore() }
+})
+
+test('an initially visible nested counter counts during aperture without a group rise', () => {
+  const f = useFixture(0, true, true, 1, 1, '11', '', false, 0, 100)
+  try {
+    f.motion.armEntry.current()
+    f.motion.scan.current()
+    assert.ok(!f.motion.reveals.current.some(reveal => reveal.el === f.group || reveal.el === f.metric))
+    assert.equal(f.timers.size, 1, 'visible counter is registered despite group-rise suppression')
+    f.fireTimer([...f.timers.keys()][0], 150)
+    assert.equal(f.metric.node.nodeValue, '0', 'the real counter text begins count-up')
+    assert.equal(f.frames.size, 1)
+  } finally { f.cleanup(); f.restore() }
+})
+
+for (const port of [false, true]) test(`entry never seeks backwards on interleaved sync/rAF clocks (${port ? 'portrait' : 'landscape'})`, () => {
+  const f = useFixture(0, true, false, 3, 1, 'clock', '', port, port ? 300 : 0)
+  try {
+    f.motion.armEntry.current() // performance.now() marker is 1ms in this fixture.
+    f.motion.stepReveals(201) // A synchronous navigation jump advances the real paused timeline.
+    const opened = f.copies.map(copy => copy.composition.style.clipPath)
+    assert.deepEqual(opened, Array(3).fill(port
+      ? 'inset(483.80800000000005px 0px 765.808px 0px)'
+      : 'inset(0px 249.85600000000005px 0px 249.85600000000005px)'))
+    f.motion.stepReveals(0) // An already-scheduled rAF timestamp can precede the marker.
+    assert.deepEqual(f.copies.map(copy => copy.composition.style.clipPath), opened, 'older frame cannot close the opened band')
+    f.motion.stepReveals(101)
+    f.motion.stepReveals(201)
+    assert.deepEqual(f.copies.map(copy => copy.composition.style.clipPath), opened, 'backwards and equal clock samples hold progress')
+    f.motion.stepReveals(501)
+    assert.deepEqual(f.copies.map(copy => copy.composition.style.clipPath), Array(3).fill(port
+      ? 'inset(344.875px 0px 626.875px 0px)'
+      : 'inset(0px 61px 0px 61px)'))
+    f.motion.stepReveals(1001)
+    assert.equal(f.motion.stepReveals(10), false, 'settled entry does not request idle playback')
+    assert.deepEqual(f.copies.map(copy => copy.composition.style.clipPath), Array(3).fill('inset(0px)'), 'settled entry stays full-root')
+  } finally { f.cleanup(); f.restore() }
+})
+
+test('scroll into a later group during aperture defers its rise until entry settles', () => {
+  const f = useFixture(0, true, false, 1, 1, '12')
+  try {
+    f.motion.armEntry.current()
+    f.motion.scan.current()
+    f.motion.motionTick.current(900, 1)
+    assert.ok(!f.motion.reveals.current.some(reveal => reveal.el === f.laterGroup), 'scroll cannot start a competing group rise')
+    f.motion.stepReveals(1001)
+    f.motion.stepReveals(1017)
+    f.motion.motionTick.current(900, 1)
+    assert.ok(f.motion.reveals.current.some(reveal => reveal.el === f.laterGroup), 'later-section rise remains available after aperture')
+  } finally { f.cleanup(); f.restore() }
+})
+
+test('entry cleanup restores preexisting clip and prevents detached or hidden writes', () => {
+  const f = useFixture(0, true, false, 1, 1, '8', 'circle(40%)')
+  try {
+    f.motion.armEntry.current()
+    f.cleanup()
+    assert.equal(f.composition.style.clipPath, 'circle(40%)', 'initial owned mask is released on unmount')
+    f.replay()
+    f.motion.armEntry.current()
+    assert.equal(f.composition.style.clipPath, 'inset(0px 488px 0px 488px)')
+    f.composition.isConnected = false
+    f.motion.stepReveals(500)
+    assert.equal(f.composition.style.clipPath, 'circle(40%)', 'detached screen is not left masked')
   } finally { f.cleanup(); f.restore() }
 })
 

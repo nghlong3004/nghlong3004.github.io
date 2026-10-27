@@ -6,17 +6,18 @@ import { ContactView } from './views/ContactView'
 import { HomeView } from './views/HomeView'
 import { ProjectsView } from './views/ProjectsView'
 
-export function PortfolioScreen({ data, view, launch = false, compact = false, expandedProject, onToggle, onNavigate, contactDraft, onContactDraftChange, contactValidation, onContactValidationChange, onContactFocusField, style }: {
+export function PortfolioScreen({ data, view, launch = false, compact = false, entryRevision = 0, expandedProject, onToggle, onNavigate, contactDraft, onContactDraftChange, contactValidation, onContactValidationChange, onContactFocusField, style }: {
   view: PortfolioView
   launch?: boolean
   compact?: boolean
+  entryRevision?: number
   style?: CSSProperties
 } & PortfolioViewProps) {
   const label = { home: data.ui.home, work: data.ui.work, projects: data.ui.archive, about: data.ui.intro, contact: data.ui.contact }[view]
   const viewProps: PortfolioViewProps = { data, expandedProject, onToggle, onNavigate, contactDraft, onContactDraftChange, contactValidation, onContactValidationChange, onContactFocusField }
   return (
     <div className={`portfolio-screen${compact ? ' portfolio-screen--compact' : ''}${launch ? ' portfolio-screen--launch' : ''}`}
-      data-portfolio-view={view} data-ff-section="view-root" data-ff-motion="composition" role="region" aria-label={label} tabIndex={-1} style={style}>
+      data-portfolio-view={view} data-ff-section="view-root" data-ff-motion="composition" data-ff-motion-entry={entryRevision || undefined} role="region" aria-label={label} tabIndex={-1} style={style}>
       {view === 'home' ? <HomeView {...viewProps} />
         : view === 'about' ? <AboutView {...viewProps} />
         : view === 'projects' ? <ProjectsView {...viewProps} />
